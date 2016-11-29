@@ -1,0 +1,297 @@
+
+android.*
+---------
+captureBackButton( noCB, yesCB )
+android.captureVolumeButtons( block, volUp, volDown )
+android.easyAndroidUIVisibility( profile ) - "immersiveSticky", "immersive", lowProfile", "default"
+
+ccmgr.*
+---------
+Grab from other docs
+
+colors.*
+---------
+easy.* - Basic colors
+easy.randomColor()
+easy.export() - exports basic colors and randomColor() function to _G
+
+rgba2(  ) - Converts Graphics 1.0 color table to a valid Graphics 2.0 color table.
+hexcolor(  ) - converts hex color codes to rgba Graphics 2.0 value
+mixRGB( c1, c2 ) - Evenly mix two RGBa colors.
+randomRGB( [ c1 ] ) - Generates a random RGB color.  If optional c1 is passed in, it is mixed evenly with the random color.
+pastelRGB( [ c1 ] ) - Generates a random RGB pastel color.  If optional c1 is passed in, it is mixed evenly with the random color.
+
+hsl2rgb( h, s, l, a ) - Convert HSL color to RGB color table.
+rgb2hsl( r, g, b, a ) - Convert RGB color to HSL color table.
+
+hueOffset( h, s, l, a, angle ) - Rotate hue by 'angle' degrees
+hslNeighbors( h, s, l, a, angle ) - Return two arbitray angle neighbors (left and right by angle)
+hslTriadic( h, s, l, a ) - Return two triadic neighbors of color
+hslSplitComplementary( h, s, l, a, angle ) - Return two complementary split angle colors. 
+
+rgbOffset( r, g, b, a, angle ) - Converts RGB color to HSL and applies hueOffset()
+rgbNeighbors( r, g, b, a, angle ) - Converts RGB color to HSL and applies hslNeighbors()
+rgbTriadic( r, g, b, a ) - Converts RGB color to HSL and applies hslTriadic()
+rgbSplitComplementary( r, g, b, a, angle ) - Converts RGB color to HSL and applies hslSplitComplementary()
+
+color.*
+-------
+fnn( ... ) - Return first argument from list that is not nil.
+   ... - Any number of any type of arguments.
+
+round(val, n) - Rounds a number to the nearest decimal places. (http://lua-users.org/wiki/FormattingNumbers)
+val - The value to round.
+n - Number of decimal places to round to.
+
+nextFrame( func, delay ) - Execute func in new frame. 
+From Sergey's code: https://gist.github.com/Lerg
+
+listen( name, listener )
+ignore( name, listener )
+autoIgnore( name, obj ) - Returns true if ignored due to 
+post( name, params, debuglvl )
+removeListeners( [ obj ] )
+
+variables - Get later
+
+
+camera.*
+------------
+camera.tracking( trackObj, world, params )	
+camera.delayedTracking( trackObj, world, params )	
+camera.trackingLooseSquare( trackObj, world, params ) - Follows target, but has a deadzone followed by an acceleration zone to gradually move the camera.
+camera.trackingLooseCircle( trackObj, world, params ) - Same as trackingLooseSquare, but using bounding circles
+camera.transitioning( trackObj, world, params )
+
+display.*
+---------
+quickLayers( parentGroup, ... )
+
+line( group, startX, startY, endX, endY, visualParams )
+line2( group, startX, startY, angle, length, visualParams )
+newPointsLine( group, points, visualParams )
+arrowhead( group, x, y, width, height, visualParams )
+arrow( group, startX, startY, endX, endY, visualParams )
+arrow2( group, startX, startY, angle, length, visualParams)
+
+arc(group, x, y, params )
+polyArc(group, x, y, params ) 
+
+newRect( group, x, y, visualParams, bodyParams, behaviorsList )
+newCircle( group, x, y, visualParams, bodyParams, behaviorsList )
+newImage( group, x, y, imgSrc, visualParams, bodyParams, behaviorsList )
+newImageRect( group, x, y, imgSrc, visualParams, bodyParams, behaviorsList )
+newSprite( group, x, y, imgSrc, sequenceData, visualParams, bodyParams, behaviorsList )
+listDPP()
+getDPP(name)
+setDPP(name,value)
+addBody( obj, bodyParams, imageFile )
+
+
+easyIFC:*
+---------
+addButtonPreset( presetName, params )
+newButton( parentGroup, params )
+presetPush( parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams)
+presetToggle( parentGroup, presetName, x,y,w,h, labelText,onEvent, overrideParams)
+presetRadio( parentGroup, presetName, x, y , w, h, labelText, onRelease, overrideParams)
+presetSlider( parentGroup, presetName, x,y,w,h, onEvent, onRelease, overrideParams)
+
+presetTableRoller( parentGroup, presetName, x, y, w, h, srcTable, onRelease, overrideParams)
+presetTable2TableRoller( parentGroup, presetName, x, y, w, h, srcTable, dstTable, entryName, onRelease, overrideParams)
+presetTableToggler( parentGroup, presetName, x, y, w, h, labelText, dstTable, entryName, onToggle, overrideParams)
+presetSlider2Table( parentGroup, presetName, x,y,w,h, dstTable, entryName, onEvent, onRelease, overrideParams)
+quickHorizSlider( parentGroup, x, y, w, h, imageBase, onEvent, onRelease, knobImgBase, kw, kh )
+
+presetNavButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+presetBackButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+presetAudioButton( self, parentGroup, presetName, x, y, w, h, labelText, onEvent, overrideParams )
+presetEventButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+presetShareButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+presetBuyButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+presetURLButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+presetRateButton( self, parentGroup, presetName, x, y, w, h, labelText, onRelease, overrideParams )
+
+addLabelPreset( presetName, params )
+presetLabel( group, presetName, text, x, y, params  )
+quickLabel( group, text, x, y, font, fontSize, textColor, anchorX, anchorY )
+quickEmbossedLabel( group, text, x, y, font, fontSize, embossTextColor, embossHighlightColor, embossShadowColor )
+
+easyIFC.*
+---------
+getCurrentRadio( group )
+
+isInBounds( obj, obj2 )
+isInBounds_alt( obj, obj2 )
+easyFlyIn( obj, params )
+easySqueeze( obj, xScale1, yScale1, xScale2, yScale2, delay, time1, time2, time3, myEasing, myEasing2, myEasing3 )
+easyInflate( obj, xScale1, yScale1, xScale2, yScale2, xScale3, yScale3, delay, time1, time2, time3, myEasing, myEasing2, myEasing3 )
+traySwipe( self, event )
+doShrink( obj )
+doGrow( obj )
+easyFlip( obj, params )
+
+pinchZoomDragTouch( self, event )
+pulse( obj, params )
+
+easyIFC.sbc.*
+-------------
+prep_tableRoller( button, srcTable, chainedCB, underBarSwap ) 
+tableRoller_CB( event )
+prep_table2TableRoller( button, dstTable, entryName, srcTable, chainedCB ) 
+table2TableRoller_CB( event ) 
+prep_tableToggler( button, dstTable, entryName, chainedCB ) 
+tableToggler_CB( event ) 
+prep_horizSlider2Table( button, dstTable, entryName, chainedCB ) 
+horizSlider2Table_CB( event )
+
+
+easyInputs.joystick.*
+--------------------
+create( group, x, y, params )
+
+easyInputs.oneTouch.*
+--------------------
+create( group, params )
+
+easyInputs.twoTouch.*
+--------------------
+create( group, params )
+
+easyInputs.oneStick.*
+--------------------
+create( group, params )
+
+easyInputs.twoStick.*
+--------------------
+create( group, params )
+
+easyInputs.oneStickOneTouch.*
+--------------------
+create( group, params )
+
+
+social.*
+--------
+rate( id )
+share( msg, url, params )
+
+
+Extensions To Lua and Corona Libs
+==================================
+display.*
+---------
+isValid(obj)
+newContainer( ... )
+newGroup( ... )
+
+transition.*
+------------
+color( obj, colorFrom, colorTo, time, delay, ease )
+
+table.*
+-------
+shuffle( t, iter ) - Randomizes the order of a numerically indexed (non-sparse) table. Alternative to randomizeTable().
+combineUnique( ... ) - Combines n tables into a single table containing only unique members from each source table.
+combineUnique_i( ... ) - Combines n tables into a single table containing only unique members from each source table.
+shallowCopy( src [ , dst ]) - Copies single-level tables; handles non-integer indexes; does not copy metatable
+deepCopy( src [ , dst ]) - Copies multi-level tables; handles non-integer indexes; does not copy metatable
+deepStripCopy( src [ , dst ]) - Copies multi-level tables, but strips out metatable(s) and ...
+shallowStripCopy( src [ , dst ]) - Copies single-level tables; handles non-integer indexes; does not copy metatable
+save( theTable, fileName [, base ] ) - Saves table to file (Uses JSON library as intermediary)
+stripSave( theTable, fileName [, base ] ) - Saves table to file (Uses JSON library as intermediary)
+( fileName [, base ] ) - Loads table from file (Uses JSON library as intermediary)
+dumpu( theTable [, padding ] ) - Dumps indexes and values inside single-level table (for debug) (UNSORTED)
+dumpu(theTable, padding, marker )
+secure_save( theTable, fileName [, base ] ) - Saves table to file (Uses JSON library as intermediary)
+secure_load( fileName [, base ] ) - Loads table from file (Uses JSON library as intermediary)
+dump(theTable, padding, marker ) -- Sorted
+print_r( theTable ) - Dumps indexes and values inside multi-level table (for debug)
+count( theTable ) - Counts all entries in table (non-recursive)
+maxIndex( theTable ) - Determine the maximum index of a sparse table
+count_r( theTable ) - Counts all entries in table (recursive)
+permute_iter( a )
+removeByRef(t, obj)
+repairIndicies( theTable )
+getRandom( t )
+serialize( o )
+toString ( t, flat )
+
+files.*
+-------
+see index.txt and verify completeness and correctness
+
+math2d.*
+--------
+Get docs elsewhere
+
+
+misc.*
+------
+isConnectedToWWW( url )
+secondsToTimer( seconds, version )
+easyUnderline( obj, color, strokeWidth, extraWidth, yOffset )
+quickLine( group, x, y, len, color, strokeWidth, yOffset )
+fitText( obj, origText, maxWidth )
+getImageSize ( path, basePath )
+rotateAbout( obj, x, y, params	)	
+createEasyMeter( x , y, width, fontSize )
+easyBlur( group, time, color, params )
+easyShake( obj, amplitude, time )
+easyAlert( title, msg, buttons )
+easyPopup( title, msg, buttons, params )
+isValidEmail( val, debugEn )
+blockTouchesForDuration( duration, subtle )
+easyRemoteImage( curImg, fileName, imageURL, baseDirectory ) 
+createSlicedImage( group, path, x, y, width, height )
+oleft( obj ) 
+oright( obj ) 
+ohcenter( obj ) 
+obottom( obj ) 
+otop( obj ) 
+ovcenter( obj ) 
+protoDim( group, obj, fontSize, color  )
+countLocals( debugLvl, level )
+
+
+persist.*
+---------
+setSecure( )
+get( fileName, fieldName, params )
+set( fileName, fieldName, value, params )
+setDefault( fileName, fieldName, value, params )
+
+points.*
+---------
+new( ... ) - Create a new points instance.
+
+pointsInstance:*
+----------------
+add( x1,y1,... ) - Appends any number of point x,y pairs to the points list.
+insert( index, x1,y1,... )
+get( index ) - Gets a single point out of the points list.
+remove(index)
+push(...)
+peek( ) - Treats points list like a stack/FILO and retrieves the point at the top (end) of the points list.
+pop( ) - Treats points list like a stack/FILO and pops the point at the top (end) off the points list.
+push_head( x1,y1,... ) - Treats points list like a queue/FIFO and pushes one or more point sets (in reverse order) onto the points list front. Like calling insert(1, x1,y1), insert(1, x2,y2), ..., insert(1, xN,yN), 
+peek_head( ) - Treats points list like a queue/FIFO and retrieves the point at the front of the points list. Like a get at 1.
+pop_head( ) - Treats points list like a queue/FIFO and pops the point at the front off the points list. Like a remove at 1.
+
+
+
+security.*
+----------
+genKey()
+saveKey( fileName, base )
+loadKey( fileName, base )
+encode( str )
+decode( str )
+getKeyString()
+printKeyString()
+loadKeyFromKeyString( keyString )
+
+
+system.*
+--------
+May re-org
