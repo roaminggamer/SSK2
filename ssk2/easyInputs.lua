@@ -3,10 +3,9 @@
 -- =============================================================
 -- Easy Inputs Loader
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
 local easyInputs = {}
 _G.ssk.easyInputs = easyInputs
 easyInputs.joystick 		= require("ssk2.easyInputs.joystick")
@@ -15,5 +14,4 @@ easyInputs.twoTouch 		= require("ssk2.easyInputs.twoTouch")
 easyInputs.oneStick 		= require("ssk2.easyInputs.oneStick")
 easyInputs.twoStick 		= require("ssk2.easyInputs.twoStick")
 easyInputs.oneStickOneTouch = require("ssk2.easyInputs.oneStickOneTouch")
---table.dump(easyInputs)
 return easyInputs

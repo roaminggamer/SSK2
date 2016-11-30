@@ -3,8 +3,8 @@
 -- =============================================================
 -- Easy Social Features - Currently ONLY Rating
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 -- Developmet Notes:
 -- 1. Add back 'sharing' function later.

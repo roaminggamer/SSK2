@@ -3,8 +3,8 @@
 -- =============================================================
 -- Quick Layers Utility
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 
@@ -19,9 +19,6 @@ end
 --
 local displayExtended = {}
 
--- ==
---    func() - what it does
--- ==
 function displayExtended.quickLayers( parentGroup, ... )
 	local parentGroup = parentGroup or display.currentStage
 	local layers = display.newGroup() 

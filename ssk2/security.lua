@@ -1,24 +1,9 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
---[[
-local security = require "security"
---security.genKey()
---security.saveKey( "key.json" )
---security.loadKey( "key.json", system.DocumentsDirectory )
-security.loadKey( "key.json" )
-local orig = 'edo !@#$%^&*()_+ 15 cool"'
-local encoded = security.encode( orig )
-local decoded = security.decode( encoded )
-print( orig )
-print( encoded )
-print( decoded )
-print( orig == decoded )
---]]
 
 local security = {}
 
@@ -124,8 +109,6 @@ function security.loadKeyFromKeyString( keyString )
 end
 
 security.loadKeyFromKeyString(defaultKeyString)
-
---print("'" .. letters .. "'")
 
 if( _G.ssk ) then
 	ssk.security = security

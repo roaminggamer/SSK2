@@ -3,9 +3,11 @@
 -- =============================================================
 -- 
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
+-- Development Notes:
+-- 1. Some features still not exposed/documented.
 
 -- ==
 --    isInBounds( obj, obj2 ) - Is the center of obj over obj2 (inside its axis aligned bounding box?)
@@ -24,8 +26,6 @@ end
 
 local function isInBounds_alt( obj, obj2 )
 
-	--print("POINK", obj.x, obj.y, obj2.x, obj2.y)
-
 	if(not obj2) then return false end
 
 	local cw2 = obj2.contentWidth/2
@@ -35,8 +35,6 @@ local function isInBounds_alt( obj, obj2 )
 	local xMin = obj2.x - cw2
 	local yMax = obj2.y + ch2
 	local yMin = obj2.y - ch2
-
-	--print("POINK", obj.x, obj.y, xMax, xMin, yMax, yMin)
 
 	local bounds = obj2.contentBounds
 	if( obj.x > xMax ) then return false end
@@ -207,7 +205,6 @@ local function easyInflate( obj, xScale1, yScale1, xScale2, yScale2, xScale3, yS
 end
 
 
--- EFM
 -- This is a placeholder and not meant to be used yet.
 --
 -- You were warned!

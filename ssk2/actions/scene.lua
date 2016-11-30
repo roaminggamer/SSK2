@@ -3,8 +3,8 @@
 -- =============================================================
 -- Actions Library - Scene Functions
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local scene = {}
@@ -109,6 +109,7 @@ scene.circWrap = function( objectToWrap, point, radius )
 		wrapV = v2
 	end
 
+	-- Debug Code Left For Future Debugging
 	--[[
 	local c = display.newCircle( wrapV.x, wrapV.y, 20 )
 	c:setFillColor(1,1,0)
@@ -120,6 +121,7 @@ scene.circWrap = function( objectToWrap, point, radius )
 
 	objectToWrap.x, objectToWrap.y = wrapV.x, wrapV.y
 
+	-- Debug Code Left For Future Debugging
 	--[[
 	if(v1) then 
 		local tx,ty = subVec( x, y, v1.x, v1.y )

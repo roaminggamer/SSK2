@@ -3,14 +3,9 @@
 -- =============================================================
 -- Display Factories Loader
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
-if( not _G.ssk ) then
-	_G.ssk = {}
-end
-
 local function shallowCopy( src, dst )
 	local dst = dst or {}
 	if( not src ) then return dst end
@@ -21,7 +16,6 @@ local function shallowCopy( src, dst )
 end
 
 local _RGDisplay = {}
-
 shallowCopy( require( "ssk2.display.arcs" ), _RGDisplay )
 shallowCopy( require( "ssk2.display.extended" ), _RGDisplay )
 shallowCopy( require( "ssk2.display.layers" ), _RGDisplay )

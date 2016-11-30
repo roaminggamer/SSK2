@@ -1,10 +1,9 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
 
 -- Localizing math functions for speedup!
 local mDeg  = math.deg
@@ -411,6 +410,7 @@ end
 -- EFM This is malfunctiong.
 -- re-write to match native
 --math2do.rcIntersect =  function ( x1, y1, x2, y2, cx, cy, cr ) 
+--[[
 math2do.segmentCircleIntersect = function( p1, p2, circle, cr )
 	local x1,y1 = p1.x, p1.y
 	local x2,y2 = p2.x, p2.y
@@ -471,7 +471,292 @@ math2do.segmentCircleIntersect = function( p1, p2, circle, cr )
 
 	return nil,nil
 end
+--]]
 
+-- // Copied/Derived from code by: Davis Claiborne (https://github.com/davisdude/mlib/blob/master/mlib.lua)
+-- directly copied: getQuadraticRoots, checkFuzzy, getSlope, checkInput, getYIntercept
+-- getCircleSegmentIntersection derived from getCircleLineIntersection
+local getQuadraticRoots
+local checkFuzzy
+local getSlope
+local checkInput
+local getYIntercept
+
+checkInput =  function( ... )
+	local input = {}
+	if type( ... ) ~= 'table' then input = { ... } else input = ... end
+	return input
+end
+
+checkFuzzy = function( number1, number2 )
+	return ( number1 - .00001 <= number2 and number2 <= number1 + .00001 )
+end
+
+getSlope = function( x1, y1, x2, y2 )
+	if checkFuzzy( x1, x2 ) then return false end 
+	return ( y1 - y2 ) / ( x1 - x2 )
+end
+
+getYIntercept = function( x, y, ... )
+	local input = checkInput( ... )
+	local slope
+
+	if #input == 1 then
+		slope = input[1]
+	else
+		slope = getSlope( x, y, unpack( input ) )
+	end
+
+	if not slope then return x, true end -- This way we have some information on the line.
+	return y - slope * x, false
+end
+
+getQuadraticRoots = function ( a, b, c )
+	local discriminant = b ^ 2 - ( 4 * a * c )
+	if discriminant < 0 then return false end
+	discriminant = math.sqrt( discriminant )
+	local denominator = ( 2 * a )
+	return ( -b - discriminant ) / denominator, ( -b + discriminant ) / denominator
+end
+
+math2do.segmentCircleIntersect = function( p1, p2, circ, radius )
+--local function getCircleLineIntersection( circleX, circleY, radius, x1, y1, x2, y2 )
+
+	local x1 = p1.x
+	local y1 = p1.y
+	local x2 = p2.x
+	local y2 = p2.y
+	local circleX = circ.x
+	local circleY = circ.y
+
+	local slope = getSlope( x1, y1, x2, y2 )
+	local intercept = getYIntercept( x1, y1, slope )
+
+	if slope then
+		local a = ( 1 + slope ^ 2 )
+		local b = ( -2 * ( circleX ) + ( 2 * slope * intercept ) - ( 2 * circleY * slope ) )
+		local c = ( circleX ^ 2 + intercept ^ 2 - 2 * ( circleY ) * ( intercept ) + circleY ^ 2 - radius ^ 2 )
+
+		x1, x2 = getQuadraticRoots( a, b, c )
+
+		if not x1 then
+			return nil,nil
+		end
+
+		y1 = slope * x1 + intercept
+		y2 = slope * x2 + intercept
+
+		if checkFuzzy( x1, x2 ) and checkFuzzy( y1, y2 ) then
+			return { x = x1, y = y1 }, nil, 'tangent'
+		else
+			return { x = x1, y = y1 }, { x = x2, y = y2 }, 'secant'
+		end
+	else -- Vertical Lines
+		local lengthToPoint1 = circleX - x1
+		local remainingDistance = lengthToPoint1 - radius
+		local intercept = math.sqrt( -( lengthToPoint1 ^ 2 - radius ^ 2 ) )
+
+		if -( lengthToPoint1 ^ 2 - radius ^ 2 ) < 0 then return false end
+
+		local bottomX, bottomY = x1, circleY - intercept
+		local topX, topY = x1, circleY + intercept
+
+		if topY ~= bottomY then
+			return { x = topX, y = topY }, { x = bottomX, y = bottomY }, 'secant'
+		else
+			return { x = topX, y = topY }, nil, 'tangent'
+		end
+	end
+end
+
+
+-- // Derived from code by: Davis Claiborne (https://github.com/davisdude/mlib/blob/master/mlib.lua)
+local function getLineLineIntersection( ... )
+	local input = checkInput( ... )
+	local x1, y1, x2, y2, x3, y3, x4, y4
+	local slope1, intercept1
+	local slope2, intercept2
+	local x, y
+
+	if #input == 4 then -- Given slope1, intercept1, slope2, intercept2.
+		slope1, intercept1, slope2, intercept2 = unpack( input )
+
+		-- Since these are lines, not segments, we can use arbitrary points, such as ( 1, y ), ( 2, y )
+		y1 = slope1 and slope1 * 1 + intercept1 or 1
+		y2 = slope1 and slope1 * 2 + intercept1 or 2
+		y3 = slope2 and slope2 * 1 + intercept2 or 1
+		y4 = slope2 and slope2 * 2 + intercept2 or 2
+		x1 = slope1 and ( y1 - intercept1 ) / slope1 or intercept1
+		x2 = slope1 and ( y2 - intercept1 ) / slope1 or intercept1
+		x3 = slope2 and ( y3 - intercept2 ) / slope2 or intercept2
+		x4 = slope2 and ( y4 - intercept2 ) / slope2 or intercept2
+	elseif #input == 6 then -- Given slope1, intercept1, and 2 points on the other line.
+		slope1, intercept1 = input[1], input[2]
+		slope2 = getSlope( input[3], input[4], input[5], input[6] )
+		intercept2 = getYIntercept( input[3], input[4], input[5], input[6] )
+
+		y1 = slope1 and slope1 * 1 + intercept1 or 1
+		y2 = slope1 and slope1 * 2 + intercept1 or 2
+		y3 = input[4]
+		y4 = input[6]
+		x1 = slope1 and ( y1 - intercept1 ) / slope1 or intercept1
+		x2 = slope1 and ( y2 - intercept1 ) / slope1 or intercept1
+		x3 = input[3]
+		x4 = input[5]
+	elseif #input == 8 then -- Given 2 points on line 1 and 2 points on line 2.
+		slope1 = getSlope( input[1], input[2], input[3], input[4] )
+		intercept1 = getYIntercept( input[1], input[2], input[3], input[4] )
+		slope2 = getSlope( input[5], input[6], input[7], input[8] )
+		intercept2 = getYIntercept( input[5], input[6], input[7], input[8] )
+
+		x1, y1, x2, y2, x3, y3, x4, y4 = unpack( input )
+	end
+
+	if not slope1 and not slope2 then -- Both are vertical lines
+		if x1 == x3 then -- Have to have the same x positions to intersect
+			return true
+		else
+			return false
+		end
+	elseif not slope1 then -- First is vertical
+		x = x1 -- They have to meet at this x, since it is this line's only x
+		y = slope2 and slope2 * x + intercept2 or 1
+	elseif not slope2 then -- Second is vertical
+		x = x3 -- Vice-Versa
+		y = slope1 * x + intercept1
+	elseif checkFuzzy( slope1, slope2 ) then -- Parallel (not vertical)
+		if checkFuzzy( intercept1, intercept2 ) then -- Same intercept
+			return true
+		else
+			return false
+		end
+	else -- Regular lines
+		x = ( -intercept1 + intercept2 ) / ( slope1 - slope2 )
+		y = slope1 * x + intercept1
+	end
+
+	return x, y
+end
+
+function math2do.lineLineIntersect( x1, y1, x2, y2, x3, y3, x4, y4 ) 
+	local x, y = getLineLineIntersection( x1, y1, x2, y2, x3, y3, x4, y4 ) 
+	if( not x) then return nil end
+	return { x = x, y = y }
+end
+
+-- Checks if a point is on a line.
+-- Does not support the format using slope because vertical lines would be impossible to check.
+local function checkLinePoint( x, y, x1, y1, x2, y2 )
+	local m = getSlope( x1, y1, x2, y2 )
+	local b = getYIntercept( x1, y1, m )
+
+	if not m then -- Vertical
+		return checkFuzzy( x, x1 )
+	end
+	return checkFuzzy( y, m * x + b )
+end
+
+-- Gives whether or not a point lies on a line segment.
+local function checkSegmentPoint( px, py, x1, y1, x2, y2 )
+	-- Explanation around 5:20: https://www.youtube.com/watch?v=A86COO8KC58
+	local x = checkLinePoint( px, py, x1, y1, x2, y2 )
+	if not x then return false end
+
+	local lengthX = x2 - x1
+	local lengthY = y2 - y1
+
+	if checkFuzzy( lengthX, 0 ) then -- Vertical line
+		if checkFuzzy( px, x1 ) then
+			local low, high
+			if y1 > y2 then low = y2; high = y1
+			else low = y1; high = y2 end
+
+			if py >= low and py <= high then return true
+			else return false end
+		else
+			return false
+		end
+	elseif checkFuzzy( lengthY, 0 ) then -- Horizontal line
+		if checkFuzzy( py, y1 ) then
+			local low, high
+			if x1 > x2 then low = x2; high = x1
+			else low = x1; high = x2 end
+
+			if px >= low and px <= high then return true
+			else return false end
+		else
+			return false
+		end
+	end
+
+	local distanceToPointX = ( px - x1 )
+	local distanceToPointY = ( py - y1 )
+	local scaleX = distanceToPointX / lengthX
+	local scaleY = distanceToPointY / lengthY
+
+	if ( scaleX >= 0 and scaleX <= 1 ) and ( scaleY >= 0 and scaleY <= 1 ) then -- Intersection
+		return true
+	end
+	return false
+end
+
+
+function math2do.segmentSegmentIntersect( x1, y1, x2, y2, x3, y3, x4, y4 )
+	local slope1, intercept1 = getSlope( x1, y1, x2, y2 ), getYIntercept( x1, y1, x2, y2 )
+	local slope2, intercept2 = getSlope( x3, y3, x4, y4 ), getYIntercept( x3, y3, x4, y4 )
+
+	if ( ( slope1 and slope2 ) and checkFuzzy( slope1, slope2 ) ) or ( not slope1 and not slope2 ) then -- Parallel lines
+		if checkFuzzy( intercept1, intercept2 ) then -- The same lines, possibly in different points.
+			local points = {}
+			if checkSegmentPoint( x1, y1, x3, y3, x4, y4 ) then addPoints( points, x1, y1 ) end
+			if checkSegmentPoint( x2, y2, x3, y3, x4, y4 ) then addPoints( points, x2, y2 ) end
+			if checkSegmentPoint( x3, y3, x1, y1, x2, y2 ) then addPoints( points, x3, y3 ) end
+			if checkSegmentPoint( x4, y4, x1, y1, x2, y2 ) then addPoints( points, x4, y4 ) end
+
+			points = removeDuplicatePointsFlat( points )
+			if #points == 0 then return nil end
+			return unpack( points )
+		else
+			return nil
+		end
+	end
+
+	local x, y = getLineLineIntersection( x1, y1, x2, y2, x3, y3, x4, y4 )
+	if x and checkSegmentPoint( x, y, x1, y1, x2, y2 ) and checkSegmentPoint( x, y, x3, y3, x4, y4 ) then
+		return { x = x,  y = y }
+	end
+	return nil
+end 
+
+--[[
+-- Test for intersection between two line segments
+math2do.segmentSegmentIntersect2 = function( a1, a2, b1, b2 )
+	return math2do.segmentSegmentIntersect( a1.x, a1.y, a2.x, a2.y, b1.x, b1.y, b2.x, b2.y )
+end
+
+-- Derived from this code: http://pastebin.com/JH7rWWPY
+math2do.segmentSegmentIntersect =  function( x1, y1, x2, y2, x3, y3, x4, y4 )	
+	local d = (y4-y3)*(x2-x1)-(x4-x3)*(y2-y1)
+	local Ua_n = ((x4-x3)*(y1-y3)-(y4-y3)*(x1-x3))
+	local Ub_n = ((x2-x1)*(y1-y3)-(y2-y1)*(x1-x3))
+	
+	if d == 0 then
+		if Ua_n == 0 and Ua_n == Ub_n then
+			return true
+		end
+		return false
+	end
+	
+	local Ua = Ua_n / d
+	local Ub = Ub_n / d
+	
+	if Ua >= 0 and Ua <= 1 and Ub >= 0 and Ub <= 1 then      
+		return true
+	end    
+	return false
+end
+--]]
+--[[
 -- Test for intersection between two line segments
 math2do.lsIntersect =  function ( a1, a2, b1, b2 ) 
 	-- Derived from this code: http://pastebin.com/JH7rWWPY
@@ -505,6 +790,7 @@ math2do.lsIntersect =  function ( a1, a2, b1, b2 )
     
 	return false
 end
+--]]
 
 
 -- Following derived from: https://gist.github.com/Xeoncross/9511295

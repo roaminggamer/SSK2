@@ -1,9 +1,11 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
+-- Development Notes:
+-- Add EasyFPSMeter
 
 local misc = {}
 _G.ssk = _G.ssk or {}
@@ -18,9 +20,6 @@ local mFloor			= math.floor
 local angle2Vector	= ssk.math2d.angle2Vector
 local scaleVec			= ssk.math2d.scale
 
--- ==
---		func() - what it does
--- ==
 misc.isConnectedToWWW = function( url )
 	local url = url or "www.google.com" 
 	local hostFound = true
@@ -35,9 +34,6 @@ misc.isConnectedToWWW = function( url )
 	return hostFound
 end
 
--- ==
---		func() - what it does
--- ==
 function misc.secondsToTimer( seconds, version )	
 	local seconds = seconds or 0
 	version = version or 1
@@ -113,9 +109,6 @@ misc.fitText = function( obj, origText, maxWidth )
 	while(obj.contentWidth > maxWidth and textLen > 1 ) do
 			textLen = textLen - 1
 			obj.text = misc.shortenString( origText, textLen, "..." )
-			--if( textLen < 12 ) then
-				-- return
-			--end
 	end	
 end
 
@@ -129,9 +122,7 @@ misc.getImageSize = function ( path, basePath )
 end
 
 
--- Rotate object about point
 misc.rotateAbout = function( obj, x, y, params	)	
-		
 	x = x or display.contentCenterX
 	y = y or display.contentCenterY
 	params = params or {}
@@ -176,10 +167,7 @@ misc.rotateAbout = function( obj, x, y, params	)
 	transition.to( obj, { _pathRot = endA, delay = delay, time = time, transition = myEasing, onComplete = obj } )
 end
 
-
--- Easy Mem/FPS Meter
---
-misc.createEasyMeter = function( x , y, width, fontSize )
+misc.createEasyMemMeter = function( x , y, width, fontSize )
 	x = x or centerX
 	y = y or centerY
 	width = width or 200
@@ -332,136 +320,7 @@ misc.easyAlert = function( title, msg, buttons )
 	return alert
 end
 
--- Easy popup
---
--- title - Name on popup.
--- msg - message in popup.
--- buttons - table of tables like this:
--- { { "button 1", opt_func1 }, { "button 2", opt_func2 }, ...}
---
-misc.easyPopup = function( title, msg, buttons, params )
 
-	params = params or {}
-	params.edgeOffset 		= params.edgeOffset or 20
-	
-	params.titleFont 		= params.titleFont or native.systemFontBold
-	params.titleFontSize 	= params.titleFontSize or 20
-	
-	params.msgFont 			= params.msgFont or native.systemFont
-	params.msgFontSize		= params.msgFontSize or 14
-
-	params.buttonFont 		= params.buttonFont or native.systemFont
-	params.buttonFontSize 	= params.buttonFontSize or 12
-
-	local newImageRect	= ssk.display.newImageRect
-	local newRect		= ssk.display.newRect
-	local group = display.newGroup()
-	local popup = display.newGroup()
-	group:insert(popup)
-
-	local function onTouch( self, event )
-		local target  = event.target
-		local eventID = event.id
-		if(event.phase == "began") then
-			display.getCurrentStage():setFocus( target, eventID )
-			target.isFocus = true
-			target:setFillColor(0,0,0,0.1)
-		elseif(target.isFocus) then
-			if(event.phase == "ended" or event.phase == "cancelled") then
-				display.getCurrentStage():setFocus( nil, eventID )
-				target.isFocus = false
-				if(target.myCB) then target.myCB() end 
-				ignore( "enterFrame", group )
-				display.remove(group)
-			end
-		end
-		return true
-	end
-
-
-	local blocker = newImageRect( group, centerX, centerY, "images/fillT.png", { w = fullw, h = fullh } )
-	blocker.touch = function( self, event ) return true end
-	blocker:addEventListener( "touch" )
-	popup:toFront()
-
-	-- Title
-	local titleText = display.newText( popup, title, centerX, 0, params.titleFont, params.titleFontSize )
-	titleText:setFillColor( 0, 0, 0 )
-	titleText.anchorY = 0
-	titleText.y = top + titleText.contentHeight/2
-
-	-- Text Body
-	local options = 
-	{
-	    parent 		= popup,
-	    text 		= msg,
-	    x 			= 0,
-	    y 			= 0,
-	    width 		= fullw - params.edgeOffset * 4,
-	    --font = native.systemFontBold,
-	    font 		= params.msgFont,
-	    fontSize 	= params.msgFontSize,
-	    align = "left"  --new alignment parameter
-	}
-
-	local textBody = display.newText( options )
-	textBody:setFillColor( 0, 0, 0 )
-	textBody.anchorX = 0
-	textBody.anchorY = 0
-	textBody.y = titleText.contentHeight + 40
-	textBody.x = left + params.edgeOffset
-
-	group.enterFrame = function( self )
-		self:toFront()
-	end; listen( "enterFrame", group )
-
-	-- Buttons
-	--
-	local buttonsY = textBody.y + textBody.contentHeight + 40
-	local buttonsText = {}
-	local totalTextWidth = 0
-	for i = 1, #buttons do
-		local buttonText = display.newText( popup, buttons[i][1], left, buttonsY, params.buttonFont, params.buttonFontSize )
-		buttonText:setFillColor( 0, 0, 0 )
-		buttonText.anchorX = 0
-		buttonsText[i] = buttonText
-		totalTextWidth = totalTextWidth + buttonText.contentWidth
-	end
-
-	local ox = fullw - totalTextWidth - params.edgeOffset * 2
-	ox = math.floor(ox / (#buttons + 1))
-	ox = (ox<0) and 0 or ox
-	local edgeBuffer = (ox > 20) and 20 or 0
-	print(ox)
-	local curX = left + ox
-	for i = 1, #buttonsText do
-		buttonsText[i].x = curX
-		curX = curX + buttonsText[i].contentWidth + ox
-		local button = newRect( popup, buttonsText[i].x + buttonsText[i].contentWidth/2, buttonsText[i].y, 
-								{ w = buttonsText[i].contentWidth + 20, h = buttonsText[i].contentHeight + 10, 
-								  stroke = _DARKERGREY_, strokeWidth = 2 } )
-		buttonsText[i]:toFront()
-
-		button.myCB = buttons[i][2]
-		button.touch = onTouch
-		button:addEventListener("touch")
-	end
-
-	-- BackRect
-	--
-	local backRect = newRect( popup, left, top, { w = fullw - params.edgeOffset * 2, h = popup.contentHeight + 30,
-		                                     stroke = _DARKERGREY_, strokeWidth = 1, anchorX = 0, anchorY = 0 } )
-	backRect:toBack()
-	popup.anchorChildren = true
-	popup.x = centerX
-	popup.y = centerY
-
-	return group
-end
-
-
--- Rudimentary 'is valid format' e-mail check
---
 misc.isValidEmail = function( val, debugEn )
 
 	if( debugEn ) then
@@ -508,12 +367,7 @@ misc.blockTouchesForDuration = function( duration, subtle )
 	timer.performWithDelay( duration, blocker )
 end
 
--- 
---
 misc.easyRemoteImage = function( curImg, fileName, imageURL, baseDirectory ) 
-	--print(curImg, fileName, imageURL )
-	--table.dump(curOrder)
-
 	baseDirectory = baseDirectory or system.TemporaryDirectory
 
 	if( string.match( imageURL, "http" ) == nil ) then

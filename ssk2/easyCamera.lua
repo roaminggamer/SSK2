@@ -6,8 +6,8 @@
 -- While these can be used out-of-the-box, the purpose of this module
 -- is to give you a 'starting' point for your own custom camera logic.
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local camera = {}
@@ -377,7 +377,6 @@ function camera.transitioning( trackObj, world, params )
 		if(not lockY) then dy = trackObj.y - ly end      
 		if(dx or dy) then	
          transition.to( world, { x = world.x - dx, y = world.y - dy, time = time, transition = myEasing } )
-			--world:translate(-dx,-dy)
 			lx = trackObj.x
 			ly = trackObj.y
 		end

@@ -3,10 +3,9 @@
 -- =============================================================
 -- Line Factories
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
 
 local mDeg  = math.deg
 local mRad  = math.rad
@@ -30,7 +29,6 @@ end
 
 
 local function sub( x1, y1, x2, y2, alt)
-	--print( "A", x1, y1, x2, y2, alt)
 	if(alt) then
 		return { x = x2-x1, y = y2-y1 }
 	end
@@ -77,10 +75,6 @@ end
 --
 local displayExtended = {}
 
-
--- ==
---    func() - what it does
--- ==
 function displayExtended.line( group, startX, startY, endX, endY, visualParams )
 	group = group or display.currentStage
 
@@ -211,9 +205,6 @@ function displayExtended.line( group, startX, startY, endX, endY, visualParams )
 end
 displayExtended.newLine = displayExtended.line
 
--- ==
---    func() - what it does
--- ==
 function displayExtended.line2( group, startX, startY, angle, length, visualParams )
 	group = group or display.currentStage
 	local endX, endY = a2v( angle )
@@ -224,11 +215,6 @@ end
 displayExtended.newAngleLine = displayExtended.line2
 
 
---EFM add ability to append new segments
---EFM add arrowcapped style (single end arrowhead)
--- ==
---    func() - what it does
--- ==
 function displayExtended.newPointsLine( group, points, visualParams )
 	group = group or display.currentStage
 	local theLine = display.newGroup()
@@ -319,10 +305,6 @@ function displayExtended.newPointsLine( group, points, visualParams )
 	return theLine
 end
 
-
--- ==
---    func() - what it does
--- ==
 function displayExtended.arrowhead( group, x, y, width, height, visualParams )
    group      = group or display.currentStage
 	width      = width or 40
@@ -346,10 +328,6 @@ function displayExtended.arrowhead( group, x, y, width, height, visualParams )
 		head:setStrokeColor( unpack(visualParams.fill))
 	end
 
---EFM G2	if( visualParams.referencePoint ) then
---EFM G2		head:setReferencePoint( visualParams.referencePoint )
---EFM G2	end
-
 	if(visualParams.rotation) then
 		head.x = 0
 		head.y = 0
@@ -362,9 +340,6 @@ function displayExtended.arrowhead( group, x, y, width, height, visualParams )
 	return head
 end
 
--- ==
---    func() - what it does
--- ==
 function displayExtended.arrow( group, startX, startY, endX, endY, visualParams )
 	group = group or display.currentStage
 	local arrow = display.newGroup()
@@ -401,17 +376,12 @@ function displayExtended.arrow( group, startX, startY, endX, endY, visualParams 
 											 rotation = rotation, 
 											 width = width })
 
-    -- remember, rotate then translate for correct result!
 	arrowhead.x = endX 
 	arrowhead.y = endY 
-
 	arrow.head = arrowhead
-	
 	arrow.angle = rotation
-
 	arrow.vx = vx
 	arrow.vy = vy
-
 	arrow.cx = cx
 	arrow.cy = cy
 
@@ -420,9 +390,6 @@ function displayExtended.arrow( group, startX, startY, endX, endY, visualParams 
 	return arrow
 end
 
--- ==
---    func() - what it does
--- ==
 function displayExtended.arrow2( group, startX, startY, angle, length, visualParams)
 	group = group or display.currentStage
 

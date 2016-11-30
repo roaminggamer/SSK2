@@ -3,8 +3,8 @@
 -- =============================================================
 -- 
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 
@@ -38,8 +38,6 @@ function labels:addLabelPreset( presetName, params )
 	entry.embossTextColor     = fnn(params.embossTextColor, {1,1,1,1})
 	entry.embossHighlightColor = fnn(params.embossHighlightColor, {1,1,1,1})
 	entry.embossShadowColor    = fnn(params.embossShadowColor, {0,0,0,1})
-
---EFM G2	entry.referencePoint = fnn(params.referencePoint, display.CenterReferencePoint)
 end
 
 -- ==
@@ -74,7 +72,6 @@ function labels:newLabel( params, screenGroup )
 	tmpParams.embossTextColor     = fnn(tmpParams.embossTextColor, {1,1,1,1})
 	tmpParams.embossHighlightColor = fnn(tmpParams.embossHighlightColor, {1,1,1,1})
 	tmpParams.embossShadowColor    = fnn(tmpParams.embossShadowColor, {0,0,0,1})
---EFM G2	tmpParams.referencePoint = fnn(tmpParams.referencePoint, display.CenterReferencePoint)
 
 	-- Create the label
 	local labelInstance
@@ -212,7 +209,6 @@ function labels:newLabel( params, screenGroup )
 	end
 
 	-- 6. Set reference point and do final positioning
---EFM G2	labelInstance:setReferencePoint( labelInstance.referencePoint )
 	labelInstance.x = tmpParams.x
 	labelInstance.y = tmpParams.y
 

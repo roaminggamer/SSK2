@@ -3,11 +3,9 @@
 -- =============================================================
 -- Easy Interfaces Loader
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
-_G.ssk = _G.ssk or {}
 local _rgEasyIFC = {}
 _G.ssk.easyIFC = _rgEasyIFC
 
@@ -27,7 +25,5 @@ shallowCopy( require( "ssk2.interfaces.buttons" ), _rgEasyIFC )
 shallowCopy( require( "ssk2.interfaces.sbc" ), _rgEasyIFC )
 shallowCopy( require( "ssk2.interfaces.effects" ), _rgEasyIFC )
 shallowCopy( require( "ssk2.interfaces.labels" ), _rgEasyIFC ) 
-
 require "ssk2.interfaces.presets.default.presets"
-
 return _rgEasyIFC

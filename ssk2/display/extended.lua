@@ -3,8 +3,8 @@
 -- =============================================================
 -- Display Factories
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local displayExtended = {}
@@ -20,8 +20,6 @@ local display_newSprite 		= display.newSprite
 -- 1. enableAutoListeners is `true`
 -- 2. The listener is supplied in the `visualParams` parameters table.
 --
-
--- EFM remove this comment when all listeners below are tested
 local autoRuntimeListeners = { 
 	"enterFrame",
 	"mouse",
@@ -225,11 +223,6 @@ function displayExtended.newImage( group, x, y, imgSrc, visualParams, bodyParams
 	if(behaviorsList) then addBehaviors(dObj, behaviorsList) end
 	return dObj
 end
-
--- ==
---    ssk.createSheet
--- ==
-
 
 -- ==
 --    ssk.display.imageRect() - Extends display.newImageRect() by adding visual parameters and physics parameters.

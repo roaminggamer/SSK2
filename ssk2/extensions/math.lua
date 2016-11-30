@@ -3,8 +3,8 @@
 -- =============================================================
 -- math.* - Extension(s)
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local mDeg  = math.deg
@@ -20,18 +20,6 @@ local mAtan2 = math.atan2
 local mPi = math.pi
 
 
-
--- ===============================================
--- ==          Caclulate Wrap Point
--- ===============================================
---[[
-h ssk.components.EFM
-d EFM
-s ssk.components.EFM()
-s * EFM - EFM
-r None.
---]]
-
 function math.normRot( toNorm )
 	if( type(toNorm) == "table" ) then
 		while( toNorm.rotation >= 360 ) do toNorm.rotation = toNorm.rotation - 360 end		
@@ -43,7 +31,6 @@ function math.normRot( toNorm )
 	end
 	return toNorm
 end
-
 
 
 -- Calculate the distance from one decimal lat-long position to another.

@@ -1,12 +1,10 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
-
 local measure = {}
-
 
 local function round(val, n)
    if (n) then return math.floor( (val * 10^n) + 0.5) / (10^n)

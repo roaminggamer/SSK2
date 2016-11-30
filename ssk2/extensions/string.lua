@@ -3,16 +3,12 @@
 -- =============================================================
 -- string.* - Extension(s)
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local strLen = string.len
 
-
--- ==
---    string:EFM( EFM ) - EFM
--- ==
 function string.truncate( str, maxLen, appendMe )
   if not str then return "" end
   appendMe = appendMe or ""
@@ -260,16 +256,15 @@ end
 -- ==
 --    Sergey Stuff - Nice bits from Sergey's code: https://gist.github.com/Lerg
 -- ==
---    trim( s ) - EFM
 function string.trim(s)
     local from = s:match"^%s*()"
     return from > #s and "" or s:match(".*%S", from)
 end
---    startsWith( s, piece ) - EFM
+--    startsWith( s, piece ) 
 function string.startswith(s, piece)
     return string.sub(s, 1, strLen(piece)) == piece
 end
---    endsWith( s, piece ) - EFM
+--    endsWith( s, piece )
 function string.endswith(s, send)
     return #s >= #send and s:find(send, #s-#send+1, true) and true or false
 end

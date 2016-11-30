@@ -3,8 +3,8 @@
 -- =============================================================
 -- Color(s) Helpers
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local getTimer  = system.getTimer
@@ -133,12 +133,6 @@ function colors.hexcolor( code )
    while code:len() < 8 do
       code = code .. "F"
    end
---[[
-        r = tonum(_hex:sub(1, 2), 16)/255
-        g = tonum(_hex:sub(3, 4), 16)/255
-        b = tonum(_hex:sub(5, 6), 16)/255
-
-]]   
    local r = tonumber( "0X" .. strSub( code, 1, 2 ) )
    local g = tonumber( "0X" .. strSub( code, 3, 4 ) )
    local b = tonumber( "0X" .. strSub( code, 5, 6 ) )
@@ -299,9 +293,6 @@ end
 
 -- ==
 --    ssk.colors.rgbOffset( rgba, angle ) - Converts RGB color to HSL and applies hueOffset()
--- ==
--- ==
---    EFM() - EFM
 -- ==
 function colors.rgbOffset( rgba, angle )
 	local tmp = colors.rgb2hsl( rgba )

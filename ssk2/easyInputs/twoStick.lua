@@ -3,8 +3,8 @@
 -- =============================================================
 -- Two Stick - Split-Screen Virtual Joystick Factory
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local joystick 	= ssk.easyInputs.joystick

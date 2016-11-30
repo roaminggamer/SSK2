@@ -3,8 +3,8 @@
 -- =============================================================
 -- SSK Loader
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 -- ==
@@ -46,6 +46,8 @@ ssk.init = function( params )
 
 		math2DPlugin 			= false, -- Use math2d plugin if found
 
+		enableWIP 				= false, -- Load WIP code (beware, there be dragons here!)
+
 		debugLevel 				= 0, -- Some modules use this to print extra debug messages
 		                          -- Typical levels are 0, 1, 2 (where 2 is the most verbose)
 	}
@@ -68,6 +70,7 @@ ssk.init = function( params )
 	-- Track the font users asked for as their gameFont 
 	--
 	ssk.__gameFont = params.gameFont or native.systemFont
+	function ssk.gameFont() return ssk.__gameFont end 
 
 
 	-- =============================================================
@@ -114,7 +117,6 @@ ssk.init = function( params )
 	--
 	local_require "ssk2.colors"
 
-
 	--
 	-- Security (through obfuscation) lib (used by persistence lib)
 	--
@@ -155,7 +157,6 @@ ssk.init = function( params )
 	local_require "ssk2.easyCamera"
 	local_require "ssk2.easySocial"
 
-	local_require "ssk2.easyBench"
 	--
 	-- Miscellaneous
 	--
@@ -166,11 +167,6 @@ ssk.init = function( params )
 	--
 	local_require "ssk2.shuffleBag"
 
-	--
-	-- File system libs
-	--
-	local_require "ssk2.files"
-
 
 	--
 	-- External Libs/Modules (Written by others and used with credit.)
@@ -180,6 +176,16 @@ ssk.init = function( params )
 	local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
 	local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
 	local_require("ssk2.external.portableRandom") -- Portable random library
+
+
+	--
+	-- Works In Progress
+	--
+	if( params.enableWIP ) then
+		local_require "ssk2.wip.easyBench"
+		local_require "ssk2.wip.files"
+	end
+
 
 	-- =============================================================
 	-- Finialize measurements and show report (if measuring enabled)

@@ -3,9 +3,12 @@
 -- =============================================================
 -- Actions Library - Move via Physics Functions
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
+-- Development Notes:
+-- 1. Add more dampening variations
+--
 
 local movep = {}
 
@@ -40,8 +43,6 @@ local mAtan2            = math.atan2
 local mPi               = math.pi
 local getTimer          = system.getTimer
 
-
---EFM add more dampening variations (including tangential)
 
 -- Dampen vertical velocity ONLY
 movep.dampVert = function( obj, params )

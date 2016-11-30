@@ -3,8 +3,8 @@
 -- =============================================================
 -- Collision Calculator
 -- =============================================================
---   Last Updated: 23 NOV 2016
--- Last Validated: 23 NOV 2016
+--   Last Updated: 29 NOV 2016
+-- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local function rpad(str, len, char)
@@ -191,10 +191,6 @@ function ccmgr:newCalculator()
 	return collisionsCalculator
 end
 
-if( _G.ssk ) then
-	ssk.cc = ccmgr
-else 
-	_G.ssk = { cc = ccmgr }
-end
+_G.ssk.cc = ccmgr
 
 return ccmgr
