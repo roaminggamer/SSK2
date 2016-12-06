@@ -90,9 +90,12 @@ function scene:create( event )
       { "Various - Persist", "tests.various.002_persist" },
       { "Various - Misc", "tests.various.003_misc" },
       { "Various - Shuffle Bags", "tests.various.004_shuffleBag" },
-      { "Various - Math 2D", "tests.various.005_math2d" },
-      { "Various - Sound Manager", "tests.various.006_soundMgr" },
-      { "Various - (Basic) Meters", "tests.various.007_meters" },
+      { "Various - Math 2D Basics", "tests.various.005_math2d" },
+      { "Various - Math 2D Seg-Seg", "tests.various.006_math2d_seg_seg" },
+      { "Various - Math 2D Line-Line", "tests.various.007_math2d_line_line" },
+      { "Various - Math 2D Seg-Circ", "tests.various.008_math2d_seg_circ" },
+      --{ "Various - Math 2D FOV", "tests.various.009_math2d_fov" },
+      { "Various - Math 2D inFBLR", "tests.various.010_math2d_inFBLR" },
 
    }
    print(#examples)

@@ -1,7 +1,7 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 30 NOV 2016
+--   Last Updated: 03 DEC 2016
 -- Last Validated: 30 NOV 2016
 -- =============================================================
 -- Development Notes:
@@ -98,12 +98,15 @@ end
 local sfxEn = true
 function soundMgr.enableSFX( enable )
 	sfxEn = enable 
-
-	-- EFM following is wrong
-	if( enable ) then
-		audio.setVolume( 1.0 ) -- Enable all sound channels
+	if( enable == false ) then
+		soundMgr.stopAll( "effect" )
+		for i = firstEffectChannel, firstMusicChannel - 1 do
+			audio.setVolume( 0, { channel = i } )
+		end
 	else
-		audio.setVolume( 0.0 ) -- Disable all sound channels
+		for i = firstEffectChannel, firstMusicChannel - 1 do
+			audio.setVolume( sfxVolume * globalVolume, { channel = i } )
+		end
 	end
 end
 
@@ -112,12 +115,15 @@ end
 local musicEn = true
 function soundMgr.enableMusic( enable )
 	musicEn = enable 
-
-	-- EFM following is wrong
-	if( enable ) then
-		audio.setVolume( 1.0 ) -- Enable all sound channels
+	if( enable == false ) then
+		soundMgr.stopAll( "music" )
+		for i = firstMusicChannel, audio.totalChannels do
+			audio.setVolume( 0, { channel = i } )
+		end
 	else
-		audio.setVolume( 0.0 ) -- Disable all sound channels
+		for i = firstMusicChannel, audio.totalChannels do
+			audio.setVolume( musicVolume * globalVolume, { channel = i } )
+		end
 	end
 end
 
@@ -333,7 +339,7 @@ local function onSound( event )
 
 	-- Make sure this type of sound is enabled.
 	--
-	if(record.soundType == "effect" and sfxEn == false ) then 
+	if( record.soundType == "effect" and sfxEn == false ) then 
 		if( debugLevel > 1 ) then
 			print("onSound() - Received 'effect' event, but effects are disabled." )
 		end
@@ -403,6 +409,7 @@ local function onSound( event )
 	end
 
 	if( channel ) then
+
 		-- Generate a generic onComplete to clean up 
 		--
 		local function onComplete( self )
@@ -418,6 +425,9 @@ local function onSound( event )
 			                           duration 	= event.duration,
 			                           onComplete 	= onComplete,
 			                           fadein  		= event.fadein } )
+
+		print(record.soundType == "effect" , sfxEn, channel, handle )
+
 
 		-- Track this sound so we can stop it later (and for music check)
 		--

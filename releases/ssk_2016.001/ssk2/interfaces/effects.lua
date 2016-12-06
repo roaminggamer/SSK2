@@ -3,11 +3,12 @@
 -- =============================================================
 -- 
 -- =============================================================
---   Last Updated: 29 NOV 2016
+--   Last Updated: 05 DEC 2016
 -- Last Validated: 29 NOV 2016
 -- =============================================================
 -- Development Notes:
 -- 1. Some features still not exposed/documented.
+-- 2. Easy Fly Out Not Ready yet
 
 -- ==
 --    isInBounds( obj, obj2 ) - Is the center of obj over obj2 (inside its axis aligned bounding box?)
@@ -97,7 +98,7 @@ local function easyFlyIn( obj, params )
 	end
 end
 
-local function easyFlyIn( obj, params )
+local function easyFlyOut( obj, params )
 	local params = params or {}
 	
 	local delay 			= params.delay or 0

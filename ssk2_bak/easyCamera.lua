@@ -6,7 +6,7 @@
 -- While these can be used out-of-the-box, the purpose of this module
 -- is to give you a 'starting' point for your own custom camera logic.
 -- =============================================================
---   Last Updated: 29 NOV 2016
+--   Last Updated: 03 DEC 2016
 -- Last Validated: 29 NOV 2016
 -- =============================================================
 
@@ -98,8 +98,6 @@ function camera.tracking( trackObj, world, params )
 	local lx = 0
 	local ly = 0
 
-	print(lx,ly)
-
 	if( centered ) then
 		if( lockX ) then
 			lx = trackObj.x
@@ -129,7 +127,17 @@ function camera.tracking( trackObj, world, params )
 		end
 		return false
 	end
-	Runtime:addEventListener( "enterFrame", world )
+	listen( "enterFrame", world )
+
+	world.finalize = function( self )
+		ignoreList( { "enterFrame" }, self )
+	end; world:addEventListener( "finalize" )
+
+	function trackObj.stopCamera( self )
+		ignore("enterFrame", world)
+		world:removeEventListener("finalize")
+		world.finalize = nil		
+	end
 end
 
 
@@ -185,7 +193,18 @@ function camera.delayedTracking( trackObj, world, params )
 		end
 		return false
 	end
-	Runtime:addEventListener( "enterFrame", world )
+	listen( "enterFrame", world )
+
+	world.finalize = function( self )
+		ignoreList( { "enterFrame" }, self )
+	end; world:addEventListener( "finalize" )
+
+	function trackObj.stopCamera( self )
+		ignore("enterFrame", world)
+		world:removeEventListener("finalize")
+		world.finalize = nil
+	end
+
 end
 
 -- ==
@@ -250,7 +269,18 @@ function camera.trackingLooseRectangle( trackObj, world, params )
 
 		return false
 	end
-	Runtime:addEventListener( "enterFrame", world )
+	listen( "enterFrame", world )
+
+	world.finalize = function( self )
+		ignoreList( { "enterFrame" }, self )
+	end; world:addEventListener( "finalize" )
+
+	function trackObj.stopCamera( self )
+		ignore("enterFrame", world)
+		world:removeEventListener("finalize")
+		world.finalize = nil
+	end
+
 end
 
 
@@ -325,11 +355,22 @@ function camera.trackingLooseCircle( trackObj, world, params )
 
 		return false
 	end
-	Runtime:addEventListener( "enterFrame", world )
+	listen( "enterFrame", world )
 
 	function trackObj.destroyCamera( self )
 		display.remove(innerCircle)
 		display.remove(outerCircle)
+		ignoreList( { "enterFrame" }, self )
+	end
+
+	world.finalize = function( self )
+		ignoreList( { "enterFrame" }, self )
+	end; world:addEventListener( "finalize" )
+
+	function trackObj.stopCamera( self )
+		ignore("enterFrame", world)
+		world:removeEventListener("finalize")
+		world.finalize = nil
 	end
   
 end
@@ -382,7 +423,18 @@ function camera.transitioning( trackObj, world, params )
 		end
 		return false
 	end
-	Runtime:addEventListener( "enterFrame", world )
+	listen( "enterFrame", world )
+
+	world.finalize = function( self )
+		ignoreList( { "enterFrame" }, self )
+	end; world:addEventListener( "finalize" )
+
+	function trackObj.stopCamera( self )
+		ignore("enterFrame", world)
+		world:removeEventListener("finalize")
+		world.finalize = nil
+	end
+
 end
 
 ----------------------------------------------------------------------

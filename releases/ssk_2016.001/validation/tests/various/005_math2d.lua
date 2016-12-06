@@ -256,7 +256,33 @@ function test.run( group, params )
 		print( "Expected Vector: ", expected[i] )
 	end
 
+	--
+	-- Distance Between
+	--
+	local vec1 = { x = 0, y = 100 }
+	local vec2 = { x = 0, y = 0 }
+	print("\Distance Between")
+	print( "---------------\n" )
+	print("\n<0, 100>  <---->  < 0, 0 >")
+	print( "Calculated: ", math2d.distanceBetween( vec1, vec2 ) )
+	print( "  Expected: ", 100 )
+	print( "Calculated: ", math2d.distanceBetween( 0, 100, 0, 0 )  )
+	print( "  Expected: ", 100 )
 
+	--
+	-- Is Within Distance
+	--
+	local vec1 = { x = 0, y = 100 }
+	local vec2 = { x = 0, y = 0 }
+	print("\Is Within Distance")
+	print( "---------------\n" )
+	print("\n<0, 100>  <---->  < 0, 0 >")
+	print( "Calculated:" )
+	print( math2d.isWithinDistance( vec1, vec2, 100 ) ) -- true
+	print( math2d.isWithinDistance( vec1, vec2, 99.999 ) ) -- false
+	print( math2d.isWithinDistance( 0, 100, 0, 0, 100 ) ) -- true
+	print( math2d.isWithinDistance( 0, 100, 0, 0, 99.999 ) ) -- false
+	print( "\nExpected:\n\ttrue\n\tfalse\n\ttrue\n\tfalse" )
 
 
 end
