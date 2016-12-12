@@ -1,0 +1,7 @@
+Author: GameArtForge
+
+License: http://creativecommons.org/licenses/by/3.0/
+
+Source: http://opengameart.org/content/letter-blocks-set-01
+
+Used only first set of 64x64 letters and renamed files.
