@@ -4,7 +4,7 @@
 -- SSK PRO Loader
 -- =============================================================
 --   Last Updated: 11 DEC 2016
--- Last Validated: 02 DEC 2016
+-- Last Validated: 11 DEC 2016
 -- =============================================================
 
 -- ==
@@ -30,7 +30,7 @@ _G.ssk = {}
 _G.ssk.__isPro = false
 
 
-ssk.getVersion = function() return "2016.002" end
+ssk.getVersion = function() return "2016.003" end
 
 local initialized = false
 ssk.init = function( params )
@@ -123,7 +123,7 @@ ssk.init = function( params )
 	-- =============================================================
 	-- Load SSK Pro Components
 	-- =============================================================
-	if( isPro ) then
+	if( _G.ssk.__isPro ) then
 		local_require "ssk2.android"
 		local_require "ssk2.security"
 		local_require "ssk2.persist"
