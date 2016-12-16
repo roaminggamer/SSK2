@@ -3,7 +3,7 @@
 -- =============================================================
 -- SSK PRO Loader
 -- =============================================================
---   Last Updated: 11 DEC 2016
+--   Last Updated: 15 DEC 2016
 -- Last Validated: 11 DEC 2016
 -- =============================================================
 
@@ -30,7 +30,7 @@ _G.ssk = {}
 _G.ssk.__isPro = true
 
 
-ssk.getVersion = function() return "2016.003" end
+ssk.getVersion = function() return "2016.004" end
 
 local initialized = false
 ssk.init = function( params )
@@ -120,6 +120,10 @@ ssk.init = function( params )
 
 	local_require "ssk2.misc"
 
+	local_require "ssk2.pex"
+
+	local_require "ssk2.dialogs.basic"
+
 	-- =============================================================
 	-- Load SSK Pro Components
 	-- =============================================================
@@ -132,6 +136,7 @@ ssk.init = function( params )
 		local_require "ssk2.easySocial"
 		local_require "ssk2.shuffleBag"
 		local_require "ssk2.meters"
+		local_require "ssk2.files"
 	end
 
 	-- =============================================================
@@ -146,6 +151,7 @@ ssk.init = function( params )
 		local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
 		local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
 		local_require("ssk2.external.portableRandom") -- Portable random library
+		local_require("ssk2.external.global_lock") -- Portable random library
 	end
 
 	-- =============================================================

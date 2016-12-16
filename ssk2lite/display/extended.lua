@@ -593,7 +593,7 @@ addBody = function( obj, bodyParams, imageFile )
 end
 
 -- ==
---    adBehaviors() - EFM - Not available right now
+--    adBehaviors() - NOTE - Not available right now
 -- ==
 addBehaviors = function( obj, behaviorsList )
 	for k,v in ipairs( behaviorsList ) do

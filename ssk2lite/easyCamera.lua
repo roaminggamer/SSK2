@@ -321,7 +321,7 @@ function camera.trackingLooseCircle( trackObj, world, params )
 	world.enterFrame = function( event )
 		local dx = trackObj.x - world.lx
 		local dy = trackObj.y - world.ly
-		local lx, ly = trackObj:localToContent( 0, 0 )  -- EFM will allow for offset camera centering?
+		local lx, ly = trackObj:localToContent( 0, 0 )  -- QUESTION: will allow for offset camera centering?
 		local olx, oly = lx - centerX, ly - centerY
 
 		local vLen = len( olx, oly )

@@ -415,7 +415,7 @@ function buttons:newButton( parentGroup, params )
       buttonEvent.phase = "began"
       buttonEvent.forceInBounds = true
       buttonEvent.noDispatch = noDispatch
-      --print(tostring(buttonEvent) .. SPC .. buttonEvent.id) -- EFM bug: Not actually dispatching event
+      --print(tostring(buttonEvent) .. SPC .. buttonEvent.id) -- bug: Not actually dispatching event
       --table.dump(buttonEvent)
       self:dispatchEvent( buttonEvent )
       buttonEvent.phase = "ended"

@@ -80,7 +80,7 @@ _G.ssk.core.post = function( name, params, debuglvl )
    if( debuglvl and debuglvl >= 1 ) then print("post( '" .. name .. "' )" ) end   
 end
 
--- Handy listener clearer (EFM not fully verified)
+-- Handy listener clearer (NOTE not fully verified)
 _G.ssk.core.removeListeners = function( obj )
    if(obj) then
       obj._functionListeners = nil --this will remove all functions listeners

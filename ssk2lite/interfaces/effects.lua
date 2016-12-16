@@ -530,22 +530,21 @@ end
 local public = {}
 
 
-public.isInBounds 		= isInBounds
-public.isInBoundsAlt	= isInBounds_alt
-public.easyFlyIn		= easyFlyIn
-public.easySqueeze 		= easySqueeze
-public.easyInflate 		= easyInflate
---EFM public.traySwipe 		= traySwipe
+public.isInBounds 			= isInBounds
+public.isInBoundsAlt			= isInBounds_alt
+public.easyFlyIn				= easyFlyIn
+public.easySqueeze 			= easySqueeze
+public.easyInflate 			= easyInflate
 
-public.doShrink 		= doShrink
-public.doGrow 			= doGrow
+public.doShrink 				= doShrink
+public.doGrow 					= doGrow
 
-public.easyFlip			= easyFlip
+public.easyFlip				= easyFlip
 
-public.pulse			= pulse
+public.pulse					= pulse
 
-public.pinchZoomDragTouch = pinchZoomDragTouch
-public.setMinDragDist = setMinDragDist
+public.pinchZoomDragTouch 	= pinchZoomDragTouch
+public.setMinDragDist 		= setMinDragDist
 
 
 return public

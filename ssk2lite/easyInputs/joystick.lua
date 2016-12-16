@@ -299,7 +299,7 @@ function joy.create( group, x, y, params )
 
 			elseif(target.isFocus) then
 				if(event.phase == "ended" or event.phase == "cancelled") then
-					display.getCurrentStage():setFocus( nil, eventID ) -- EFM this is wrong?!
+					display.getCurrentStage():setFocus( target, nil ) 
 					stick.x,stick.y = outerRing.x, outerRing.y
 
 					angle = 0
@@ -405,7 +405,7 @@ function joy.create( group, x, y, params )
 
 			elseif(target.isFocus) then
 				if(event.phase == "ended" or event.phase == "cancelled") then
-					display.getCurrentStage():setFocus( nil, eventID )
+					display.getCurrentStage():setFocus( target, nil )
 					stick.x,stick.y = outerRing.x, outerRing.y
 
 					angle = 0
