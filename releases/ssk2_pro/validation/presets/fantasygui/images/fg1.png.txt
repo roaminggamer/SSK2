@@ -1,0 +1,1 @@
+fg1_01.png.png 44 18, fg1_02.png.png 429 18, fg1_03.png.png 812 18, fg1_04.png.png 1199 18, fg1_05.png.png 321 220, fg1_06.png.png 518 220, fg1_07.png.png 715 220, fg1_08.png.png 911 220, fg1_09.png.png 1108 220.
