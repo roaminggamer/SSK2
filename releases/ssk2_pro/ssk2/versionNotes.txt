@@ -1,0 +1,22 @@
+====
+2017
+====
+
+2017.005
+* PRO - Added Easy Positioner Tool/Module
+* PRO - Added First Version of Tiled Loader
+* Both - Added First Version of Factory Manager
+* Both - Added 'custom' dialog tray factory.
+* Both - Added forEach() as table.* extention
+* Both - Added forEachi() as table.* extention
+* Both - Added optional locked image/rect to buttons library (2/3/4 state button)
+* Both - Added optional toggled image/rect to buttons library (2/3/4 state button)
+* Both - Updated 'ignoreList' to allow it to gracefully handle 'nil' objects.
+* Both - Updated ssk.misc.getImageSize() to more nicely handle bad path.
+
+
+====
+2016
+====
+2016.001 .. 2016.004
+* Initial Releases

@@ -368,11 +368,40 @@ function util.findAllFiles( path )
    end
    return files
 end
+--[[ -- Failed experiment
+function util.findAllFiles( path, asNum )
+   local tmp = util.getFilesInFolder( path )
+   local files = {}
+   for k,v in pairs( tmp ) do
+      files[v] = v
+   end
+   for k,v in pairs( files ) do
+      local newPath =  path and (path .. "/" .. v) or v
+      local isDir = util.isFolder( newPath )
+      if( isDir ) then
+         files[v] = util.findAllFiles( newPath )
+      else
+      end
+   end
 
+   table.dump(files,nil,'bogart')
+   if( asNum ) then
+      local tmp = files
+      files = {}
+      for k,v in pairs(tmp) do
+         files[#files+1] = v
+      end      
+      table.sort(files)
+   end
+   return files
+end
+--]]
 --
 -- flattenNames 
 --
 function util.flattenNames( t, sep, prefix ) 
+   sep = self or "/"
+   prefix = prefix or ""
    local flatNames = {}
    local function flatten(t,indent,_prefix)
       local path 

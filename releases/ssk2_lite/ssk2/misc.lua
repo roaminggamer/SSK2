@@ -11,6 +11,7 @@ local misc = {}
 _G.ssk = _G.ssk or {}
 _G.ssk.misc = misc
 
+local pairs 			= pairs
 local socket			= require "socket"
 local getTimer			= system.getTimer
 local strGSub			= string.gsub
@@ -103,6 +104,18 @@ misc.shortenString = function( text, maxLen, appendMe )
   return outText
 end
 
+misc.shortenString2 = function( text, maxLen, prependMe )
+  if not text then return "" end
+  --print( text, maxLen, appendMe )
+  prependMe = prependMe or ""
+  local outText = text
+  if(outText:len() > maxLen) then
+    outText = prependMe .. outText:sub(outText:len()-maxLen+1,outText:len()) 
+  end
+  return outText
+end
+
+
 misc.fitText = function( obj, origText, maxWidth )
 	origText = origText or ""
 	local textLen = string.len( origText )
@@ -113,8 +126,11 @@ misc.fitText = function( obj, origText, maxWidth )
 end
 
 misc.getImageSize = function ( path, basePath )
-	basePath = basePath or system.ResourceDirectory
+	basePath = basePath or system.ResourceDirectory	
 	local tmp = display.newImage( path, basePath, 10000,10000 )
+	if( not tmp ) then
+		return 0, 0
+	end
 	local sx = tmp.contentWidth
 	local sy = tmp.contentHeight
 	display.remove(tmp)
@@ -332,6 +348,115 @@ misc.isValidEmail = function( val, debugEn )
 	if(#val<2) then return false end
 	return true
 end
+
+
+
+--
+-- Add Smart Touch Listener To Object 
+-- - Calls optional user listener
+--
+local function isInBounds( obj, obj2 )
+	if(not obj2) then return false end
+	local bounds = obj2.contentBounds
+	if( obj.x > bounds.xMax ) then return false end
+	if( obj.x < bounds.xMin ) then return false end
+	if( obj.y > bounds.yMax ) then return false end
+	if( obj.y < bounds.yMin ) then return false end
+	return true
+end
+function misc.addSmartTouch( obj, params )
+	params = params or {}
+	obj.touch = function( self, event )
+		local phase = event.phase
+		local id 	= event.id
+		if( phase == "began" ) then
+			self.isFocus = true
+			display.currentStage:setFocus( self, id )
+			if( params.toFront ) then self:toFront() end
+			if( params.listener ) then
+				return params.listener( self, event )
+			end
+		elseif( self.isFocus ) then
+			event.inBounds = isInBounds( event, self )
+			if( phase == "ended" or phase == "cancelled" ) then
+				self.isFocus = false
+				display.currentStage:setFocus( self, nil )
+			end
+			if( params.listener ) then
+				return params.listener( self, event )
+			end
+		end
+		if( params.listener ) then
+			return params.listener( self, event )
+		else
+			return false
+		end		
+	end; obj:addEventListener("touch")
+end
+
+
+--
+-- Add Smart Drag Listener To Object 
+-- - Dispatches: onDragged, onDropped events
+-- - Calls optional user listener
+--
+function misc.addSmartDrag( obj, params )
+	params = params or {}
+	obj.touch = function( self, event )
+		local phase = event.phase
+		local id 	= event.id
+		if( phase == "began" ) then
+			self.isFocus = true
+			display.currentStage:setFocus( self, id )
+			self.x0 = self.x
+			self.y0 = self.y
+			if( params.toFront ) then self:toFront() end
+			if( self.onDragged ) then
+				self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y,  dx = 0, dy = 0, time = getTimer(), target = self } )
+			end
+			post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = 0, dy = 0, time = getTimer(), target = self } )
+			if( params.listener ) then
+				return params.listener( self, event )
+			end						
+		elseif( self.isFocus ) then
+			local dx = event.x - event.xStart
+			local dy = event.y - event.yStart
+			self.x = self.x0 + dx
+			self.y = self.y0 + dy
+
+			event.dx = dx
+			event.dy = dy
+
+			if( phase == "ended" or phase == "cancelled" ) then
+				self.isFocus = false
+				display.currentStage:setFocus( self, nil )
+				if( self.onDragged ) then
+					self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
+				end
+				if( self.onDropped ) then
+					self:onDropped( { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
+				end
+				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
+				post("onDropped", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
+			else
+				if( self.onDragged ) then
+					self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
+				end
+				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
+			end
+			if( params.listener ) then
+				return params.listener( self, event )
+			end
+		end
+		if( params.listener ) then
+			return params.listener( self, event )
+		else
+			return false
+		end		
+	end; obj:addEventListener("touch")
+end
+
+
 
 -- temporarily block touches
 --

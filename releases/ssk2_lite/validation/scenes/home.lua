@@ -49,8 +49,8 @@ function scene:create( event )
 
    local background = display.newRect( sceneGroup, centerX, centerY, fullw, fullh )
    background:setFillColor( 0.2, 0.5, 0.8 )
-   local title = display.newText( sceneGroup, "SSK2 Validation Sampler", centerX, top + 30, 
-                                  native.systemFontBold, 36 )
+   local title = display.newText( sceneGroup, "SSK2 Validation Sampler", centerX, top + 20, 
+                                  native.systemFontBold, 28 )
 
    local examples = {}
    examples[#examples+1] = { "Actions - Face Instantly", "tests.actions.001_face_instant" }
@@ -97,16 +97,26 @@ function scene:create( event )
    examples[#examples+1] = { "Various - Math 2D inFBLR", "tests.various.010_math2d_inFBLR" }
 
    examples[#examples+1] = { "Various - Particle Loaders", "tests.various.011_pex" }
-   examples[#examples+1] = { "Various - Dialog (Trays)", "tests.various.012_dialogs" }
+   examples[#examples+1] = { "Factory Manager", "tests.factories.001_factoryTest" }
 
-   print(#examples)
+   if( ssk.__isPro ) then examples[#examples+1] = { "Tiled Loader Test #1", "tests.tiled.001_basic_tiled_loader_test" } end
+
+   examples[#examples+1] = { "Various - Dialog Trays - Basic & Custom", "tests.various.012_dialogs" }
+
+   if( ssk.__isPro ) then examples[#examples+1] = { "Various - Easy Positioner Tool", "tests.various.013_easy_positioner" } end
+   
+   examples[#examples+1] = { "Easy Interfaces - Complex Buttons", "tests.easyIFC.004_complexButtons" }
+
+
+
+   --print(#examples)
 
    -- Automatically generate and place buttons to run each sample:
    -- 
    local buttonW = 300
-   local buttonH = 32
-   local tweenY  = buttonH + 10
-   local startY = top + 80
+   local buttonH = 24
+   local tweenY  = buttonH + 5
+   local startY = top + 60
    local startX = left + buttonW/2 + 20
    local curY = startY
    local curX = startX
@@ -115,7 +125,7 @@ function scene:create( event )
       buttons[#buttons+1] = easyIFC:presetPush( sceneGroup, "default", curX, curY, 
          buttonW, buttonH, 
          "  (" .. num .. ") " .. label, onTouch, 
-         { labelSize = 14, strokeWidth = 0 } )
+         { labelSize = 14, strokeWidth = 0, labelHorizAlign = "left", labelOffset = { 5, 1 } } )
       buttons[#buttons].sampleScript = sampleScript
 
       curY = curY + tweenY
@@ -128,6 +138,8 @@ function scene:create( event )
    for i = 1, #examples do
       newButton( i, examples[i][1], examples[i][2] )
    end
+
+   -- Uncommenting next line runs last example automatically.   
    --nextFrame( function() buttons[#buttons]:toggle() end )
 end
 

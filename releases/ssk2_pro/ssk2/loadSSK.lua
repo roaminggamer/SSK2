@@ -3,9 +3,15 @@
 -- =============================================================
 -- SSK PRO Loader
 -- =============================================================
---   Last Updated: 15 DEC 2016
+--   Last Updated: 03 JAN 2017
 -- Last Validated: 15 DEC 2016
 -- =============================================================
+-- Development Notes:
+-- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
+-- 2. Add event reflector to PRO
+-- =============================================================
+
+
 
 -- ==
 --    fnn( ... ) - Return first argument from list that is not nil.
@@ -29,8 +35,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = true
 
-
-ssk.getVersion = function() return "2016.004" end
+ssk.getVersion = function() return "2017.005" end
 
 local initialized = false
 ssk.init = function( params )
@@ -69,12 +74,13 @@ ssk.init = function( params )
 	--
 	ssk.__enableAutoListeners = params.enableAutoListeners
 
+		-- EFM custom path here
+
 	--
 	-- Track the font users asked for as their gameFont 
 	--
 	ssk.__gameFont = params.gameFont or native.systemFont
 	function ssk.gameFont() return ssk.__gameFont end 
-
 
 	-- =============================================================
 	-- If measuring, get replacement 'require'
@@ -123,6 +129,9 @@ ssk.init = function( params )
 	local_require "ssk2.pex"
 
 	local_require "ssk2.dialogs.basic"
+	local_require "ssk2.dialogs.custom"
+
+	local_require "ssk2.factoryMgr"
 
 	-- =============================================================
 	-- Load SSK Pro Components
@@ -137,6 +146,8 @@ ssk.init = function( params )
 		local_require "ssk2.shuffleBag"
 		local_require "ssk2.meters"
 		local_require "ssk2.files"
+		local_require "ssk2.tiledLoader"
+		local_require "ssk2.easyPositioner"
 	end
 
 	-- =============================================================
@@ -164,8 +175,17 @@ ssk.init = function( params )
 	-- Frame counter 
 	-- =============================================================
 	ssk.__lfc = 0
+	local getTimer = system.getTimer
+	ssk.__lastTime = getTimer()
+	ssk.__deltaTime = 0
+	function ssk.getDT() return ssk.__deltaTime end 
 	function ssk.getFrame() return ssk.__lfc end 
-	ssk.enterFrame = function( self ) self.__lfc = self.__lfc + 1; end; Runtime:addEventListener("enterFrame",ssk)
+	ssk.enterFrame = function( self ) 
+		self.__lfc = self.__lfc + 1; 
+		local curTime = getTimer()
+		ssk.__deltaTime = curTime - self.__lastTime
+		self.__lastTime = curTime
+	end; Runtime:addEventListener("enterFrame",ssk)
 
 	-- =============================================================
 	-- Initialize The Core

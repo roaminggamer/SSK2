@@ -3,12 +3,19 @@
 -- =============================================================
 -- 
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
+--   Last Updated: 06 JAN 2017
+-- Last Validated: 06 JAN 2017
 -- =============================================================
 
+local fnn = _G.fnn or 
+   function( ... ) 
+      for i = 1, #arg do
+         local theArg = arg[i]
+         if(theArg ~= nil) then return theArg end
+      end
+      return nil
+   end
 
-local fnn
 
 local buttons = {}
 
@@ -32,8 +39,8 @@ function buttons:addButtonPreset( presetName, params )
    entry.touchMaskW     	= params.touchMaskW
    entry.touchMaskH     	= params.touchMaskH
 
-   entry.unselRectEn       = (params.unselRectFillColor) and (not params.unselImgSrc) and (not params.unselSliceSrc)
-   entry.selRectEn         = (params.selRectFillColor) and (not params.selImgSrc) and (not params.selSliceSrc)
+   entry.unselRectEn       = (params.unselRectFillColor) and (not params.unselImgSrc) 
+   entry.selRectEn         = (params.selRectFillColor) and (not params.selImgSrc) 
    entry.buttonType   		= fnn(params.buttonType, "push" )
    entry.labelText 		   = fnn(params.labelText, "")
    entry.labelSize     	   = fnn(params.labelSize, 20)
@@ -96,10 +103,10 @@ function buttons:newButton( parentGroup, params )
    buttonInstance.labelHorizAlign 	= fnn(buttonInstance.labelHorizAlign, "center" )
    buttonInstance.emboss            = fnn(buttonInstance.emboss, false)
 
-   buttonInstance.unselRectEn       = (buttonInstance.unselRectFillColor) and (not buttonInstance.unselImgSrc) and (not buttonInstance.unselSliceSrc)
-   buttonInstance.selRectEn         = (buttonInstance.selRectFillColor) and (not buttonInstance.selImgSrc) and (not buttonInstance.selSliceSrc)
+   buttonInstance.unselRectEn       = (buttonInstance.unselRectFillColor) and (not buttonInstance.unselImgSrc)
+   buttonInstance.selRectEn         = (buttonInstance.selRectFillColor) and (not buttonInstance.selImgSrc)
 
-   buttonInstance.isPressed         = false -- start off unpressed
+   buttonInstance.isPressed         = false 
 
    -- ====================
    -- Create the button
@@ -113,217 +120,113 @@ function buttons:newButton( parentGroup, params )
       buttonInstance.maskScaleY = buttonInstance.h / buttonInstance.touchMaskH
    end
 
-   -- UNSEL RECT
-   if(buttonInstance.unselRectEn) then
-      local unselRect
-      if(buttonInstance.cornerRadius) then
-         unselRect = display.newRoundedRect( buttonInstance.w/2, buttonInstance.h/2, buttonInstance.w, buttonInstance.h, buttonInstance.cornerRadius)
-      else
-         unselRect = display.newRect( buttonInstance.w/2, buttonInstance.h/2, buttonInstance.w, buttonInstance.h)
+   -- Rect Components
+   --
+   local prefixes = { "unsel", "sel", "toggled", "locked" }
+   for i = 1, #prefixes do
+      local prefix = prefixes[i]
+
+      local name1 = prefix .. "RectEn"
+      local name2 = prefix .. "RectFillColor"
+      local name3 = prefix.. "StrokeColor"
+      local name4 = prefix.. "Rect"
+
+      if(buttonInstance[name1]) then
+         local obj
+         if(buttonInstance.cornerRadius) then
+            obj = display.newRoundedRect( buttonInstance.w/2, buttonInstance.h/2, buttonInstance.w, buttonInstance.h, buttonInstance.cornerRadius)
+         else
+            obj = display.newRect( buttonInstance.w/2, buttonInstance.h/2, buttonInstance.w, buttonInstance.h)
+         end
+
+         obj.isHitTestable = true
+
+         if(buttonInstance.strokeWidth) then
+            obj.strokeWidth = buttonInstance.strokeWidth
+         elseif(buttonInstance.selStrokeWidth) then
+            obj.strokeWidth = buttonInstance.selStrokeWidth
+         end
+
+         if(buttonInstance[name2]) then
+            local r = fnn(buttonInstance[name2][1], 1)
+            local g = fnn(buttonInstance[name2][2], 1)
+            local b = fnn(buttonInstance[name2][3], 1)
+            local a = fnn(buttonInstance[name2][4], 1)
+            obj:setFillColor(r,g,b,a)
+         end
+
+         if(buttonInstance[name3]) then
+            local r = fnn(buttonInstance[name3][1], 1)
+            local g = fnn(buttonInstance[name3][2], 1)
+            local b = fnn(buttonInstance[name3][3], 1)
+            local a = fnn(buttonInstance[name3][4], 1)
+            obj:setStrokeColor(r,g,b,a)
+
+         elseif(buttonInstance.strokeColor) then
+            local r = fnn(buttonInstance.strokeColor[1], 1)
+            local g = fnn(buttonInstance.strokeColor[2], 1)
+            local b = fnn(buttonInstance.strokeColor[3], 1)
+            local a = fnn(buttonInstance.strokeColor[4], 1)
+            obj:setStrokeColor(r,g,b,a)
+         end
+
+         buttonInstance:insert( obj, true )
+         obj.isVisible = (i == 1)
+         buttonInstance[name4] = obj
       end
-
-      unselRect.isHitTestable = true
-
-      if(buttonInstance.strokeWidth) then
-         unselRect.strokeWidth = buttonInstance.strokeWidth
-      elseif(buttonInstance.selStrokeWidth) then
-         unselRect.strokeWidth = buttonInstance.selStrokeWidth
-      end
-
-      if(buttonInstance.unselRectFillColor ) then
-         local r = fnn(buttonInstance.unselRectFillColor[1], 1)
-         local g = fnn(buttonInstance.unselRectFillColor[2], 1)
-         local b = fnn(buttonInstance.unselRectFillColor[3], 1)
-         local a = fnn(buttonInstance.unselRectFillColor[4], 1)
-         unselRect:setFillColor(r,g,b,a)
-      end
-
-      if(buttonInstance.unselStrokeColor) then
-         local r = fnn(buttonInstance.unselStrokeColor[1], 1)
-         local g = fnn(buttonInstance.unselStrokeColor[2], 1)
-         local b = fnn(buttonInstance.unselStrokeColor[3], 1)
-         local a = fnn(buttonInstance.unselStrokeColor[4], 1)
-         unselRect:setStrokeColor(r,g,b,a)
-
-      elseif(buttonInstance.strokeColor) then
-         local r = fnn(buttonInstance.strokeColor[1], 1)
-         local g = fnn(buttonInstance.strokeColor[2], 1)
-         local b = fnn(buttonInstance.strokeColor[3], 1)
-         local a = fnn(buttonInstance.strokeColor[4], 1)
-         unselRect:setStrokeColor(r,g,b,a)
-      end
-
-      buttonInstance:insert( unselRect, true )
-      unselRect.isVisible = true
-      buttonInstance.unselRect = unselRect
 
    end
 
-   -- SEL RECT
-   if(buttonInstance.selRectEn) then
+   -- Image Components
+   --
+   local prefixes = { "unsel", "sel", "toggled", "locked" }
+   for i = 1, #prefixes do
+      local prefix = prefixes[i]
 
-      local selRect
-      if(buttonInstance.cornerRadius) then
-         selRect = display.newRoundedRect( buttonInstance.w/2, buttonInstance.h/2, buttonInstance.w, buttonInstance.h, buttonInstance.cornerRadius)
-      else
-         selRect = display.newRect( buttonInstance.w/2, buttonInstance.h/2, buttonInstance.w, buttonInstance.h)
-      end
+      local name1 = prefix .. "ImgSrc"
+      local name2 = prefix .. "ImgFillColor"
+      local name3 = prefix .. "StrokeColor"
+      local name4 = prefix .. "Img"
 
-      selRect.isHitTestable = true
+      if(buttonInstance[prefix .. "ImgSrc"]) then
+         local obj
+         obj = display.newImageRect( buttonInstance[name1], buttonInstance.baseFolder, buttonInstance.w, buttonInstance.h)
+         obj.isHitTestable = true
 
-      if(buttonInstance.strokeWidth) then
-         selRect.strokeWidth = buttonInstance.strokeWidth
-      elseif(buttonInstance.selStrokeWidth) then
-         selRect.strokeWidth = buttonInstance.selStrokeWidth
-      end
+         if(buttonInstance[name2]) then
+            local r = fnn(buttonInstance[name2][1], 1)
+            local g = fnn(buttonInstance[name2][2], 1)
+            local b = fnn(buttonInstance[name2][3], 1)
+            local a = fnn(buttonInstance[name2][4], 1)
+            obj:setFillColor(r,g,b,a)
+         end
 
-      if(buttonInstance.selRectFillColor ) then
-         local r = fnn(buttonInstance.selRectFillColor[1], 1)
-         local g = fnn(buttonInstance.selRectFillColor[2], 1)
-         local b = fnn(buttonInstance.selRectFillColor[3], 1)
-         local a = fnn(buttonInstance.selRectFillColor[4], 1)
-         selRect:setFillColor(r,g,b,a)
-      end
+         if(buttonInstance.strokeWidth) then
+            obj.strokeWidth = buttonInstance.strokeWidth
+         elseif(buttonInstance.selStrokeWidth) then
+            obj.strokeWidth = buttonInstance.selStrokeWidth
+         end
 
-      if(buttonInstance.selStrokeColor) then
-         local r = fnn(buttonInstance.selStrokeColor[1], 1)
-         local g = fnn(buttonInstance.selStrokeColor[2], 1)
-         local b = fnn(buttonInstance.selStrokeColor[3], 1)
-         local a = fnn(buttonInstance.selStrokeColor[4], 1)
-         selRect:setStrokeColor(r,g,b,a)
+         if(buttonInstance[name3]) then
+            local r = fnn(buttonInstance[name3][1], 1)
+            local g = fnn(buttonInstance[name3][2], 1)
+            local b = fnn(buttonInstance[name3][3], 1)
+            local a = fnn(buttonInstance[name3][4], 1)
+            obj:setStrokeColor(r,g,b,a)
 
-      elseif(buttonInstance.strokeColor) then
-         local r = fnn(buttonInstance.strokeColor[1], 1)
-         local g = fnn(buttonInstance.strokeColor[2], 1)
-         local b = fnn(buttonInstance.strokeColor[3], 1)
-         local a = fnn(buttonInstance.strokeColor[4], 1)
-         selRect:setStrokeColor(r,g,b,a)
-      end
+         elseif(buttonInstance.strokeColor) then
+            local r = fnn(buttonInstance.strokeColor[1], 1)
+            local g = fnn(buttonInstance.strokeColor[2], 1)
+            local b = fnn(buttonInstance.strokeColor[3], 1)
+            local a = fnn(buttonInstance.strokeColor[4], 1)
+            obj:setStrokeColor(r,g,b,a)
+         end
+         buttonInstance:insert( obj, true )
+         obj.isVisible = (i == 1) 
+         buttonInstance[name4] = obj
+      end 
+   end     
 
-      buttonInstance:insert( selRect, true )
-      selRect.isVisible = false
-      buttonInstance.selRect = selRect
-   end
-
-   -- UNSEL SLICE IMG
-   if(buttonInstance.unselSliceSrc) then    
-      local unselSliceObj
-      --unselSliceObj = display.newImageRect( buttonInstance.unselSliceSrc, buttonInstance.baseFolder, buttonInstance.w, buttonInstance.h)
-      unselSliceObj = ssk.misc.createSlicedImage( buttonInstance, buttonInstance.unselSliceSrc, 0, 0, buttonInstance.w, buttonInstance.h )
-      unselSliceObj.isHitTestable = true -- EDOCHI
-
-      if(buttonInstance.unselSliceFillColor ) then
-         local r = fnn(buttonInstance.unselSliceFillColor[1], 1)
-         local g = fnn(buttonInstance.unselSliceFillColor[2], 1)
-         local b = fnn(buttonInstance.unselSliceFillColor[3], 1)
-         local a = fnn(buttonInstance.unselSliceFillColor[4], 1)
-         unselSliceObj:setFillColor(r,g,b,a)
-      end
-      unselSliceObj.isVisible = true
-      buttonInstance.unsel = unselSliceObj
-   end
-
-   -- SEL SLICE IMG
-   if(buttonInstance.selSliceSrc) then    
-      local selSliceObj
-      --selSliceObj = display.newImageRect( buttonInstance.selSliceSrc, buttonInstance.baseFolder, buttonInstance.w, buttonInstance.h)
-      selSliceObj = ssk.misc.createSlicedImage( buttonInstance, buttonInstance.selSliceSrc, 0, 0, buttonInstance.w, buttonInstance.h )
-      selSliceObj.isHitTestable = true -- EDOCHI
-
-      if(buttonInstance.selSliceFillColor ) then
-         local r = fnn(buttonInstance.selSliceFillColor[1], 1)
-         local g = fnn(buttonInstance.selSliceFillColor[2], 1)
-         local b = fnn(buttonInstance.selSliceFillColor[3], 1)
-         local a = fnn(buttonInstance.selSliceFillColor[4], 1)
-         selSliceObj:setFillColor(r,g,b,a)
-      end
-
-      selSliceObj.isVisible = true
-      buttonInstance.sel = selSliceObj
-   end
-
-
-
-   -- UNSEL IMG
-   if(buttonInstance.unselImgSrc) then		
-      local unselImgObj
-      unselImgObj = display.newImageRect( buttonInstance.unselImgSrc, buttonInstance.baseFolder, buttonInstance.w, buttonInstance.h)
-      unselImgObj.isHitTestable = true
-
-      if(buttonInstance.unselImgFillColor ) then
-         local r = fnn(buttonInstance.unselImgFillColor[1], 1)
-         local g = fnn(buttonInstance.unselImgFillColor[2], 1)
-         local b = fnn(buttonInstance.unselImgFillColor[3], 1)
-         local a = fnn(buttonInstance.unselImgFillColor[4], 1)
-         unselImgObj:setFillColor(r,g,b,a)
-      end
-
-      if(buttonInstance.strokeWidth) then
-         unselImgObj.strokeWidth = buttonInstance.strokeWidth
-      elseif(buttonInstance.selStrokeWidth) then
-         unselImgObj.strokeWidth = buttonInstance.selStrokeWidth
-      end
-
-      if(buttonInstance.unselStrokeColor) then
-         local r = fnn(buttonInstance.unselStrokeColor[1], 1)
-         local g = fnn(buttonInstance.unselStrokeColor[2], 1)
-         local b = fnn(buttonInstance.unselStrokeColor[3], 1)
-         local a = fnn(buttonInstance.unselStrokeColor[4], 1)
-         unselImgObj:setStrokeColor(r,g,b,a)
-
-      elseif(buttonInstance.strokeColor) then
-         local r = fnn(buttonInstance.strokeColor[1], 1)
-         local g = fnn(buttonInstance.strokeColor[2], 1)
-         local b = fnn(buttonInstance.strokeColor[3], 1)
-         local a = fnn(buttonInstance.strokeColor[4], 1)
-         unselImgObj:setStrokeColor(r,g,b,a)
-      end
-
-
-      buttonInstance:insert( unselImgObj, true )
-      unselImgObj.isVisible = true
-      buttonInstance.unsel = unselImgObj
-   end
-
-   -- SEL IMG
-   if(buttonInstance.selImgSrc) then		
-      local selImgObj
-      selImgObj = display.newImageRect( buttonInstance.selImgSrc, buttonInstance.baseFolder, buttonInstance.w, buttonInstance.h)
-      selImgObj.isHitTestable = true
-
-      if(buttonInstance.selImgFillColor ) then
-         local r = fnn(buttonInstance.selImgFillColor[1], 1)
-         local g = fnn(buttonInstance.selImgFillColor[2], 1)
-         local b = fnn(buttonInstance.selImgFillColor[3], 1)
-         local a = fnn(buttonInstance.selImgFillColor[4], 1)
-         selImgObj:setFillColor(r,g,b,a)
-      end
-
-      if(buttonInstance.strokeWidth) then
-         selImgObj.strokeWidth = buttonInstance.strokeWidth
-      elseif(buttonInstance.selStrokeWidth) then
-         selImgObj.strokeWidth = buttonInstance.selStrokeWidth
-      end
-
-      if(buttonInstance.selStrokeColor) then
-         local r = fnn(buttonInstance.selStrokeColor[1], 1)
-         local g = fnn(buttonInstance.selStrokeColor[2], 1)
-         local b = fnn(buttonInstance.selStrokeColor[3], 1)
-         local a = fnn(buttonInstance.selStrokeColor[4], 1)
-         selImgObj:setStrokeColor(r,g,b,a)
-
-      elseif(buttonInstance.strokeColor) then
-         local r = fnn(buttonInstance.strokeColor[1], 1)
-         local g = fnn(buttonInstance.strokeColor[2], 1)
-         local b = fnn(buttonInstance.strokeColor[3], 1)
-         local a = fnn(buttonInstance.strokeColor[4], 1)
-         selImgObj:setStrokeColor(r,g,b,a)
-      end
-
-      buttonInstance:insert( selImgObj, true )
-      selImgObj.isVisible = false
-      buttonInstance.sel = selImgObj
-   end
 
    -- BUTTON Overlay Rect
    if(buttonInstance.buttonOverlayRectColor) then
@@ -387,6 +290,9 @@ function buttons:newButton( parentGroup, params )
       labelText.x = buttonInstance.labelOffset[1] + 
                     params.w/2                    
       labelText.y = buttonInstance.labelOffset[2]
+   else
+      labelText.x = buttonInstance.labelOffset[1]
+      labelText.y = buttonInstance.labelOffset[2]
    end
 
    buttonInstance:addEventListener( "touch", self )
@@ -427,7 +333,30 @@ function buttons:newButton( parentGroup, params )
    -- ==
    function buttonInstance:disable( ) 
       self.isEnabled = false
-      self.alpha = 0.3
+      local prefixes = { "unsel", "sel", "toggled", "locked" }
+      
+      if( self.lockedRect ) then
+         for i = 1, #prefixes do 
+            local obj = self[prefixes[i] .. "Rect"]
+            if( obj and obj._lastVis == nil ) then
+               obj._lastVis = obj.isVisible
+               obj.isVisible = false
+            end
+         end
+         self.lockedRect.isVisible = true
+      elseif( self.lockedImg ) then
+         for i = 1, #prefixes do 
+            local obj = self[prefixes[i] .. "Img"]
+            if( obj and obj._lastVis == nil ) then
+               obj._lastVis = obj.isVisible
+               obj.isVisible = false
+            end
+         end
+         self.lockedImg.isVisible = true
+      else
+         self.alpha = 0.3
+      end
+      
    end
 
    -- ==
@@ -435,7 +364,31 @@ function buttons:newButton( parentGroup, params )
    -- ==
    function buttonInstance:enable( ) 
       self.isEnabled = true
-      self.alpha = 1.0
+
+      local prefixes = { "unsel", "sel", "toggled", "locked" }
+      
+      if( self.lockedRect ) then
+         for i = 1, #prefixes do 
+            local obj = self[prefixes[i] .. "Rect"]
+            if( obj and obj._lastVis ~= nil ) then
+               obj.isVisible = obj._lastVis
+               obj._lastVis = nil
+            end
+         end
+         self.lockedRect.isVisible = false
+      elseif( self.lockedImg ) then
+         for i = 1, #prefixes do 
+            local obj = self[prefixes[i] .. "Img"]
+            if( obj and obj._lastVis ~= nil ) then
+               obj.isVisible = obj._lastVis
+               obj._lastVis = nil
+            end
+         end
+         self.lockedImg.isVisible = false
+      else
+         self.alpha = 1.0
+      end
+
    end
 
    -- ==
@@ -513,47 +466,123 @@ function buttons:newButton( parentGroup, params )
    --    
    --    vis - true means highlight, false means un-highlight.
    -- ==
-   function buttonInstance:setHighlight( vis )	
-      --if(not self.selRect) then print "NO RECT" end	
-      --if(not self.sel) then print "NO IMAGE" end	
-      --if(not self.overlayRect) then print "NO OVERLAY RECT" end	
-      --if(not self.overlayImage) then print "NO OVERLAY IMAGE" end	
+   function buttonInstance:setHighlight( vis, isEnd ) 
+      local isToggleRadio  = (self.buttonType ~= "push")
 
-      if(self.highlighted == nil or self.highlighted ~= vis) then
+      -- Rectangle Buttons
+      if(self.selRect) then self.selRect.isVisible = vis end
+      if(self.unselRect) then self.unselRect.isVisible = (not vis) end
 
-         if(self.selRect) then self.selRect.isVisible = vis end
-         if(self.unselRect) then self.unselRect.isVisible = (not vis) end
-         if(self.sel) then self.sel.isVisible = vis end
-         if(self.unsel) then self.unsel.isVisible = (not vis) end
 
-         if (self.touchOffset) then
-            local xOffset = self.touchOffset[1] or self.x
-            local yOffset = self.touchOffset[2] or self.y
-            if(vis) then						
-               self.x = self.x + xOffset
-               self.y = self.y + yOffset
-            else
-               self.x = self.x - xOffset
-               self.y = self.y - yOffset
+      -- TOGGLE AND RADIO IMAGE BUTTONS
+      if( isToggleRadio ) then
+
+         -- BUTTONS WITH TOGGLED IMAGE         
+         if(self.toggledImg) then            
+            if( isEnd ) then
+               if( self.isPressed ) then
+                  self.toggledImg.isVisible = true
+
+                  -- Handle Selected Image
+                  if(self.selImg) then 
+                     self.selImg.isVisible = false
+                  end
+
+                  -- Finally Handle Not Selected Image
+                  if(self.unselImg) then
+                     self.unselImg.isVisible = false
+                  end
+
+               else
+                  self.toggledImg.isVisible = false
+
+                  -- Handle Selected Image
+                  if(self.selImg) then self.selImg.isVisible = self.isPressed end
+
+                  -- Finally Handle Not Selected Image
+                  if(self.unselImg) then
+                     self.unselImg.isVisible = not self.isPressed
+                  end
+               end               
+            else                  
+               self.toggledImg.isVisible = (not vis and self.isPressed)
+               if(self.selImg) then self.selImg.isVisible = vis end
+               if(self.unselImg) then self.unselImg.isVisible = not vis end               
             end
+
+
+         -- BUTTONS WITHOUT TOGGLED IMAGE
+         else
+            if( isEnd ) then
+               -- Next Handle Selected Image
+               if(self.selImg) then self.selImg.isVisible = self.isPressed  end
+
+               -- Finally Handle Not Selected Image
+               if(self.selImg) then
+                  self.unselImg.isVisible = not self.selImg.isVisible
+               elseif(self.unselImg) then
+                  self.unselImg.isVisible = not vis
+               end
+            else
+               -- Next Handle Selected Image
+               if(self.selImg) then self.selImg.isVisible = vis or self.isPressed  end
+
+               -- Finally Handle Not Selected Image
+               if(self.selImg) then
+                  self.unselImg.isVisible = not self.selImg.isVisible
+               elseif(self.unselImg) then
+                  self.unselImg.isVisible = not vis
+               end
+            end
+            --print( vis, self.isPressed, twoStateSel, isEnd, isToggleRadio, self.highlighted == nil, self.highlighted ~= vis, system.getTimer() )            
          end
 
-         if(self.selLabelColor) then 
-            if(vis) then		
-               self.myLabel:setFillColor( unpack( self.selLabelColor ) )
-            else
-               self.myLabel:setFillColor( unpack( self.labelColor ) )
-            end
+      -- PUSH IMAGE BUTTONS
+      else
+         -- Next Handle Selected Image
+         if(self.selImg) then
+            self.selImg.isVisible = vis
          end
 
-         self.highlighted = vis
-
+         -- Finally Handle Not Selected Image
+         if(self.unselImg) then
+            self.unselImg.isVisible = not vis
+         end
       end
+
+      local doOffsetColor = vis or self.isPressed
+      if( isToggleRadio and isEnd and not self.isPressed ) then doOffsetColor = false end
+      if( not isToggleRadio and not vis ) then doOffsetColor = false end
+      if( self.toggledImg ) then doOffsetColor = false end
+
+      if(self.touchOffset) then
+         print(self.x0)
+         local xOffset = self.touchOffset[1] or self.x
+         local yOffset = self.touchOffset[2] or self.y
+         if(doOffsetColor) then                  
+            self.x = self.x0 + xOffset
+            self.y = self.y0 + yOffset
+         else
+            self.x = self.x0 
+            self.y = self.y0 
+         end
+      end
+
+      if(self.selLabelColor) then 
+         if(doOffsetColor) then      
+            self.myLabel:setFillColor( unpack( self.selLabelColor ) )
+         else
+            self.myLabel:setFillColor( unpack( self.labelColor ) )
+         end
+      end
+
    end
+
+
 
    ----[[
    -- ==
-   --    buttonInstance:setHighlight( width, height ) - Sets the width and height of the button.
+   --    buttonInstance:setSize( width, height ) - Sets the width and height of the button.
    --    Note: This is an 'editMode' only feature designed to simplify the implementation of 
    --    the editor.  It has NO REALWORLD APPLICATION.  
    --    
@@ -607,7 +636,6 @@ function buttons:newButton( parentGroup, params )
          buttonInstance.x = buttonInstance.x - (aw-dw)/2
       elseif( buttonInstance.x > cx ) then
          buttonInstance.x = buttonInstance.x + (aw-dw)/2
-
       end
 
       -- Fix vertical alignment
@@ -617,6 +645,15 @@ function buttons:newButton( parentGroup, params )
       elseif( buttonInstance.y > cy ) then
          buttonInstance.y = buttonInstance.y + (ah-dh)/2
       end      
+   end
+
+   buttonInstance.x0 = buttonInstance.x
+   buttonInstance.y0 = buttonInstance.y
+
+   function buttonInstance:resetStartPosition()
+      print(self.x, self.y)
+      self.x0 = self.x
+      self.y0 = self.y
    end
 
    return buttonInstance
@@ -781,15 +818,15 @@ function buttons:presetSlider( parentGroup, presetName, x,y,w,h, onEvent, onRele
 
    parentGroup:insert( sliderKnob )
 
-   sliderKnob.unsel = display.newImageRect(sliderKnob, tmpButton.unselKnobImg, tmpButton.kw, tmpButton.kh )
-   sliderKnob.sel   = display.newImageRect(sliderKnob, tmpButton.selKnobImg, tmpButton.kw, tmpButton.kh )
+   sliderKnob.unselImg  = display.newImageRect(sliderKnob, tmpButton.unselKnobImg, tmpButton.kw, tmpButton.kh )
+   sliderKnob.selImg    = display.newImageRect(sliderKnob, tmpButton.selKnobImg, tmpButton.kw, tmpButton.kh )
 
    if(presetData.unselKnobImgFillColor ) then
       local r = fnn(presetData.unselKnobImgFillColor[1], 1)
       local g = fnn(presetData.unselKnobImgFillColor[2], 1)
       local b = fnn(presetData.unselKnobImgFillColor[3], 1)
       local a = fnn(presetData.unselKnobImgFillColor[4], 1)
-      sliderKnob.unsel:setFillColor(r,g,b,a)
+      sliderKnob.unselImg:setFillColor(r,g,b,a)
    end
 
    if(presetData.selKnobImgFillColor ) then
@@ -797,10 +834,10 @@ function buttons:presetSlider( parentGroup, presetName, x,y,w,h, onEvent, onRele
       local g = fnn(presetData.selKnobImgFillColor[2], 1)
       local b = fnn(presetData.selKnobImgFillColor[3], 1)
       local a = fnn(presetData.selKnobImgFillColor[4], 1)
-      sliderKnob.sel:setFillColor(r,g,b,a)
+      sliderKnob.selImg:setFillColor(r,g,b,a)
    end
 
-   sliderKnob.sel.isVisible = false
+   sliderKnob.selImg.isVisible = false
 
    sliderKnob.x = tmpButton.x - tmpButton.width/2  + tmpButton.width/2
    sliderKnob.y = tmpButton.y
@@ -862,8 +899,8 @@ function buttons:presetSlider( parentGroup, presetName, x,y,w,h, onEvent, onRele
    -- ==
    function tmpButton:disable( ) 
       self.isEnabled = false
-      self.sel.alpha = 0.3
-      self.unsel.alpha = 0.3
+      self.selImg.alpha = 0.3
+      self.unselImg.alpha = 0.3
       self.myKnob.alpha = 0.3
    end
 
@@ -872,8 +909,8 @@ function buttons:presetSlider( parentGroup, presetName, x,y,w,h, onEvent, onRele
    -- ==
    function tmpButton:enable( ) 
       self.isEnabled = true
-      self.sel.alpha = 1.0
-      self.unsel.alpha = 1.0
+      self.selImg.alpha = 1.0
+      self.unselImg.alpha = 1.0
       self.myKnob.alpha = 1.0		
    end
 
@@ -953,11 +990,11 @@ function buttons:quickHorizSlider( parentGroup, x, y, w, h, imageBase, onEvent, 
 
    local sliderKnob = display.newGroup()
 
-   sliderKnob.unsel = display.newImageRect(sliderKnob, knobImgBase .. ".png", kw, kh )
-   sliderKnob.sel   = display.newImageRect(sliderKnob, knobImgBase .. "Over.png", kw, kh )
-   sliderKnob.unsel.rotation = sliderKnob.rotation
-   sliderKnob.sel.rotation = sliderKnob.rotation
-   sliderKnob.sel.isVisible = false
+   sliderKnob.unselImg           = display.newImageRect(sliderKnob, knobImgBase .. ".png", kw, kh )
+   sliderKnob.selImg             = display.newImageRect(sliderKnob, knobImgBase .. "Over.png", kw, kh )
+   sliderKnob.unselImg.rotation  = sliderKnob.rotation
+   sliderKnob.selImg.rotation    = sliderKnob.rotation
+   sliderKnob.selImg.isVisible   = false
 
    sliderKnob.x = tmpButton.x - tmpButton.width/2  + tmpButton.width/2
    sliderKnob.y = tmpButton.y
@@ -1002,8 +1039,8 @@ function buttons:quickHorizSlider( parentGroup, x, y, w, h, imageBase, onEvent, 
    -- ==
    function tmpButton:disable( ) 
       self.isEnabled = false
-      self.sel.alpha = 0.3
-      self.unsel.alpha = 0.3
+      self.selImg.alpha = 0.3
+      self.unselImg.alpha = 0.3
       self.myKnob.alpha = 0.3
    end
 
@@ -1012,8 +1049,8 @@ function buttons:quickHorizSlider( parentGroup, x, y, w, h, imageBase, onEvent, 
    -- ==
    function tmpButton:enable( ) 
       self.isEnabled = true
-      self.sel.alpha = 1.0
-      self.unsel.alpha = 1.0
+      self.selImg.alpha = 1.0
+      self.unselImg.alpha = 1.0
       self.myKnob.alpha = 1.0		
    end
 
@@ -1031,8 +1068,8 @@ function buttons:touch( params )
    local id		         = params.id 
    local theButton      = params.target 
    local phase          = params.phase
-   local sel            = theButton.sel
-   local unsel          = theButton.unsel
+   local selImg         = theButton.selImg
+   local unselImg       = theButton.unselImg
    local onPress        = theButton.onPress
    local onRelease      = theButton.onRelease
    local onEvent        = theButton.onEvent
@@ -1059,9 +1096,9 @@ function buttons:touch( params )
 
    if(phase == "began") then
 
-      if(theKnob and theKnob.sel) then -- This is a slider
-         theKnob.sel.isVisible = true
-         theKnob.unsel.isVisible = false
+      if(theKnob and theKnob.selImg) then -- This is a slider
+         theKnob.selImg.isVisible = true
+         theKnob.unselImg.isVisible = false
       end
 
       theButton:setHighlight(true)
@@ -1071,7 +1108,6 @@ function buttons:touch( params )
       -- Only Pushbutton fires event here
       if(buttonType == "push") then
          -- PUSH BUTTON
-         --print("push button began")
          theButton.isPressed = true
          if( sound ) then audio.play( sound ) end
          if( pressSound ) then audio.play( pressSound ) end
@@ -1091,43 +1127,29 @@ function buttons:touch( params )
          isWithinBounds = true
       end
 
-      if( phase == "moved") then
+      if( phase == "moved") then         
          if(buttonType == "push") then
             theButton:setHighlight(isWithinBounds)
-            --sel.isVisible   = isWithinBounds
-            --unsel.isVisible = not isWithinBounds
             if( onEvent ) then result = result and onEvent( buttonEvent ) end
          elseif(buttonType == "toggle") then
-            if( not isWithinBounds ) then
-               theButton:setHighlight(theButton.isPressed)
-               --sel.isVisible   = theButton.isPressed
-               --unsel.isVisible = not theButton.isPressed					
-            else
-               theButton:setHighlight(true)
-               --sel.isVisible   = true
-               --unsel.isVisible = false
-            end
+            theButton:setHighlight(isWithinBounds)
+            if( onEvent ) then onEvent( buttonEvent ) end
          elseif(buttonType == "radio") then
+            theButton:setHighlight(isWithinBounds)
             if( onEvent ) then result = result and onEvent( buttonEvent ) end
          end
 
       elseif(phase == "ended" or phase == "cancelled") then
-         --print("buttonType " .. buttonType )
-         ------------------------------------------------------
-         if(buttonType == "push") then -- PUSH BUTTON
-            ------------------------------------------------------
-            --print "push button ended"	
 
-            if(theKnob and theKnob.sel) then -- This is a slider
-               theKnob.sel.isVisible   = false
-               theKnob.unsel.isVisible = true
+         if(buttonType == "push") then -- PUSH BUTTON
+
+            if(theKnob and theKnob.selImg) then -- This is a slider
+               theKnob.selImg.isVisible   = false
+               theKnob.unselImg.isVisible = true
             end
 
-            theButton:setHighlight(false)
-            --sel.isVisible   = false
-            --unsel.isVisible = true
-
             theButton.isPressed = false
+            theButton:setHighlight(false, true)
 
             if isWithinBounds then
                if( sound ) then audio.play( sound ) end
@@ -1136,10 +1158,8 @@ function buttons:touch( params )
                if( onEvent ) then result = result and onEvent( buttonEvent ) end
             end
 
-            ------------------------------------------------------
          elseif(buttonType == "toggle") then -- TOGGLE BUTTON				
-            ------------------------------------------------------
-            --print( "\ntoggle button ended -- " .. buttonEvent.phase )
+
             if isWithinBounds then
                if(theButton.isPressed == true) then
                   theButton.isPressed = false
@@ -1156,23 +1176,27 @@ function buttons:touch( params )
                   if( onEvent ) then result = result and onEvent( buttonEvent ) end
                end					
             end
-            theButton:setHighlight(theButton.isPressed)
-            --sel.isVisible   = theButton.isPressed
-            --unsel.isVisible = not theButton.isPressed				
-            ------------------------------------------------------
+            theButton:setHighlight(isWithinBounds,true)
+
          elseif(buttonType == "radio") then -- RADIO BUTTON
-            ------------------------------------------------------
-            --print "radio button ended" 
+
             if isWithinBounds then
-               --print( "parent.currentRadio ==> " .. tostring(parent.currentRadio))
                if( not parent.currentRadio ) then
-                  --print("First radio press")
 
                elseif( parent.currentRadio ~= theButton ) then
                   local oldRadio = parent.currentRadio
-                  if( oldRadio ) then
+                  if( oldRadio ) then                     
                      oldRadio.isPressed = false
                      oldRadio:setHighlight(false)
+                     --oldRadio.x = oldRadio.x0
+                     --oldRadio.y = oldRadio.y0
+                     local prefixes = { "unsel", "sel", "toggled", "locked" }                     
+                     for i = 1, #prefixes do 
+                        local obj = oldRadio[prefixes[i] .. "Img"]
+                        if( obj ) then obj._lastVis = nil end
+                        local obj = oldRadio[prefixes[i] .. "Rect"]
+                        if( obj ) then obj._lastVis = nil end
+                     end
                   end
                end
 
@@ -1180,28 +1204,18 @@ function buttons:touch( params )
                buttonEvent.theButton = theButton
 
                theButton.isPressed = true
-               --buttonEvent.phase = "ended"
                if( sound ) then audio.play( sound ) end
-               --if( onEvent ) then result = result and onEvent( buttonEvent ) end
-
                if( releaseSound ) then audio.play( releaseSound ) end
                if( onRelease ) then result = result and onRelease( buttonEvent ) end
 
             end
             if( onEvent ) then result = result and onEvent( buttonEvent ) end
 
-            theButton:setHighlight(theButton.isPressed)
-            --sel.isVisible   = theButton.isPressed
-            --unsel.isVisible = not theButton.isPressed
+            theButton:setHighlight(theButton.isPressed, true)
          end
 
          -- Allow touch events to be sent normally to the objects they "hit"
-         if( theButton.sskTouch ) then
-            -- NOTHING
-            --table.dump( theButton )     
-         else
-            display.getCurrentStage():setFocus( theButton, nil )
-         end    
+         display.getCurrentStage():setFocus( theButton, nil )
          
          theButton.isFocus = false
       end
@@ -1209,22 +1223,9 @@ function buttons:touch( params )
    return result
 end
 
-
-
 -- Attach custom button builders to button library
 -- Note: These were designed explicitly for my editor to make the design and 
 -- generation of code easier for me to achieve and easier for users to understand.
 local customButtons = require "ssk2.interfaces.customButtons"
 customButtons.attach( buttons )
-
-
-fnn = _G.fnn or 
-   function( ... ) 
-      for i = 1, #arg do
-         local theArg = arg[i]
-         if(theArg ~= nil) then return theArg end
-      end
-      return nil
-   end
-
 return buttons

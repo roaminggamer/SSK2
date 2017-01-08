@@ -6,7 +6,8 @@
 --   Last Updated: 29 NOV 2016
 -- Last Validated: 29 NOV 2016
 -- =============================================================
-
+-- Designer Notes:
+-- 1. Add insertAbove, insertBelow method to containers/groups.
 
 -- display.remove( func ) - Replacement that works in tandem with 'isValid'
 --
@@ -30,3 +31,5 @@ function display.newGroup( ... )
 	group.__isGroup 	= true
 	return group
 end
+
+

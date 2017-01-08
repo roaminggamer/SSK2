@@ -16,7 +16,7 @@ _G.fontB 	= "Raleway-Black.ttf"
 require "ssk2.loadSSK"
 _G.ssk.init( { launchArgs 				= ..., 
 	            gameFont 				= "Raleway-Light.ttf",
-	            measure 					= true,
+	            measure 					= false,
 	            math2DPlugin 			= false,
 	            enableAutoListeners 	= true,
 	            exportColors 			= true,

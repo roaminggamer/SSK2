@@ -52,7 +52,8 @@ end
 local pairs = _G.pairs
 _G.ssk.core.listen = function( name, listener ) Runtime:addEventListener( name, listener ) end
 _G.ssk.core.ignore = function( name, listener ) Runtime:removeEventListener( name, listener ) end
-_G.ssk.core.ignoreList = function( list, obj ) 
+_G.ssk.core.ignoreList = function( list, obj )
+   if( not obj ) then return end
    for i = 1, #list do
       local name = list[i]
       if(obj[name]) then 

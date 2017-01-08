@@ -615,3 +615,20 @@ function table.toString_old( t, flat )
    return output
 end
 
+-- 
+-- forEach( func ) - utility that calls func on each object in table
+--
+-- func - Reference to function that takes an object parameter and an optional 'key' parameter
+--
+function table.forEach( tbl, func )
+   for k,v in pairs( tbl ) do func( v, k ) end
+end
+-- 
+-- forEachi( func ) - Utility that calls func on each object in numerically indexed table. 
+--
+--
+-- func - Reference to function that takes an object parameter and an optional 'key' parameter
+--
+function table.forEachi( tbl, func )
+   for i = 1, #tbl do func( tbl[i], i ) end
+end

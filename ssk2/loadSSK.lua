@@ -3,8 +3,8 @@
 -- =============================================================
 -- SSK PRO Loader
 -- =============================================================
---   Last Updated: 03 JAN 2017
--- Last Validated: 15 DEC 2016
+--   Last Updated: 07 JAN 2017
+-- Last Validated: 07 JAN 2017
 -- =============================================================
 -- Development Notes:
 -- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
