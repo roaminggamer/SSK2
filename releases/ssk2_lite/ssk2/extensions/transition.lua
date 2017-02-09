@@ -3,8 +3,8 @@
 -- =============================================================
 -- transition.* - Extension(s)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
+--   Last Updated: 14 NOV 2016
+-- Last Validated: 14 NOV 2016
 -- =============================================================
 
 -- =============================================================
@@ -33,6 +33,12 @@
  	local delay 		= params.delay
  	local ease 			= params.transition
  	local onComplete 	= params.onComplete
+
+ 	-- Handle case where reference to obj is passed with
+ 	-- 'onComplete' method attached
+ 	if( onComplete and type(onComplete) == "table" ) then
+ 		onComplete = onComplete.onComplete 
+ 	end
 
    local fcolor 	= table.shallowCopy( fromColor )
    local tcolor 	= table.shallowCopy( toColor )

@@ -40,7 +40,7 @@ local rgColor = ssk.RGColor
 ----------------------------------------------------------------------
 -- Locals
 ----------------------------------------------------------------------
-
+local runLast = false
 ----------------------------------------------------------------------
 -- Scene Methods
 ----------------------------------------------------------------------
@@ -51,6 +51,11 @@ function scene:create( event )
    background:setFillColor( 0.2, 0.5, 0.8 )
    local title = display.newText( sceneGroup, "SSK2 Validation Sampler", centerX, top + 20, 
                                   native.systemFontBold, 28 )
+
+   local vtitle = display.newText( sceneGroup, "(Running SSK2 Version: " .. ssk.getVersion() .. ")", right - 10, top + 20, 
+                                  native.systemFont, 14 )
+   vtitle:setFillColor(0)
+   vtitle.anchorX = 1
 
    local examples = {}
    examples[#examples+1] = { "Actions - Face Instantly", "tests.actions.001_face_instant" }
@@ -75,6 +80,7 @@ function scene:create( event )
    if( ssk.__isPro ) then examples[#examples+1] = { "Display - Lines", "tests.display.003_lines" } end
 
    examples[#examples+1] = { "Easy Interfaces - Basic Buttons", "tests.easyIFC.001_basicButtons" }
+   examples[#examples+1] = { "Easy Interfaces - Complex Buttons", "tests.easyIFC.004_complexButtons" }
    examples[#examples+1] = { "Easy Interfaces - Quick Labels", "tests.easyIFC.002_quick_labels" }
    examples[#examples+1] = { "Easy Interfaces - Effects", "tests.easyIFC.003_effects" }
 
@@ -85,6 +91,10 @@ function scene:create( event )
    examples[#examples+1] = { "Easy Inputs - One Stick + One Touch", "tests.easyInputs.005_oneStickOneTouch" }
    examples[#examples+1] = { "Easy Inputs - Prettier One Stick", "tests.easyInputs.006_pretty_oneStick" }
    
+   examples[#examples+1] = { "Factory Manager", "tests.factories.001_factoryTest" }
+
+if( ssk.__isPro ) then examples[#examples+1] = { "Tiled Loader Test #1", "tests.tiled.001_basic_tiled_loader_test" } end
+
    if( ssk.__isPro ) then examples[#examples+1] = { "Various - Security", "tests.various.001_security" } end
    if( ssk.__isPro ) then examples[#examples+1] = { "Various - Persist", "tests.various.002_persist" } end
    examples[#examples+1] = { "Various - Misc", "tests.various.003_misc" }
@@ -97,17 +107,21 @@ function scene:create( event )
    examples[#examples+1] = { "Various - Math 2D inFBLR", "tests.various.010_math2d_inFBLR" }
 
    examples[#examples+1] = { "Various - Particle Loaders", "tests.various.011_pex" }
-   examples[#examples+1] = { "Factory Manager", "tests.factories.001_factoryTest" }
-
-   if( ssk.__isPro ) then examples[#examples+1] = { "Tiled Loader Test #1", "tests.tiled.001_basic_tiled_loader_test" } end
+  
 
    examples[#examples+1] = { "Various - Dialog Trays - Basic & Custom", "tests.various.012_dialogs" }
 
    if( ssk.__isPro ) then examples[#examples+1] = { "Various - Easy Positioner Tool", "tests.various.013_easy_positioner" } end
-   
-   examples[#examples+1] = { "Easy Interfaces - Complex Buttons", "tests.easyIFC.004_complexButtons" }
 
+   examples[#examples+1] = { "Various - Easy Dragging", "tests.various.014_dragging" }
 
+   examples[#examples+1] = { "Various - Meters", "tests.various.016_meters" }
+
+   if( ssk.__isPro ) then examples[#examples+1] = { "Various - Sound Manager", "tests.various.015_soundMgr" } end
+
+   examples[#examples+1] = { "Various -  Misc: Rotate About", "tests.various.017_rotateabout" }
+
+   --runLast = true
 
    --print(#examples)
 
@@ -139,8 +153,10 @@ function scene:create( event )
       newButton( i, examples[i][1], examples[i][2] )
    end
 
-   -- Uncommenting next line runs last example automatically.   
-   --nextFrame( function() buttons[#buttons]:toggle() end )
+   -- Run last example immediately?
+   if( runLast ) then
+      nextFrame( function() buttons[#buttons]:toggle() end )
+   end
 end
 
 ----------------------------------------------------------------------

@@ -3,8 +3,8 @@
 -- =============================================================
 -- string.* - Extension(s)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
+--   Last Updated: 16 JAN 2017
+-- Last Validated: 16 JAN 2017
 -- =============================================================
 
 local strLen = string.len
@@ -260,15 +260,20 @@ function string.trim(s)
     local from = s:match"^%s*()"
     return from > #s and "" or s:match(".*%S", from)
 end
+
+-- Note: Retaining case till release 2017.008 or later
 --    startsWith( s, piece ) 
 function string.startswith(s, piece)
     return string.sub(s, 1, strLen(piece)) == piece
 end
+string.startsWith = string.startswith
+
+-- Note: Retaining case till release 2017.008 or later
 --    endsWith( s, piece )
 function string.endswith(s, send)
     return #s >= #send and s:find(send, #s-#send+1, true) and true or false
 end
-
+string.endsWith = string.endswith
 
 string.url_encode = function(str)
   if (str) then

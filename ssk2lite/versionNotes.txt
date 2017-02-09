@@ -2,6 +2,23 @@
 2017
 ====
 
+
+2017.007
+* Both - Changed string.startswith to camelCase: string.startsWith
+* Both - Changed string.endswith to camelCase: string.endsWith
+* Both - Updated transition.color onComplete to handle functions and methods.
+* Both - Fixed math2d.angleBetween() so that it takes vector tables and discrete values.
+* Both - Modified ssk.misc.rotateAbout() to make it more flexible.
+* Both - Added Run Length Encode/Decode Module
+
+
+2017.006
+* Both - Critical fix to Math2D, adding two missing functions/dependencies.
+* Both - Added ssk.misc.addSmartTouch( obj, params ) - Adds a touch handler that will work in all setups.
+* Both - Added ssk.misc.addSmartDrag( obj, params ) - Adds a touch handler that gives the object a drag-n-drop ability.
+* Both - Added ssk.misc.addPhysicsDrag( obj, params ) - Adds a touch handler that gives the object a drag-n-drop ability using physics.
+
+
 2017.005
 * PRO - Added Easy Positioner Tool/Module
 * PRO - Added First Version of Tiled Loader

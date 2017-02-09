@@ -143,7 +143,7 @@ misc.rotateAbout = function( obj, x, y, params	)
 	y = y or display.contentCenterY
 	params = params or {}
 		
-	local radius		= params.radius or 50
+	local radius		   = params.radius or 50	
 	obj._pathRot		= params.startA or 0
 	local endA			= params.endA or (obj._pathRot + 360 )
 	local time			= params.time or 1000
@@ -165,10 +165,13 @@ misc.rotateAbout = function( obj, x, y, params	)
 		Runtime:removeEventListener( "enterFrame", self )
 	end
 
+	-- Handle special endRadius case
+	obj.__radius = radius
+
 	-- Update position every frame
 	obj.enterFrame = function ( self )
 		local vx,vy = angle2Vector( self._pathRot )
-		vx,vy = scaleVec( vx, vy, radius )
+		vx,vy = scaleVec( vx, vy, obj.__radius )
 		self.x = x + vx 
 		self.y = y + vy
 
@@ -180,7 +183,17 @@ misc.rotateAbout = function( obj, x, y, params	)
 	Runtime:addEventListener( "enterFrame", obj )
 
 	-- Use transition to change the angle (gives us access to nice effects)
-	transition.to( obj, { _pathRot = endA, delay = delay, time = time, transition = myEasing, onComplete = obj } )
+	if( params.endRadius ) then
+		transition.to( obj, { delay = params.radiusDelay or delay, 
+				                   time = params.radiusTime or time, 
+				                   transition = params.radiusEasing or myEasing, 
+				                   __radius = params.endRadius } )
+	end
+	transition.to( obj, { _pathRot = endA, 
+		                   delay = delay, 
+		                   time = time, 
+		                   transition = myEasing,
+		                   onComplete = obj } )
 end
 
 misc.createEasyMemMeter = function( x , y, width, fontSize )
@@ -389,7 +402,7 @@ function misc.addSmartTouch( obj, params )
 		if( params.listener ) then
 			return params.listener( self, event )
 		else
-			return false
+			return fnn(params.retval,false)
 		end		
 	end; obj:addEventListener("touch")
 end
@@ -451,7 +464,76 @@ function misc.addSmartDrag( obj, params )
 		if( params.listener ) then
 			return params.listener( self, event )
 		else
-			return false
+			return fnn(params.retval,false)
+		end		
+	end; obj:addEventListener("touch")
+end
+
+--
+-- Add Smart Physics Drag Listener To Object 
+-- - Dispatches: onDragged, onDropped events
+-- - Calls optional user listener
+--
+function misc.addPhysicsDrag( obj, params )
+	params = params or {}
+	local touchJointForce 	= params.force or 10
+	local dragFromCenter 	= fnn(params.fromCenter,true)
+	
+	obj.touch = function( self, event )
+		local phase = event.phase
+		local id 	= event.id
+		if( phase == "began" ) then
+			self.isFocus = true
+
+			if( dragFromCenter ) then
+				self.tempJoint = physics.newJoint( "touch", self, self.x, self.y )
+			else
+				self.tempJoint = physics.newJoint( "touch", self, event.x, event.y )
+			end
+			self.tempJoint.maxForce = touchJointForce
+
+			display.currentStage:setFocus( self, id )
+			self.x0 = self.x
+			self.y0 = self.y
+			if( params.toFront ) then self:toFront() end
+			if( self.onDragged ) then
+				self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y,  time = getTimer(), target = self } )
+			end
+			post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+			if( params.listener ) then
+				return params.listener( self, event )
+			end						
+		elseif( self.isFocus ) then				
+
+			if( phase == "ended" or phase == "cancelled" ) then
+				self.isFocus = false
+				display.currentStage:setFocus( self, nil )
+
+				display.remove( self.tempJoint ) 
+
+				if( self.onDragged ) then
+					self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+				end
+				if( self.onDropped ) then
+					self:onDropped( { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+				end
+				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+				post("onDropped", { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+			else
+				self.tempJoint:setTarget( event.x, event.y )
+				if( self.onDragged ) then
+					self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+				end
+				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, time = getTimer(), target = self } )
+			end
+			if( params.listener ) then
+				return params.listener( self, event )
+			end
+		end
+		if( params.listener ) then
+			return params.listener( self, event )
+		else
+			return fnn(params.retval,false)
 		end		
 	end; obj:addEventListener("touch")
 end

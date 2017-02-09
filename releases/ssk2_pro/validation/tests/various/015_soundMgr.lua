@@ -44,45 +44,95 @@ function test.run( group, params )
 	local soundMgr = ssk.soundMgr
 
 	soundMgr.enableSFX( true )
+	soundMgr.enableVoice( true )
 	soundMgr.enableMusic( true )
 
 	soundMgr.setVolume(0.5)
 	
 	soundMgr.setDebugLevel( 1 )
 
+
 	soundMgr.add( "click", "sounds/sfx/click.mp3", { preload = true, minTweenTime = 200 } )
-	
+
 	soundMgr.addEffect( "explosion", "sounds/sfx/explosion.wav", { preload = true, sticky = true } )
+
+	soundMgr.addVoice( "count1", "sounds/vo/count_1.mp3" )
+	soundMgr.addVoice( "count2", "sounds/vo/count_2.mp3" )
+	soundMgr.addVoice( "count3", "sounds/vo/count_3.mp3" )
+	soundMgr.addVoice( "count4", "sounds/vo/count_4.mp3" )
 
 	soundMgr.addMusic( "Sugar Plum Breakdown", "sounds/music/Sugar Plum Breakdown.mp3" )
 
 	soundMgr.release( "click" )
 	soundMgr.release( "explosion" )
 
-	post( "onSound", { sound = "click" } )
-	nextFrame( function() post( "onSound", { sound = "click" } ) end, 100 )
+	--
+	-- Validation Sequence
+	-- 
 
-	timer.performWithDelay( 2000, 
-		function()
-			post( "onSound", { sound = "explosion" } )
-			nextFrame( function() post( "onSound", { sound = "explosion" } ) end, 250 )
-		end )
+	local function valSequence()
+		post( "onSound", { sound = "click" } )
+		nextFrame( function() post( "onSound", { sound = "click" } ) end, 100 )
 
-	local function onComplete()
-		print("All sounds should be done.")
-		soundMgr.dump()
+		timer.performWithDelay( 2000, 
+			function()
+				post( "onSound", { sound = "explosion" } )
+				nextFrame( function() post( "onSound", { sound = "explosion" } ) end, 250 )
+			end )
+
+		local function onComplete()
+			print("All sounds should be done.")
+			soundMgr.dump()
+		end
+
+		timer.performWithDelay( 3000, 
+			function()
+				post( "onSound", { sound = "Sugar Plum Breakdown", fadein = 1500, loops = 0, onComplete = onComplete } )
+			end )
+
+		timer.performWithDelay( 3500, 
+			function()
+				print("Stopping early.")
+				soundMgr.stopAll("music")
+			end )
 	end
 
-	timer.performWithDelay( 3000, 
-		function()
-			post( "onSound", { sound = "Sugar Plum Breakdown", fadein = 1500, loops = 0, onComplete = onComplete } )
-		end )
+	--
+	-- Individual Sounds and Features
+	-- 
+	local function onPress( event ) 
+		local sName = event.target.sName
+		post( "onSound", { sound = sName } )
+	end
 
-	timer.performWithDelay( 3500, 
-		function()
-			print("Stopping early.")
-			soundMgr.stopAll("music")
-		end )
+	local curY = centerY - 300
+
+   easyIFC:presetPush( group, "default", centerX, curY, 300, 40, "Run Validation Sequence", valSequence )
+
+   curY = curY + 50
+   local tmp = easyIFC:presetPush( group, "default", centerX, curY, 300, 40, "SFX - Click", onPress )
+   tmp.sName = "click"
+
+   curY = curY + 50
+   local tmp = easyIFC:presetPush( group, "default", centerX, curY, 300, 40, "VO - Count 1", onPress )
+   tmp.sName = "count1"
+
+   curY = curY + 50
+   local tmp = easyIFC:presetPush( group, "default", centerX, curY, 300, 40, "VO - Count 2", onPress )
+   tmp.sName = "count2"
+
+   curY = curY + 50
+   local tmp = easyIFC:presetPush( group, "default", centerX, curY, 300, 40, "VO - Count 3", onPress )
+   tmp.sName = "count3"
+
+   curY = curY + 50
+   local tmp = easyIFC:presetPush( group, "default", centerX, curY, 300, 40, "Music - Sugar Plum Breakdown", onPress )
+   tmp.sName = "Sugar Plum Breakdown"
+
+
+
+
+
 
 end
 

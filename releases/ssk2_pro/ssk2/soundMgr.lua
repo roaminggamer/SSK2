@@ -1,29 +1,33 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 03 DEC 2016
--- Last Validated: 30 NOV 2016
+--   Last Updated: 25 JAN 2017
+-- Last Validated: 25 JAN 2017
 -- =============================================================
 -- Development Notes:
 -- 1. Consider adding 'altVolume' capability.
+-- 2. Investigate ability to play various sound types in mulitple channels.  For now, disallow for voice and music.
 
 local soundMgr = {}
 _G.ssk.soundMgr = soundMgr
 
 -- Local storage for sound handles
-local allSounds 			= {} 
+local allSounds 				= {} 
 
-local debugLevel 			= 0
-local globalVolume		= 1.0
-local sfxVolume			= 1.0
-local musicVolume			= 1.0
+local debugLevel 				= 0
+local globalVolume			= 1.0
+local sfxVolume				= 1.0
+local voiceVolume				= 1.0
+local musicVolume				= 1.0
 
-local audio    			= require "audio"
-local getTimer 			= system.getTimer
+local audio    				= require "audio"
+local getTimer 				= system.getTimer
 
 local firstChannel 			= 1
 local maxMusicChannels 		= 4
-local firstMusicChannel 	= audio.findFreeChannel( audio.totalChannels  - maxMusicChannels)
+local maxVoiceChannels 		= 4
+local firstMusicChannel 	= audio.findFreeChannel( audio.totalChannels  - maxMusicChannels + 1)
+local firstVoiceChannel 	= audio.findFreeChannel( firstMusicChannel  - maxVoiceChannels)
 local firstEffectChannel 	= audio.findFreeChannel( firstChannel )
 
 --
@@ -41,15 +45,31 @@ end
 -- setMaxMusicChannels( max ) 
 --
 function soundMgr.setMaxMusicChannels( max ) 
-	max = max or 4
-	max = (max < 1) and 1 or max
-	local maxMusicChannels 		= max
-	local firstMusicChannel 	= audio.findFreeChannel( audio.totalChannels  - maxMusicChannels)
+	print("WARNING: soundMgr.setMaxMusicChannels( max ) superceded by: soundMgr.setMaxChannels( music, voice )" )
+	print("WARNING: Please call setMaxChannels( music, voice ) instead." )
+end
+--
+-- setMaxChannels( music, voice ) 
+--
+function soundMgr.setMaxChannels( music, voice ) 
+
+	music = music or 4
+	voice = voice or 4
+
+	music = (music < 1) and 1 or music
+	voice = (voice < 1) and 1 or voice
+
+	local maxMusicChannels 		= music
+	local maxVoiceChannels 		= voice
+	
+	local firstMusicChannel 	= audio.findFreeChannel( audio.totalChannels  - maxMusicChannels + 1)
+	local firstVoiceChannel 	= audio.findFreeChannel( firstMusicChannel  - maxVoiceChannels)
 	local firstEffectChannel 	= audio.findFreeChannel( firstChannel )
 
 	if( debugLevel > 0 ) then
-		print("soundMgr.setMaxMusicChannels() -  firstMusicChannel == " .. tostring(firstMusicChannel) )
-		print("soundMgr.setMaxMusicChannels() - firstEffectChannel == " .. tostring(firstEffectChannel) )
+		print("soundMgr.setMaxChannels() - firstEffectChannel == " .. tostring(firstEffectChannel) )
+		print("soundMgr.setMaxChannels() - firstVoiceChannel  == " .. tostring(firstVoiceChannel) )
+		print("soundMgr.setMaxChannels() - firstMusicChannel  == " .. tostring(firstMusicChannel) )
 	end
 
 end
@@ -67,6 +87,16 @@ function soundMgr.setVolume( volume, volType )
 
 		if( debugLevel > 0  ) then
 			print("soundMgr.setVolume() - Global Volume == " .. volume )
+		end
+
+	elseif( volType == "voice" ) then
+		voiceVolume = volume
+		for i = firstVoiceChannel, firstMusicChannel - 1 do
+			audio.setVolume( volume * globalVolume, { channel = i } )
+		end
+
+		if( debugLevel > 0  ) then
+			print("soundMgr.setVolume() - Effect Volume == " .. volume )
 		end
 
 	elseif( volType == "effect" ) then
@@ -100,12 +130,30 @@ function soundMgr.enableSFX( enable )
 	sfxEn = enable 
 	if( enable == false ) then
 		soundMgr.stopAll( "effect" )
-		for i = firstEffectChannel, firstMusicChannel - 1 do
+		for i = firstEffectChannel, firstVoiceChannel - 1 do
 			audio.setVolume( 0, { channel = i } )
 		end
 	else
-		for i = firstEffectChannel, firstMusicChannel - 1 do
+		for i = firstEffectChannel, firstVoiceChannel - 1 do
 			audio.setVolume( sfxVolume * globalVolume, { channel = i } )
+		end
+	end
+end
+
+
+-- enableVoice( enable ) - Globally enable/disable voice over effects.
+--
+local voiceEn = true
+function soundMgr.enableVoice( enable )
+	voiceEn = enable 
+	if( enable == false ) then
+		soundMgr.stopAll( "voice" )
+		for i = firstVoiceChannel, firstMusicChannel - 1 do
+			audio.setVolume( 0, { channel = i } )
+		end
+	else
+		for i = firstVoiceChannel, firstMusicChannel - 1 do
+			audio.setVolume( voiceVolume * globalVolume, { channel = i } )
 		end
 	end
 end
@@ -133,8 +181,9 @@ function soundMgr.setDebugLevel( level )
 	debugLevel = fnn(level, 0)
 
 	if( debugLevel ) then
-		print(" firstMusicChannel == " .. tostring(firstMusicChannel) )
 		print("firstEffectChannel == " .. tostring(firstEffectChannel) )
+		print("firstVoiceChannel  == " .. tostring(firstVoiceChannel) )
+		print("firstMusicChannel  == " .. tostring(firstMusicChannel) )
 	end
 
 end
@@ -155,6 +204,7 @@ function soundMgr.add( name, path, params )
 	local preload = fnn( params.preload, false )
 
 	if( soundType ~= "effect" and 
+		 soundType ~= "voice"  and
 		 soundType ~= "music" ) then
 		error( "soundMgr.add( " .. tostring(name) .. ", ... ) - Unknown soundType: " ..
 			    tostring( soundType ) )
@@ -177,6 +227,8 @@ function soundMgr.add( name, path, params )
 	if( preload )	then
 		if( soundType == "effect" ) then
 			record.handle = audio.loadSound( path, baseDir )
+		elseif( soundType == "voice" ) then
+			record.handle = audio.loadSound( path, baseDir )
 		else
 			record.handle = audio.loadStream( path, baseDir )
 		end
@@ -192,6 +244,14 @@ end
 function soundMgr.addEffect( name, path, params )
 	params = params or {}
 	params.soundType = "effect"
+	soundMgr.add( name, path, params )
+end
+
+-- addVoice( name, path, params )
+--
+function soundMgr.addVoice( name, path, params )
+	params = params or {}
+	params.soundType = "voice"
 	soundMgr.add( name, path, params )
 end
 
@@ -216,6 +276,13 @@ function soundMgr.load( name )
 		record.loaded = true
 		if( debugLevel > 0  ) then
 			print("Loaded effect: " .. tostring(record.name) .. "(" .. tostring(record.handle) .. ")" )
+		end
+
+	elseif( record.soundType == "voice" ) then
+		record.handle = audio.loadSound( record.path, record.baseDir )
+		record.loaded = true
+		if( debugLevel > 0  ) then
+			print("Loaded voice: " .. tostring(record.name) .. "(" .. tostring(record.handle) .. ")" )
 		end
 
 	elseif( record.soundType == "music" ) then
@@ -345,6 +412,12 @@ local function onSound( event )
 		end
 		return 
 	end
+	if( record.soundType == "voice" and voiceEn == false ) then 
+		if( debugLevel > 1 ) then
+			print("onSound() - Received 'voice' event, but effects are disabled." )
+		end
+		return 
+	end
 	if(record.soundType == "music" and musicEn == false  )then 
 		if( debugLevel > 1  ) then
 			print("onSound() - Received 'music' event, but music is disabled." )
@@ -361,6 +434,14 @@ local function onSound( event )
 
 			if( debugLevel > 0 ) then
 				print("Late loaded effect: " .. tostring(record.name) .. "(" .. tostring(record.handle) .. ")" )
+			end
+
+		elseif( record.soundType == "voice" ) then
+			record.handle = audio.loadSound( record.path, record.baseDir )
+			record.loaded = true
+
+			if( debugLevel > 0 ) then
+				print("Late loaded voice: " .. tostring(record.name) .. "(" .. tostring(record.handle) .. ")" )
 			end
 
 		elseif( record.soundType == "music" ) then
@@ -393,9 +474,17 @@ local function onSound( event )
 	local channel 
 	if( record.soundType == "music" ) then
 		channel = audio.findFreeChannel( firstMusicChannel )
+
+	elseif( record.soundType == "voice" ) then
+		channel = audio.findFreeChannel( firstVoiceChannel )
+		if( channel >= firstMusicChannel ) then 
+			print( "Warning: soundMgr 'onSound' Listener - No more voice channels available!")
+			return 
+		end
+
 	else
 		channel = audio.findFreeChannel( firstEffectChannel )
-		if( channel >= firstMusicChannel ) then 
+		if( channel >= firstVoiceChannel ) then 
 			print( "Warning: soundMgr 'onSound' Listener - No more effect channels available!")
 			return 
 		end
@@ -403,8 +492,10 @@ local function onSound( event )
 
 	-- Music sounds are only allowed to play once.  i.e. Same sound can't be playing in two channels.
 	--
-	if( record.soundType == "music" and table.count( record.playing ) > 0 ) then
-		print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " music and it is already playing.  Skipping.")
+	--if( record.soundType == "music" and table.count( record.playing ) > 0 ) then
+	if( (record.soundType == "music" or record.soundType == "voice") and 
+		 table.count( record.playing ) > 0 ) then
+		print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " (music or voice) and it is already playing.  Skipping.")
 		return		
 	end
 
@@ -419,6 +510,7 @@ local function onSound( event )
 			end
 		end
 
+		--table.dump( record, nil, record.name)
 		local handle = audio.play( record.handle,  
 			                        {	channel 		= channel, 
 			                           loops 		= event.loops,
@@ -426,7 +518,7 @@ local function onSound( event )
 			                           onComplete 	= onComplete,
 			                           fadein  		= event.fadein } )
 
-		print(record.soundType == "effect" , sfxEn, channel, handle )
+		--print(record.soundType == "effect" , sfxEn, channel, handle )
 
 
 		-- Track this sound so we can stop it later (and for music check)

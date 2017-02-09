@@ -3,8 +3,8 @@
 -- =============================================================
 -- SSK PRO Loader
 -- =============================================================
---   Last Updated: 07 JAN 2017
--- Last Validated: 07 JAN 2017
+--   Last Updated: 07 FEB 2017
+-- Last Validated: 07 FEB 2017
 -- =============================================================
 -- Development Notes:
 -- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
@@ -35,7 +35,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = false
 
-ssk.getVersion = function() return "2017.005" end
+ssk.getVersion = function() return "2017.007" end
 
 local initialized = false
 ssk.init = function( params )
@@ -65,6 +65,7 @@ ssk.init = function( params )
 	if( params.exportSystem == nil ) then params.exportSystem = false; end
 	if( params.exportColors == nil ) then params.exportColors = true; end
 	if( params.enableAutoListeners == nil ) then params.enableAutoListeners = true end
+	if( params.useExternal == nil ) then params.useExternal = false; end
 
 	-- Snag the debug level setting
 	ssk.__debugLevel = params.debugLevel or 0
@@ -163,6 +164,7 @@ ssk.init = function( params )
 		local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
 		local_require("ssk2.external.portableRandom") -- Portable random library
 		local_require("ssk2.external.global_lock") -- Portable random library
+		local_require("ssk2.external.rle") -- Run Length Encoder
 	end
 
 	-- =============================================================

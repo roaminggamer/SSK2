@@ -1,8 +1,8 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
+--   Last Updated: 12 JAN 2017
+-- Last Validated: 12 JAN 2017
 -- =============================================================
 
 -- Localizing math functions for speedup!
@@ -412,9 +412,19 @@ math2do.clockwiseAngleSweep = function( vec1, vec2 )
 end
 
 -- ==
---    ssk.math2d.angleBetween( ... ) - 
+--    ssk.math2d.angleBetween( ... )
 -- ==
-math2do.angleBetween = function( vec1, vec2 )
+math2do.angleBetween = function( ... ) 
+   local vec1, vec2
+
+	if( type(arg[1]) == "number" ) then
+		vec1 = { x = arg[1], y = arg[2] }
+		vec2 = { x = arg[3], y = arg[4] }
+	else
+		vec1 = arg[1]
+		vec2 = arg[2]
+	end
+
 	-- Normalize the vectors
 	local len1 = mSqrt(vec1.x * vec1.x + vec1.y * vec1.y)
 	local nx1 = vec1.x / len1
@@ -512,7 +522,7 @@ end
 -- =============================================================
 -- Wholly copied from Davis Claiborne's mlib: https://github.com/davisdude/mlib/blob/master/mlib.lua
 --
--- checkFuzzy, getSlope, getQuadraticRoots, getYIntercept
+-- checkFuzzy, getSlope, getQuadraticRoots, getYIntercept, removeDuplicatePointsFlat, addPoints
 --
 -- Derived from Davis Claiborne's mlib: https://github.com/davisdude/mlib/blob/master/mlib.lua
 --
@@ -522,7 +532,7 @@ end
 -- segmentSegmentIntersect (signature and returns changed)
 -- 
 -- =============================================================
-local checkFuzzy, getSlope, getQuadraticRoots, getYIntercept
+local checkFuzzy, getSlope, getQuadraticRoots, getYIntercept, removeDuplicatePointsFlat, addPoints
 checkFuzzy = function( number1, number2 )
 	return ( number1 - .00001 <= number2 and number2 <= number1 + .00001 )
 end
@@ -547,6 +557,29 @@ getYIntercept = function( x, y, ... )
 	if not slope then return x, true end 
 	return y - slope * x, false
 end
+
+-- Removes duplicate points from table of points { x0, y0, x1, y1, ... }
+removeDuplicatePointsFlat = function( tab )
+	for i = #tab, 1 -2 do
+		for ii = #tab - 2, 3, -2 do
+			if i ~= ii then
+				local x1, y1 = tab[i], tab[i + 1]
+				local x2, y2 = tab[ii], tab[ii + 1]
+				if checkFuzzy( x1, x2 ) and checkFuzzy( y1, y2 ) then
+					table.remove( tab, ii ); table.remove( tab, ii + 1 )
+				end
+			end
+		end
+	end
+	return tab
+end
+
+-- Helper to add points to flat table.
+addPoints = function ( tab, x, y )
+    tab[#tab + 1] = x
+    tab[#tab + 1] = y
+end
+
 
 -- ==
 --    ssk.math2d.segmentCircleIntersect( ... ) - Checks for intercept(s) between line-segment
@@ -730,6 +763,7 @@ local function checkSegmentPoint( px, py, x1, y1, x2, y2 )
 	return false
 end
 math2do.checkSegmentPoint = checkSegmentPoint
+
 
 
 -- ==
