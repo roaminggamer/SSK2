@@ -2,6 +2,15 @@
 2017
 ====
 
+2017.008
+* Both - Fixed issue with factoryMgr.new() - Previously if nil was passed for < x, y > then < centerX, centerY > was used as a default.  This broke some of my standard factories which relied on nil values to mean: 'auto-place'.  From now on, < x, y > values are passed to the factory instances without change.
+* Both - Added ssk.misc.createPieChart() factory
+* Both - Added ssk.misc.genCircleMask() helper
+* Both - Added ssk.misc.pingPong() helper
+* Both - Bug fix (key event autolistener not hooking up)
+* Both - Added table.tokenize() function to create token separated strings from tables (opposite of string.split()).
+* Fixed bug in autolan require() that caused crash when enabling external libraries.
+
 
 2017.007
 * Both - Changed string.startswith to camelCase: string.startsWith

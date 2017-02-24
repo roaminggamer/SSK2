@@ -632,3 +632,16 @@ end
 function table.forEachi( tbl, func )
    for i = 1, #tbl do func( tbl[i], i ) end
 end
+
+
+-- ==
+--    table.tokenize( t [, tok ] ) - Combines all elements in a numerically indexed table into a single string separated by tokens `tok`, where the default token is a comma `,`.
+-- ==
+function table.tokenize( t, tok )
+   tok = tok or ","
+   local out 
+   for i = 1, #t do
+      out = (out) and (out .. tok .. t[i] ) or t[i]
+   end
+   return out
+end

@@ -3,15 +3,13 @@
 -- =============================================================
 -- SSK PRO Loader
 -- =============================================================
---   Last Updated: 07 FEB 2017
--- Last Validated: 07 FEB 2017
+--   Last Updated: 23 FEB 2017
+-- Last Validated: 23 FEB 2017
 -- =============================================================
 -- Development Notes:
 -- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
 -- 2. Add event reflector to PRO
 -- =============================================================
-
-
 
 -- ==
 --    fnn( ... ) - Return first argument from list that is not nil.
@@ -35,7 +33,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = true
 
-ssk.getVersion = function() return "2017.007" end
+ssk.getVersion = function() return "2017.008" end
 
 local initialized = false
 ssk.init = function( params )
@@ -155,9 +153,9 @@ ssk.init = function( params )
 	-- External Libs/Modules (Written by others and used with credit.)
 	-- =============================================================
 	if( params.useExternal ) then
-		_G.ssk.autolan = {}
-		_G.ssk.autolan.client = local_require( "ssk2.external.mydevelopers.autolan.client" )
-		_G.ssk.autolan.server = local_require( "ssk2.external.mydevelopers.autolan.server" )
+		--_G.ssk.autolan = {}
+		--_G.ssk.autolan.client = local_require( "ssk2.external.mydevelopers.autolan.Client" )
+		--_G.ssk.autolan.server = local_require( "ssk2.external.mydevelopers.autolan.Server" )
 		local_require( "ssk2.external.proxy" ) -- Adds "propertyUpdate" events to any Corona display object.; Source unknown
 		local_require( "ssk2.external.wait" ) -- Adapted from Steven Johnson's work (ggcrunchy) https://github.com/ggcrunchy/samples
 		local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives

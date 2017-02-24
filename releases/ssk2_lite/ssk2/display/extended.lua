@@ -21,16 +21,16 @@ local display_newSprite 		= display.newSprite
 -- 2. The listener is supplied in the `visualParams` parameters table.
 --
 local autoRuntimeListeners = { 
+	"accelerometer",
+	"axis",
 	"enterFrame",
 	"mouse",
+	"key",
 }
 
 local autoListeners = {
-	"accelerometer",
-	"axis",
 	"collision",
 	"finalize",
-	"key",
 	"sprite",
 	"tap",
 	"touch",

@@ -98,8 +98,8 @@ end
 -- ==
 function factoryMgr.new( name, group, x, y, params )
 	group = group or display.currentStage
-	x = x or centerX
-	y = y or centerY
+	x = x 
+	y = y 
 	if( not factories[name] ) then 
 		print( "factorMgr.new() - Unknown factory: " .. tostring(name) )
 		return nil 

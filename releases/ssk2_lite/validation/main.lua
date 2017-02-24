@@ -26,3 +26,4 @@ _G.ssk.init( { launchArgs 				= ...,
 
 local composer = require "composer"
 composer.gotoScene( "scenes.home" )
+

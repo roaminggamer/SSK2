@@ -759,6 +759,277 @@ else
    end
 end
 
+-- genCircleMask() - Generate a best fit circular mask and save to system.ResourceDiectory
+-- Inspired by Public Works Released by Rag Dog Studios
+-- http://ragdogstudios.com/2014/02/07/dynamic-pie-charts-with-corona-sdk-graphics-2-0/
+--
+-- This feature cannot be used in a live app w/o visual artifacts (blips), because:
+-- > It creates a circle in the center of the screen,
+-- > It waits one frame,
+-- > It saves that circle as a mask file, and then
+-- > It deletes the object.
+--
+-- This is meant to be used when you are writing your game to generate decent masks when you don't 
+-- want to make them in an art program.
+--
+function misc.genCircleMask( size, name )
+	size = size or 64
+	size = size - 4 -- account for stroke width
+	name = name or "mask.png"
+	local circle = display.newCircle( 0, 0, size/2 )
+	-- Smooth jagged stroke by using image fill instead of (default) generated stroke
+	circle.stroke = { type = "image", filename = "ssk2/fillW.png" }
+	circle.strokeWidth = 2
+	circle:setFillColor(1,1,1)
+
+	local maskGroup = display.newGroup()
+	maskGroup.x = centerX
+	maskGroup.y = centerY
+
+	local mw = 1
+	local mh = 1
+
+	-- algorithmcally discover (best fit for mask)
+	while( mw < circle.contentWidth ) do mw = mw * 2; end
+	while( mh < circle.contentHeight ) do mh = mh * 2; end
+
+	-- Create black 'background' for mask	
+	local tmp = display.newRect( maskGroup, 0, 0, mw, mh )
+	tmp:setFillColor(0,0,0)
+
+	-- Add the circle maskGroup
+	maskGroup:insert( circle )
+
+	nextFrame( 
+		function()
+			display.save( maskGroup, name )
+			display.remove( maskGroup )
+		end )
+
+	-- EFM: Possible to handle this better?
+	if( ( display.contentWidth ~= display.actualContentWidth ) or
+		 ( display.contentHeight~= display.actualContentHeight ) ) then
+		print("WARNING: ssk.misc.genCircleMask() - Device resolution must match config.lua to ensure a valid mask is produced.")
+	end		
+end
+-- genCircleMask() - Generate a best fit circular mask and save to system.ResourceDiectory
+-- Inspired by Public Works Released by Rag Dog Studios
+-- http://ragdogstudios.com/2014/02/07/dynamic-pie-charts-with-corona-sdk-graphics-2-0/
+--
+-- The RagDog studios version has/had these differences:
+-- > It generated a mask on the fly.  While this will still work, the orignial code must be modified
+--   to generate the mask in one frame and use it in the next or it will fail to work as expected.
+-- > It used the idea of percentages for each slice (original usage was in business apps).
+--   This version takes either percentages or degrees (do not mix them).  If you supply degrees, it will convert them to percentages internally
+--   to take advantage of the original algorithm.  This makes the utility a little more flexible for those of us who think of pie charts as angular wedges.
+--
+function misc.createPieChart( group, x, y, params )
+	group = group or display.currentStage
+	x = x or centerX
+	y = y or centerY
+
+	local slices
+	params = params or 
+	{
+		slices = 
+		{
+			{ degrees = 120, color = _R_ },
+			{ degrees = 120, color = _G_ },
+			{ degrees = 120, color = _B_ },
+		},
+		mask = "mask.png",
+		radius = 100
+  	}
+
+  	-- Ensure the params we need are present and correct
+  	params.radius = params.radius or (params.size or 100)/2  	
+  	params.size = params.size or (2 * params.radius)
+  	if( not params.maskWidth ) then
+  		if( params.maskSize ) then
+  			params.maskWidth = params.maskSize / 2
+  		else
+  			params.maskWidth = params.radius * 2
+  		end
+  	end
+  	if( not params.maskHeight ) then
+  		if( params.maskSize ) then
+  			params.maskHeight = params.maskSize / 2
+  		else
+  			params.maskHeight = params.radius * 2
+  		end
+  	end
+
+  	-- Create a group to contain the chart parts, and act as the chart object
+	local chart = display.newGroup()
+	group:insert( chart )
+	chart.x = x
+	chart.y = y
+
+	local slices = table.deepCopy( params.slices )
+
+	-- Convert degrees to percentage if 'degrees' were used
+	if( slices[1].degrees ) then
+		for i = 1, #slices do
+			slices[i].percentage = 100.0 * slices[i].degrees / 360.0
+		end
+	end
+
+	-- Localize and Prep variables for subsquent calculations
+	-- Gives us slight speed up and makes writing the code easier/
+	local mSin, mCos = math.sin, math.cos
+	local toRad = math.pi/180
+	local currAngle = -90
+	local strokesSlices = {}
+
+	-- Clean the perentages to make sure the total is exactly 99.99 
+	-- Tip: We do this, because 100.0 will generate an error from newPolygon due to overlapping  first and last vertex
+	for i = #slices, 1, -1 do
+		if( slices[i].percentage <= 0 ) then
+			table.remove(slices, i)
+		elseif( slices[i].percentage == 100 ) then
+			slices[i].percentage = params.altMax or 99.9 -- If you get an error from the newPolygon, try supplying a smaller size like 99.85, 99.8, ...
+		end
+	end
+
+	for i = 1, #slices do
+		local newAngle = slices[i].percentage * 360 * (params.sliceMultiplier or 0.01)
+		local midAngle1, midAngle2
+		local shape
+		if( newAngle > 180 ) then
+			newAngle = currAngle+newAngle
+			midAngle1 = currAngle+(newAngle-180-currAngle) * 0.5
+			midAngle2 = midAngle1+(newAngle-90-midAngle1) * 0.5
+			midAngle3 = midAngle2+(newAngle-90-midAngle2) * 0.5
+			midAngle4 = midAngle3+(newAngle-midAngle3) * 0.5
+			shape = 
+				{ 	
+					0, 0, 
+					mCos(currAngle*toRad) * params.radius * 2, mSin(currAngle * toRad) * params.radius * 2, 
+					mCos(midAngle1 * toRad) * params.radius * 2, mSin(midAngle1 * toRad) * params.radius * 2, 
+					mCos(midAngle2 * toRad) * params.radius * 2, mSin(midAngle2 * toRad) * params.radius * 2, 
+					mCos(midAngle3 * toRad) * params.radius * 2, mSin(midAngle3 * toRad) * params.radius * 2, 
+					mCos(midAngle4 * toRad) * params.radius * 2, mSin(midAngle4 * toRad) * params.radius * 2, 
+					mCos(newAngle * toRad) * params.radius * 2, mSin(newAngle * toRad) * params.radius * 2 
+				}
+		else
+			newAngle = currAngle+newAngle
+			midAngle1 = currAngle+(newAngle-currAngle) * 0.5
+			shape = 
+				{
+					0, 0, 
+					mCos(currAngle * toRad) * params.radius * 2, mSin(currAngle * toRad) * params.radius * 2, 
+					mCos(midAngle1 * toRad) * params.radius * 2, mSin(midAngle1 * toRad) * params.radius * 2,
+					mCos(newAngle * toRad) * params.radius * 2, mSin(newAngle * toRad) * params.radius * 2 }
+		end
+		currAngle = newAngle
+
+		local slice = display.newPolygon( chart, 0, 0, shape )
+		slice:setFillColor(unpack(slices[i].color))
+		slice.stroke = { type = "image", filename = "ssk2/fillW.png" }
+		slice.strokeWidth = params.altStrokeWidth or 2
+		-- Tip: altStrokeColor can be used to cool effect (see SSK2 validation example)
+		slice:setStrokeColor(unpack(params.altStrokeColor or slices[i].color))
+
+		local lowerPointX, higherPointX, lowerPointY, higherPointY = 10000, -10000, 10000, -10000
+		for i = 1, #shape, 2 do
+			if shape[i] < lowerPointX then
+				lowerPointX = shape[i]
+			end
+			if shape[i] > higherPointX then
+				higherPointX = shape[i]
+			end
+			if shape[i+1] < lowerPointY then
+				lowerPointY = shape[i+1]
+			end
+			if shape[i+1] > higherPointY then
+				higherPointY = shape[i+1]
+			end
+		end
+
+		slice.x = lowerPointX + (higherPointX-lowerPointX) * 0.5
+		slice.y = lowerPointY + (higherPointY-lowerPointY) * 0.5
+	end
+
+	-- Tip: noMask can be used to cool effect (see SSK2 validation example)
+	if( not params.noMask ) then
+		local base = params.maskBase or system.ResourceDiectory
+      local mask = graphics.newMask( params.mask or "mask.png", base )
+      chart:setMask(mask);        
+      chart.maskScaleX = params.size/params.maskWidth
+      chart.maskScaleY = params.size/params.maskHeight
+	end
+	
+	return chart
+end	
+
+--
+-- Make an object ping-pong back and forth between to arbitrary points 
+--
+function misc.pingPong( obj, params )	
+	params = params or {}
+	--
+	-- Forward Declare Ping/Pong Functions
+	local pingF
+	local pongF
+	--
+	-- Prep defaults for ping/pong definitions	
+	local ping 			= params.ping or { x = obj.x - 100 }
+	local pong 			= params.pong or { x = obj.x + 100 }
+	local tag = params.tag or "pingpong" 
+	local firstTime = params.firstTime
+	ping.time = ping.time or params.time or 1000
+	ping.delay = ping.delay or params.delay 
+	ping.transition = ping.transition or params.transition
+	pong.time = pong.time or params.time or 1000
+	pong.delay = pong.delay or params.delay
+	pong.transition = pong.transition or params.transition
+
+	--
+	-- Create special 'first' ping/pong records for first transition
+	-- (Note, only one will be used)
+	local firstPing 
+	local firstPong
+	if( params.first == "pong" ) then
+		firstPong = table.deepCopy( pong )
+		firstPong.time = (firstTime) and firstTime or firstPong.time/2
+		firstPong.delay = 0
+	else
+		firstPing = table.deepCopy( ping )
+		firstPing.time = (firstTime) and firstTime or firstPing.time/2
+		firstPing.delay = 0
+	end
+
+	--
+	-- Ping/Pog onComplete Listener definitions
+	pingF = function( self, isFirst )
+		if( isFirst ) then
+			transition.to( self, firstPing )
+		else
+			transition.to( self, ping )
+		end
+	end
+	pongF = function( self, isFirst )		
+		if( isFirst ) then
+			transition.to( self, firstPong )
+		else
+			transition.to( self, pong )
+		end
+	end
+
+	-- Attach onComplete listeners to ping/pong definitions
+	ping.onComplete = pongF
+	pong.onComplete = pingF
+	--
+	-- Start it up
+	if( params.first == "pong" ) then
+		firstPong.onComplete = pingF
+		pongF( obj, true )		
+	else
+		firstPing.onComplete = pongF
+		pingF( obj, true )		
+	end
+end
+
 
 -- ========================================================================
 
