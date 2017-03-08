@@ -62,13 +62,38 @@ function factory.new( group, x, y, params )
 	local scoreVariable = params.scoreVariable or "score"
 
 	--
-	-- Label
+	-- Label(s)
 	--
-	local hud = easyIFC:quickLabel( group, common[scoreVariable], x, y, 
-		                             params.font or ssk.gameFont,
-		                             params.fontSize or 48,
-		                             params.color or _W_ )
+	local hud
+	if( params.prefix ) then
+		local prefixLabel = 
+		easyIFC:quickLabel( group, params.prefix, x, y, 
+                          params.font or ssk.gameFont,
+                          params.fontSize or 48,
+                          params.color or _W_,
+                          params.prefixAnchor or 0.5 )
+
+
+		hud = easyIFC:quickLabel( group, common[scoreVariable], x + 
+			                       (1-(params.prefixAnchor or 0.5)) * prefixLabel.contentWidth, y, 
+	                             params.font or ssk.gameFont,
+	                             params.fontSize or 48,
+	                             params.color or _W_, 0 )
+
+	else
+		hud = easyIFC:quickLabel( group, common[scoreVariable], x, y, 
+	                             params.font or ssk.gameFont,
+	                             params.fontSize or 48,
+	                             params.color or _W_ )
+	end
 	hud.lastScore = common[scoreVariable]
+
+	local formatStr 
+	if( params.decimals ) then
+		formatStr = "%" .. params.decimals .. "." .. params.decimals .. "d"
+		hud.text = string.format( formatStr, common[scoreVariable] )
+	end
+
 
 	-- 
 	-- Update score text every frame 
@@ -82,7 +107,13 @@ function factory.new( group, x, y, params )
 		-- 
 		-- Update the score text
 		--
-		self.text = tostring(common[scoreVariable])
+		if( formatStr ) then
+			self.text = string.format( formatStr, common[scoreVariable] )
+		else			
+			self.text = tostring(common[scoreVariable])			
+		end
+
+		
 
 		--
 		-- Track new score

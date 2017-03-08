@@ -84,10 +84,19 @@ end
 function factory.new( group, x, y, params )
 	params = params or { }
 
+	local minFireX = params.minFireX or left
+	local maxFireX = params.maxFireX or right
+
+	continousFire = fnn(params.continousFire, continousFire)
+	local bulletRadius = params.bulletRadius or 7
+	local bulletSize = params.bulletSize or bulletRadius * 2
+
+
+
 	local bullets = {}
 
 	if( bulletLimit ) then
-		common.count = bulletLimit - table.count( bullets )
+		common.bullets = bulletLimit - table.count( bullets )
 	end
 
 	-- Create player 
@@ -95,12 +104,15 @@ function factory.new( group, x, y, params )
 		{ size = params.size or 40 , alpha = 1, curAmmo = "bullets", targetAngle = 0, isVisible = false }, 
 		{ radius = 18,  calculator = myCC, colliderName = "player", bodyType = "static" } )
 
-
 	--
 	-- Move Player to Touch and Fire (test w/ and w/ autoFire)
 	--
 	function player.onOneTouch( self, event )
-		self.x = event.x
+		local x = event.x
+		x = ( x < minFireX ) and minFireX or x
+		x = ( x > maxFireX ) and maxFireX or x
+		self.x = x
+
 		if( continousFire ) then
 			player.isFiring = ( event.phase ~= "ended" )
 		else
@@ -118,23 +130,34 @@ function factory.new( group, x, y, params )
 	end
 
 	function player.fireBullet( self )
-		if( bulletLimit and table.count(bullets) > bulletLimit ) then return end
+		if( bulletLimit and table.count(bullets) >= bulletLimit ) then return end
 
 		local curTime = getTimer()
 		local dt = curTime - self.lastFireTime
-		if( dt >= firePeriod ) then			
+		if( dt >= firePeriod ) then	
+
+			self.lastFireTime		 = curTime
 			
 			local vec = angle2Vector( self.rotation, true )	
 			local vec2 = scaleVec( vec, self.width/2 )
 			vec = scaleVec( vec, bulletVelocity )
 
-			
-			local bullet = newCircle( self.parent, self.x + vec2.x, self.y + vec2.y, 
-												{ size = 14, fill = _Y_, collision = onCollision }, 
-												{ radius = 8,  calculator = myCC, colliderName = "bullet",
-													bounce = 1 } )
+			local bulletY = params.fireY or  self.y
+			local bullet
+
+			if( bulletImg ) then
+				bullet = newImageRect( self.parent, self.x + vec2.x, bulletY, bulletImg,
+													{ size = bulletSize, fill = _Y_, collision = onCollision }, 
+													{ radius = bulletRadius,  calculator = myCC, colliderName = "bullet",
+														bounce = 1 } )
+			else
+				bullet = newCircle( self.parent, self.x + vec2.x, bulletY, 
+													{ size = bulletSize, fill = _Y_, collision = onCollision }, 
+													{ radius = bulletRadius,  calculator = myCC, colliderName = "bullet",
+														bounce = 1 } )
+			end
 			bullets[bullet] = bullet
-			common.count = bulletLimit - table.count( bullets )
+			common.bullets = bulletLimit - table.count( bullets )
 
 			bullet.rotation = self.rotation
 			bullet:setLinearVelocity(vec.x, vec.y)
@@ -144,7 +167,7 @@ function factory.new( group, x, y, params )
 				bullets[self] = nil
 				print("bulletCount", table.count(bullets))
 				display.remove( self )
-				common.count = bulletLimit - table.count( bullets )
+				common.bullets = bulletLimit - table.count( bullets )
 			end
 
 			bullet.timer = bullet.destroy

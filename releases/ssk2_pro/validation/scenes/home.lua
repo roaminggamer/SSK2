@@ -124,6 +124,8 @@ if( ssk.__isPro ) then examples[#examples+1] = { "Tiled Loader Test #1", "tests.
    examples[#examples+1] = { "Various -  Misc: Pie Chart", "tests.various.018_pie_chart" }
    examples[#examples+1] = { "Various -  Misc: Ping Pong", "tests.various.019_ping_pong" }
 
+   examples[#examples+1] = { "Various -  Pex Loader", "tests.various.020_pex" }
+
    --runLast = true
 
    --print(#examples)

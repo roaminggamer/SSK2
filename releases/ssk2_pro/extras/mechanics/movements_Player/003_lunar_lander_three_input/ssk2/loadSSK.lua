@@ -147,8 +147,9 @@ ssk.init = function( params )
 		local_require "ssk2.files"
 		local_require "ssk2.tiledLoader"
 		local_require "ssk2.easyPositioner"
+		local_require "ssk2.adHelpers.adHelpers"
 	end
-
+	
 	-- =============================================================
 	-- External Libs/Modules (Written by others and used with credit.)
 	-- =============================================================

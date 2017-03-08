@@ -387,8 +387,8 @@ function misc.addSmartTouch( obj, params )
 			display.currentStage:setFocus( self, id )
 			if( params.toFront ) then self:toFront() end
 			if( params.listener ) then
-				return params.listener( self, event )
-			end
+				return params.listener( self, event ) or fnn(params.retval,false)
+			end			
 		elseif( self.isFocus ) then
 			event.inBounds = isInBounds( event, self )
 			if( phase == "ended" or phase == "cancelled" ) then
@@ -396,11 +396,11 @@ function misc.addSmartTouch( obj, params )
 				display.currentStage:setFocus( self, nil )
 			end
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
 		end
 		if( params.listener ) then
-			return params.listener( self, event )
+			return params.listener( self, event ) or fnn(params.retval,false)
 		else
 			return fnn(params.retval,false)
 		end		
@@ -429,7 +429,7 @@ function misc.addSmartDrag( obj, params )
 			end
 			post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = 0, dy = 0, time = getTimer(), target = self } )
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end						
 		elseif( self.isFocus ) then
 			local dx = event.x - event.xStart
@@ -458,11 +458,11 @@ function misc.addSmartDrag( obj, params )
 				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
 			end
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
 		end
 		if( params.listener ) then
-			return params.listener( self, event )
+			return params.listener( self, event ) or fnn(params.retval,false)
 		else
 			return fnn(params.retval,false)
 		end		
@@ -983,6 +983,8 @@ function misc.pingPong( obj, params )
 	pong.time = pong.time or params.time or 1000
 	pong.delay = pong.delay or params.delay
 	pong.transition = pong.transition or params.transition
+	ping.tag = ping.tag or tag
+	pong.tag = pong.tag or tag
 
 	--
 	-- Create special 'first' ping/pong records for first transition

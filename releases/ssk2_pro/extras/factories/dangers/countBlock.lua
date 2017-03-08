@@ -76,7 +76,7 @@ function factory.new( group, x, y, params )
 	local size = params.size or 80
 	local danger = newRect( group, x, y, 		
 		                     	{	size = size, fill = _T_, stroke = params.color or _R_, 
-		                     	   strokeWidth = 2,
+		                     	   strokeWidth = params.strokeWidth or 2,
 		                     	   myCount = params.count or 1 },
 		                        {	bodyType = "kinematic",
 		                           isSleepingAllowed = false,

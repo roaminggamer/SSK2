@@ -2,6 +2,9 @@
 2017
 ====
 
+2017.009 
+* Both - Fixed bug in pex.lua where particle emitter was not added to (passed) group.
+
 2017.008
 * Both - Fixed issue with factoryMgr.new() - Previously if nil was passed for < x, y > then < centerX, centerY > was used as a default.  This broke some of my standard factories which relied on nil values to mean: 'auto-place'.  From now on, < x, y > values are passed to the factory instances without change.
 * Both - Added ssk.misc.createPieChart() factory

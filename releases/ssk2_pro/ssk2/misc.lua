@@ -387,8 +387,9 @@ function misc.addSmartTouch( obj, params )
 			display.currentStage:setFocus( self, id )
 			if( params.toFront ) then self:toFront() end
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
+			print( "bogies", params.retval )
 		elseif( self.isFocus ) then
 			event.inBounds = isInBounds( event, self )
 			if( phase == "ended" or phase == "cancelled" ) then
@@ -396,11 +397,12 @@ function misc.addSmartTouch( obj, params )
 				display.currentStage:setFocus( self, nil )
 			end
 			if( params.listener ) then
-				return params.listener( self, event )
+				print("DOIT", phase)
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
 		end
 		if( params.listener ) then
-			return params.listener( self, event )
+			return params.listener( self, event ) or fnn(params.retval,false)
 		else
 			return fnn(params.retval,false)
 		end		
@@ -429,7 +431,7 @@ function misc.addSmartDrag( obj, params )
 			end
 			post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = 0, dy = 0, time = getTimer(), target = self } )
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end						
 		elseif( self.isFocus ) then
 			local dx = event.x - event.xStart
@@ -458,11 +460,11 @@ function misc.addSmartDrag( obj, params )
 				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
 			end
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
 		end
 		if( params.listener ) then
-			return params.listener( self, event )
+			return params.listener( self, event ) or fnn(params.retval,false)
 		else
 			return fnn(params.retval,false)
 		end		
