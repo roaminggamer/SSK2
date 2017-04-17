@@ -556,7 +556,7 @@ function buttons:newButton( parentGroup, params )
       if( self.toggledImg ) then doOffsetColor = false end
 
       if(self.touchOffset) then
-         print(self.x0)
+         --print(self.x0)
          local xOffset = self.touchOffset[1] or self.x
          local yOffset = self.touchOffset[2] or self.y
          if(doOffsetColor) then                  
@@ -651,7 +651,7 @@ function buttons:newButton( parentGroup, params )
    buttonInstance.y0 = buttonInstance.y
 
    function buttonInstance:resetStartPosition()
-      print(self.x, self.y)
+      --print(self.x, self.y)
       self.x0 = self.x
       self.y0 = self.y
    end

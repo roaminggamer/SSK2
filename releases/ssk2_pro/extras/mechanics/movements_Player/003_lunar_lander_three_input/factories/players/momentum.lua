@@ -25,7 +25,7 @@ local easyIFC = ssk.easyIFC;local persist = ssk.persist
 --
 -- Common SSK Helper Functions
 local isValid = display.isValid;local isInBounds = ssk.easyIFC.isInBounds
-local normRot = ssk.misc.normRot;local easyAlert = ssk.misc.easyAlert
+local normRot = math.normRot;local easyAlert = ssk.misc.easyAlert
 
 local movep = ssk.actions.movep
 

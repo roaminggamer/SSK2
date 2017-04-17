@@ -26,7 +26,7 @@
 -- =============================================================
  function transition.color( obj, params )
  	params = params or {}
- 	table.dump(params)
+ 	--table.dump(params)
  	local fromColor 	= params.fromColor or _W_
  	local toColor 		= params.toColor or _W_
  	local time 			= params.time or 1000

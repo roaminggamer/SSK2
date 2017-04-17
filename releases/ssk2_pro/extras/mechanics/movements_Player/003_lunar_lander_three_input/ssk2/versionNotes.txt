@@ -2,11 +2,21 @@
 2017
 ====
 
+2017.010
+* Both - New math.* extension: math.isOdd()
+* Both - New math.* extension: math.isEven()
+
+
 2017.009 
 * Both - Fixed bug in pex.lua where particle emitter was not added to (passed) group.
 * Both - Fixed bug with optional `retval` for misc.smartTouch and misc.smartDrag.
-* PRO - Added Ad helpers modules for: admob, applovin, house ads, inmobi, mediabrix, revmob, and vungle
 * Both - Fixed pingPong tag bug.  Common tag name not propogated to ping/pong transitions.
+* Both - Added delay parameter to ssk.misc.easyShake()
+* PRO - Added Ad helpers modules for: admob, applovin, house ads, inmobi, mediabrix, revmob, and vungle (not documented yet)
+* PRO - Fixed bug where Android rating calls crashed.
+* PRO - Fixed social.* docs. 
+* PRO - Added composer.* swipe extension (still work in progress so may change before final release.)
+* PRO - Modified debug output levels for soundMgr to make it less verbose during normal use.
 
 2017.008
 * Both - Fixed issue with factoryMgr.new() - Previously if nil was passed for < x, y > then < centerX, centerY > was used as a default.  This broke some of my standard factories which relied on nil values to mean: 'auto-place'.  From now on, < x, y > values are passed to the factory instances without change.

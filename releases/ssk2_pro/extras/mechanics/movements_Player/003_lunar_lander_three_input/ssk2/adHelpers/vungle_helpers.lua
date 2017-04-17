@@ -34,6 +34,10 @@ end
 
 local vungle_helpers = {}
 
+function vungle_helpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
+end
+
 -- Place to store phase callback records [see: vungle_helpers.setPhaseCB()]
 --
 local phaseCallbacks = {}

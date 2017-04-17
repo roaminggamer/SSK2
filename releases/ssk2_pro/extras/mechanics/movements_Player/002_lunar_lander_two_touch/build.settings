@@ -9,7 +9,7 @@
 -- https://docs.coronalabs.com/daily/guide/distribution/osxBuild/index.html
 -- =============================================================
 
-local orientation = 'landscapeRight' -- portrait, landscapeRight, ...
+local orientation = 'portrait' -- portrait, landscapeRight, ...
 
 
 settings = {

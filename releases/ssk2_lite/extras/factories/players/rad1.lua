@@ -43,6 +43,7 @@ local initialized = false
 
 local debugEn 				= true
 
+local initialDifficulty = 1
 local difficulty 			= 1
 
 local diffMult 			= 1
@@ -72,6 +73,7 @@ local vCur 					= vBase
 -- =============================================================
 local moves = "horiz"
 local isInteractive = true
+local wrapRect
 local setDifficulty
 -- =============================================================
 -- Factory Module Begins
@@ -87,7 +89,14 @@ function factory.init( params )
 	moves = params.moves or "horiz"
 	isInteractive = fnn(params.isInteractive, isInteractive)
 
-	setDifficulty(1)
+	rotRate_initial = params.rotRate or rotRate_initial
+	vBase_initial = params.vBase or vBase_initial
+	vDelta_initial = params.vDelta or vDelta_initial
+	vIncr_initial = params.vIncr or vIncr_initial
+	vIncr2_initial = params.vIncr2 or vIncr2_initial
+	initialDifficulty = params.initialDifficulty or initialDifficulty
+
+	setDifficulty(initialDifficulty)
 
 	initialized = true
 end
@@ -107,10 +116,10 @@ function factory.new( group, x, y, params )
 
 	-- Create player 
 	local player = newImageRect( group, x, y, "images/misc/arrow.png",
-		{ 	w = 40, h = 40, alpha = 1, myColor = myColor, fill = common.colors.green, 
+		{ 	w = params.size or 40, h = params.size or 40, alpha = 1, myColor = myColor, fill = common.colors.green, 
 		  dA = 0 }, 
-		{	isFixedRotation = false, radius = 18, gravityScale = 0,
-		   density = 1, linearDamping = 1, 
+		{	isFixedRotation = false, radius = (params.size or 40)/2 - 2, gravityScale = 0,
+		   density = 1, linearDamping = 1, friction = 0,
 			calculator = myCC, colliderName = "player" } )
 
 
@@ -121,7 +130,10 @@ function factory.new( group, x, y, params )
 		local phase = event.phase
 		local isPlatform = (event.other.colliderName == "platform")
 
-		if( phase == "began" ) then
+		if( phase == "ended" ) then
+			self:setFillColor(unpack(_W_))
+		elseif( phase == "began" ) then
+			self:setFillColor(unpack(_R_))
 
 			--
 			-- If it is a coin,
@@ -144,7 +156,7 @@ function factory.new( group, x, y, params )
 			-- 3. Dipatch a sound event to play coin sound (if it was set up)
 			-- 4. Dispatch a 'player died' event.
 			--
-			if( other.colliderName == "wall" ) then
+			if( other.colliderName == "wall" and self.stopCamera ) then
 				self:stopCamera()
 				display.remove( self )
 				post("onDied" )
@@ -256,6 +268,11 @@ function factory.new( group, x, y, params )
 		vec = scaleVec( vec, vCur )
 		self:setLinearVelocity( vec.x, vec.y )
 
+		if( moves == "asteroids" and wrapRect ) then
+			ssk.actions.scene.rectWrap( self, wrapRect )
+		end
+
+
 		--self:drawTrail()
 	end
 	listen( "enterFrame", player )
@@ -263,10 +280,14 @@ function factory.new( group, x, y, params )
 	--
 	-- Start tracking the player with the camera (ignore movement in y-axis)
 	--
-	if( params.moves == "horiz" ) then
+	if( moves == "horiz" ) then
 		ssk.camera.tracking( player, params.world, { lockY = true } )		
-	else
+	elseif( moves == "vert" ) then
 		ssk.camera.tracking( player, params.world, { lockX = true } )		
+	elseif( moves == "asteroids" ) then
+		wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + (params.size or 40), h = fullh + (params.size or 40)} )
+		--wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + 2 * (params.size or 40), h = fullh + 2 * (params.size or 40)} )
+		--wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw, h = fullh } )
 	end
 
 	--

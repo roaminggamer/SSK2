@@ -299,7 +299,7 @@ end
 -- Easy Shake
 --
 -- Derived from this: http://forums.coronalabs.com/topic/53736-simple-shake-easing-code-and-demo/
-misc.easyShake = function( obj, amplitude, time )
+misc.easyShake = function( obj, amplitude, time, delay )
 	obj = obj or display.currentStage
 	amplitude = amplitude or 100
 	time = time or 1000
@@ -319,7 +319,7 @@ misc.easyShake = function( obj, amplitude, time )
 		obj.x = obj._shakeX0
 		obj.y = obj._shakeY0
 	end
-	transition.to(obj , {time = time, x = obj.x, y = obj.y, transition = shakeEasing, onComplete = onComplete } ) -- use the displayObjects current x and y as parameter
+	transition.to(obj , {time = time, x = obj.x, y = obj.y, delay = delay, transition = shakeEasing, onComplete = onComplete } ) -- use the displayObjects current x and y as parameter
 end
 
 -- Easy alert popup
@@ -387,8 +387,8 @@ function misc.addSmartTouch( obj, params )
 			display.currentStage:setFocus( self, id )
 			if( params.toFront ) then self:toFront() end
 			if( params.listener ) then
-				return params.listener( self, event )
-			end
+				return params.listener( self, event ) or fnn(params.retval,false)
+			end			
 		elseif( self.isFocus ) then
 			event.inBounds = isInBounds( event, self )
 			if( phase == "ended" or phase == "cancelled" ) then
@@ -396,11 +396,11 @@ function misc.addSmartTouch( obj, params )
 				display.currentStage:setFocus( self, nil )
 			end
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
 		end
 		if( params.listener ) then
-			return params.listener( self, event )
+			return params.listener( self, event ) or fnn(params.retval,false)
 		else
 			return fnn(params.retval,false)
 		end		
@@ -429,7 +429,7 @@ function misc.addSmartDrag( obj, params )
 			end
 			post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = 0, dy = 0, time = getTimer(), target = self } )
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end						
 		elseif( self.isFocus ) then
 			local dx = event.x - event.xStart
@@ -458,11 +458,11 @@ function misc.addSmartDrag( obj, params )
 				post("onDragged", { obj = self, phase = event.phase, x = event.x, y = event.y, dx = dx, dy = dy, time = getTimer(), target = self } )
 			end
 			if( params.listener ) then
-				return params.listener( self, event )
+				return params.listener( self, event ) or fnn(params.retval,false)
 			end
 		end
 		if( params.listener ) then
-			return params.listener( self, event )
+			return params.listener( self, event ) or fnn(params.retval,false)
 		else
 			return fnn(params.retval,false)
 		end		
@@ -983,6 +983,8 @@ function misc.pingPong( obj, params )
 	pong.time = pong.time or params.time or 1000
 	pong.delay = pong.delay or params.delay
 	pong.transition = pong.transition or params.transition
+	ping.tag = ping.tag or tag
+	pong.tag = pong.tag or tag
 
 	--
 	-- Create special 'first' ping/pong records for first transition

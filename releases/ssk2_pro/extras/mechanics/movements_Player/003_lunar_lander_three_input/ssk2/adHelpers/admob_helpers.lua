@@ -47,6 +47,11 @@ end
 
 local admob_helpers = {}
 
+function admob_helpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
+end
+
+
 
 -- Place to store phase callback records [see: admob_helpers.setPhaseCB()]
 --
@@ -249,13 +254,19 @@ function admob_helpers.showBanner( position, targetingOptions )
    ads:setCurrentProvider("admob")
 
    -- Configure the banner ad parameters
-   local xPos, yPos
+   local xPos, yPos = display.screenOriginX, display.contentCenterY - display.actualContentHeight/2
    local params
-   if( position == "top" ) then
-      xPos, yPos = display.screenOriginX, display.contentCenterY - display.actualContentHeight/2
+   if( type(position) == "string" ) then
+      if( position == "top" ) then
+         xPos, yPos = display.screenOriginX, display.contentCenterY - display.actualContentHeight/2
+      else
+         xPos, yPos = display.screenOriginX, display.contentCenterY + display.actualContentHeight/2
+      end
    else
-      xPos, yPos = display.screenOriginX, display.contentCenterY + display.actualContentHeight/2
+      xPos = position.xPos
+      yPos = position.yPos
    end
+
 
    if( onAndroid ) then
       params = 

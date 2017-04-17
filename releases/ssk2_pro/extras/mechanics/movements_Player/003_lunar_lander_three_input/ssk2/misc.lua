@@ -299,7 +299,7 @@ end
 -- Easy Shake
 --
 -- Derived from this: http://forums.coronalabs.com/topic/53736-simple-shake-easing-code-and-demo/
-misc.easyShake = function( obj, amplitude, time )
+misc.easyShake = function( obj, amplitude, time, delay )
 	obj = obj or display.currentStage
 	amplitude = amplitude or 100
 	time = time or 1000
@@ -319,7 +319,7 @@ misc.easyShake = function( obj, amplitude, time )
 		obj.x = obj._shakeX0
 		obj.y = obj._shakeY0
 	end
-	transition.to(obj , {time = time, x = obj.x, y = obj.y, transition = shakeEasing, onComplete = onComplete } ) -- use the displayObjects current x and y as parameter
+	transition.to(obj , {time = time, x = obj.x, y = obj.y, delay = delay, transition = shakeEasing, onComplete = onComplete } ) -- use the displayObjects current x and y as parameter
 end
 
 -- Easy alert popup

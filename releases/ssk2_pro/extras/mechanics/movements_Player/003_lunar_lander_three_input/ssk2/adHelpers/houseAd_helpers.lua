@@ -70,6 +70,12 @@ end
 
 local houseAdHelpers = {}
 
+
+function houseAdHelpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
+end
+
+
 local currentAd
 
 local bannerAds = {}

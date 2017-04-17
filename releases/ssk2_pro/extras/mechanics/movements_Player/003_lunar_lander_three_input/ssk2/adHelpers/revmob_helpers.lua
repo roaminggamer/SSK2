@@ -52,6 +52,11 @@ end
 
 local revmob_helpers = {}
 
+function revmob_helpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
+end
+
+
 -- Place to store phase callback records [see: revmob_helpers.setPhaseCB()]
 --
 local phaseCallbacks = {}

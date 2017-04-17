@@ -27,13 +27,18 @@ local mediaBrix = require( "plugin.mediaBrix" )
 
 local lastID -- Set 'on show' to simplify call to hide
 
-local mediabrix_helpers = {}
-
 local debugLevel = 0
 local function dPrint( level, ... )
    if( level <= debugLevel ) then
       print( unpack( arg ) )
    end
+end
+
+
+local mediabrix_helpers = {}
+
+function mediabrix_helpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
 end
 
 

@@ -20,6 +20,15 @@ local mAtan2 = math.atan2
 local mPi = math.pi
 
 
+function math.isOdd(num) 	
+	return (num%2 ~= 0)
+end
+function math.isEven(num) 	
+	return (num%2 == 0)
+end
+
+
+
 function math.normRot( toNorm )
 	if( type(toNorm) == "table" ) then
 		while( toNorm.rotation >= 360 ) do toNorm.rotation = toNorm.rotation - 360 end		

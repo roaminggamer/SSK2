@@ -43,6 +43,10 @@ end
 
 local inmobi_helpers = {}
 
+function inmobi_helpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
+end
+
 
 -- Place to store phase callback records [see: inmobi_helpers.setPhaseCB()]
 --

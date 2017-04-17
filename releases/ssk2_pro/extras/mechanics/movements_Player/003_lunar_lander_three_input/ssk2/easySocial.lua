@@ -44,7 +44,8 @@ function social.rate( params )
 		url = "amzn://apps/android?p=" .. id
 
 	elseif( ssk.system.onAndroid ) then
-		url = "market://details?id=" .. id
+		--url = "market://details?id=" .. id
+		url = "https://play.google.com/store/apps/details?id=" .. id
 	
 	elseif( ssk.system.oniOS ) then		
 		url = "itms-apps://itunes.apple.com/app/id" .. id .. "?onlyLatestVersion=false"
@@ -60,7 +61,14 @@ function social.rate( params )
 			
 	end
 	if( not url ) then return false end
-	system.openURL( url )
+
+
+	if( not system.canOpenURL( url ) ) then
+		print("Warning! - ssk.social.rate() - Cannot Open URL: ", url ) 
+	end
+
+	if( params.debugEn ) then print("ssk.social.rate() - Opening URL: ", url ) end
+	system.openURL( url )	
 	return true
 end
 

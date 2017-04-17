@@ -44,9 +44,11 @@ end
 --
 -- setMaxMusicChannels( max ) 
 --
-function soundMgr.setMaxMusicChannels( max ) 
-	print("WARNING: soundMgr.setMaxMusicChannels( max ) superceded by: soundMgr.setMaxChannels( music, voice )" )
-	print("WARNING: Please call setMaxChannels( music, voice ) instead." )
+function soundMgr.setMaxMusicChannels( max )
+	if( debugLevel > -1 ) then 
+		print("WARNING: soundMgr.setMaxMusicChannels( max ) superceded by: soundMgr.setMaxChannels( music, voice )" )
+		print("WARNING: Please call setMaxChannels( music, voice ) instead." )
+	end
 end
 --
 -- setMaxChannels( music, voice ) 
@@ -194,7 +196,9 @@ function soundMgr.add( name, path, params )
 
 	-- Already exists.  Exit early.
 	if( allSounds[name] ) then 
-		print("Warning: soundMgr.add() - soundMgr.add() name: " .. tostring(name) .. " already exists." )
+		if( debugLevel > -1 ) then 
+			print("Warning: soundMgr.add() - soundMgr.add() name: " .. tostring(name) .. " already exists." )
+		end
 		return false
 	end
 
@@ -400,7 +404,9 @@ local function onSound( event )
 	-- No Record found... abort
 	--
 	if( not record ) then 
-		print("Warning: soundMgr 'onSound' Listener - No record for sound " .. tostring(event.sound) .. " found?")
+		if( debugLevel > -1 ) then 
+			print("Warning: soundMgr 'onSound' Listener - No record for sound " .. tostring(event.sound) .. " found?")
+		end
 		return 
 	end
 
@@ -463,7 +469,9 @@ local function onSound( event )
 			print( "Times:  cur / minTween / last ==> ", curTime, record.minTweenTime, record.lastTime )
 		end
 		if( curTime - record.lastTime < record.minTweenTime ) then			
-			print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " too soon (minTweenTime == " .. tostring(record.minTweenTime) .." ms).  Skipping.")
+			if( debugLevel > -1 ) then 
+				print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " too soon (minTweenTime == " .. tostring(record.minTweenTime) .." ms).  Skipping.")
+			end
 			return
 		end
 	end
@@ -478,14 +486,18 @@ local function onSound( event )
 	elseif( record.soundType == "voice" ) then
 		channel = audio.findFreeChannel( firstVoiceChannel )
 		if( channel >= firstMusicChannel ) then 
-			print( "Warning: soundMgr 'onSound' Listener - No more voice channels available!")
+			if( debugLevel > -1 ) then 
+				print( "Warning: soundMgr 'onSound' Listener - No more voice channels available!")
+			end
 			return 
 		end
 
 	else
 		channel = audio.findFreeChannel( firstEffectChannel )
 		if( channel >= firstVoiceChannel ) then 
-			print( "Warning: soundMgr 'onSound' Listener - No more effect channels available!")
+			if( debugLevel > -1 ) then 
+				print( "Warning: soundMgr 'onSound' Listener - No more effect channels available!")
+			end
 			return 
 		end
 	end	
@@ -495,7 +507,9 @@ local function onSound( event )
 	--if( record.soundType == "music" and table.count( record.playing ) > 0 ) then
 	if( (record.soundType == "music" or record.soundType == "voice") and 
 		 table.count( record.playing ) > 0 ) then
-		print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " (music or voice) and it is already playing.  Skipping.")
+		if( debugLevel > -1 ) then 
+			print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " (music or voice) and it is already playing.  Skipping.")
+		end
 		return		
 	end
 

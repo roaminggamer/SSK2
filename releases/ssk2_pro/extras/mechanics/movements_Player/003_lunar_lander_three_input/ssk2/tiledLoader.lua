@@ -145,6 +145,14 @@ function tiledLoader.new()
 				end
 			end		
 		end
+
+		--
+		-- Attach image path to each record
+		--
+		for i = 1, #oRec do
+			local rec = oRec[i]
+			rec.image = images[rec.gid].image
+		end		
 	end
 
 	--

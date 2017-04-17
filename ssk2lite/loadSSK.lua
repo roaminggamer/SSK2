@@ -11,8 +11,6 @@
 -- 2. Add event reflector to PRO
 -- =============================================================
 
-
-
 -- ==
 --    fnn( ... ) - Return first argument from list that is not nil.
 --    ... - Any number of any type of arguments.
@@ -35,7 +33,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = false
 
-ssk.getVersion = function() return "2017.007" end
+ssk.getVersion = function() return "2017.009" end
 
 local initialized = false
 ssk.init = function( params )
@@ -149,8 +147,9 @@ ssk.init = function( params )
 		local_require "ssk2.files"
 		local_require "ssk2.tiledLoader"
 		local_require "ssk2.easyPositioner"
+		local_require "ssk2.adHelpers.adHelpers"
 	end
-
+	
 	-- =============================================================
 	-- External Libs/Modules (Written by others and used with credit.)
 	-- =============================================================

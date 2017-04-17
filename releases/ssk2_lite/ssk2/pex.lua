@@ -57,6 +57,8 @@ local function pex( group, x, y, data, params )
 	emitter.x = x
 	emitter.y = y	
 
+	group:insert(emitter)
+
 	return emitter, data
 end
 

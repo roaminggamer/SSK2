@@ -98,14 +98,50 @@ end
 -- ==
 function factoryMgr.new( name, group, x, y, params )
 	group = group or display.currentStage
-	x = x 
-	y = y 
 	if( not factories[name] ) then 
 		print( "factorMgr.new() - Unknown factory: " .. tostring(name) )
 		return nil 
 	end
 
 	return factories[name].new( group, x, y, params )
+end
+
+-- =============================================================
+-- Following only needed for editor ready factories
+-- =============================================================
+
+-- ==
+--    newChip( name [, group [, x [, y [, params ]]]] ) - Create new editor GUI chip instance of name factory object,
+--                                           in group, at < x,  y >.
+--                                           Pass optional params table to factory.
+-- ==
+function factoryMgr.newChip( name, group, x, y, params )
+	group = group or display.currentStage
+	x = x 
+	y = y 
+	if( not factories[name] ) then 
+		print( "factorMgr.newChip() - Unknown factory: " .. tostring(name) )
+		return nil 
+	end
+
+	return factories[name].newChip( name, group, x, y, params )
+end
+
+-- ==
+--    newPiece( name [, group [, x [, y [, params ]]]] ) - Create new editor GUI chip instance of name factory object,
+--                                           in group, at < x,  y >.
+--                                           Pass optional params table to factory.
+-- ==
+function factoryMgr.newPiece( name, group, x, y, params )
+	group = group or display.currentStage
+	x = x 
+	y = y 
+	if( not factories[name] ) then 
+		print( "factorMgr.newPiece() - Unknown factory: " .. tostring(name) )
+		return nil 
+	end
+
+	return factories[name].newPiece( name, group, x, y, params )
 end
 
 

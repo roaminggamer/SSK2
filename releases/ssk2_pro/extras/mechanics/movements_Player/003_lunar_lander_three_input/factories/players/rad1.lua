@@ -25,7 +25,7 @@ local easyIFC = ssk.easyIFC;local persist = ssk.persist
 --
 -- Common SSK Helper Functions
 local isValid = display.isValid;local isInBounds = ssk.easyIFC.isInBounds
-local normRot = ssk.misc.normRot;local easyAlert = ssk.misc.easyAlert
+local normRot = math.normRot;local easyAlert = ssk.misc.easyAlert
 
 -- SSK 2D Math Library
 local addVec = ssk.math2d.add;local subVec = ssk.math2d.sub;local diffVec = ssk.math2d.diff
@@ -118,8 +118,8 @@ function factory.new( group, x, y, params )
 	local player = newImageRect( group, x, y, "images/misc/arrow.png",
 		{ 	w = params.size or 40, h = params.size or 40, alpha = 1, myColor = myColor, fill = common.colors.green, 
 		  dA = 0 }, 
-		{	isFixedRotation = false, radius = 18, gravityScale = 0,
-		   density = 1, linearDamping = 1, 
+		{	isFixedRotation = false, radius = (params.size or 40)/2 - 2, gravityScale = 0,
+		   density = 1, linearDamping = 1, friction = 0,
 			calculator = myCC, colliderName = "player" } )
 
 
@@ -130,7 +130,10 @@ function factory.new( group, x, y, params )
 		local phase = event.phase
 		local isPlatform = (event.other.colliderName == "platform")
 
-		if( phase == "began" ) then
+		if( phase == "ended" ) then
+			self:setFillColor(unpack(_W_))
+		elseif( phase == "began" ) then
+			self:setFillColor(unpack(_R_))
 
 			--
 			-- If it is a coin,
@@ -153,7 +156,7 @@ function factory.new( group, x, y, params )
 			-- 3. Dipatch a sound event to play coin sound (if it was set up)
 			-- 4. Dispatch a 'player died' event.
 			--
-			if( other.colliderName == "wall" ) then
+			if( other.colliderName == "wall" and self.stopCamera ) then
 				self:stopCamera()
 				display.remove( self )
 				post("onDied" )

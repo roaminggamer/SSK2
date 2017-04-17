@@ -38,6 +38,12 @@ end
 
 local applovin_helpers = {}
 
+function applovin_helpers.setDebugLevel( newLevel )
+   debugLevel = newLevel or 0 
+end
+
+
+
 -- Place to store phase callback records [see: applovin_helpers.setPhaseCB()]
 --
 local phaseCallbacks = {}

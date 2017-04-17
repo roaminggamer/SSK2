@@ -244,7 +244,7 @@ function game.start( group, params )
 		transition.to( self, { rotation = -60, time = rTime, delay = rDelay, onComplete = self } )
 	end
 
-	local dude = ssk.display.newImageRect( nil, centerX, bottom - 125, "images/dude.png",
+	local dude = ssk.display.newImageRect( nil, centerX, bottom - 125, "images/misc/dude.png",
 														{ size = 75}, 
 														{ bodyType = "kinematic", isSensor = true } )
 
@@ -266,7 +266,7 @@ function game.start( group, params )
 
 	function dude.onOneTouch( self, event )
 		if( event.phase == "began" ) then 
-			local arrow = ssk.display.newImageRect( nil, self.x, self.y, "images/arrow.png",
+			local arrow = ssk.display.newImageRect( nil, self.x, self.y, "images/misc/arrow.png",
 															 { radius = 10, collision = onCollision },
 															 { radius = 10, bounce = 1, friction = 0,
 															   calculator = myCC, colliderName = "arrow", 

@@ -175,6 +175,19 @@ local params =
 mgr:addButtonPreset( "default_play", params )
 
 -- ============================
+-- ======= Pause Button
+-- ============================
+local params = 
+{ 
+	unselImgSrc  = imagePath .. "pause.png",
+	selImgSrc    = imagePath .. "pause.png",
+	w 			 = 128,
+	h 			 = 128,
+	touchOffset  = {1,2},
+}
+mgr:addButtonPreset( "default_pause", params )
+
+-- ============================
 -- ======= Back Button
 -- ============================
 local params = 
@@ -312,4 +325,47 @@ local params =
 	touchOffset  = {1,2},
 }
 mgr:addButtonPreset( "default_home", params )
+
+
+
+-- ============================
+-- ======= Achievements Button
+-- ============================
+local params = 
+{ 
+	unselImgSrc  = imagePath .. "achievements.png",
+	selImgSrc    = imagePath .. "achievements.png",
+	w 			 = 100,
+	h 			 = 100,
+	touchOffset  = {1,2},
+}
+mgr:addButtonPreset( "default_achievements", params )
+
+-- ============================
+-- ======= Leaderboard Button
+-- ============================
+local params = 
+{ 
+	unselImgSrc  = imagePath .. "leaderboard.png",
+	selImgSrc    = imagePath .. "leaderboard.png",
+	w 			 = 100,
+	h 			 = 100,
+	touchOffset  = {1,2},
+}
+mgr:addButtonPreset( "default_leaderboard", params )
+
+
+
+-- ============================
+-- ======= No Ads Button
+-- ============================
+local params = 
+{ 
+	unselImgSrc  = imagePath .. "noads.png",
+	selImgSrc    = imagePath .. "noads.png",
+	w 			 = 100,
+	h 			 = 100,
+	touchOffset  = {1,2},
+}
+mgr:addButtonPreset( "default_noads", params )
 
