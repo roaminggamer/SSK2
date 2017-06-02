@@ -63,7 +63,7 @@ function game.init()
 		                           leftWallPosition = left + 40, 
 		                           rightWallPosition = right - 40 })
 
-	factoryMgr.init( "player", { moves = "vert" } ) 
+	factoryMgr.init( "player", { camera = "vert" } ) 
 
 	factoryMgr.init()
 

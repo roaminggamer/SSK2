@@ -229,7 +229,6 @@ end
 --    table.dumpu( theTable [, padding ] ) - Dumps indexes and values inside single-level table (for debug) (UNSORTED)
 -- ==
 function table.dumpu(theTable, padding, marker )
-   marker = marker or ""
    local padding = padding or 30
    print("\Table Dump:")
    print("-----")
@@ -250,7 +249,7 @@ function table.dumpu(theTable, padding, marker )
    else
       print("empty")
    end
-   print( marker .. "-----\n")
+   print( marker and ( "-----\n" ..marker .. "\n-----" ) or "-----" )
 end
 
 -- ==
@@ -303,7 +302,6 @@ end
 --    
 -- ==
 function table.dump(theTable, padding, marker ) -- Sorted
-   marker = marker or ""
    local theTable = theTable or  {}
    local function compare(a,b)
       return tostring(a) < tostring(b)
@@ -334,7 +332,7 @@ function table.dump(theTable, padding, marker ) -- Sorted
    else
       print("empty")
    end
-   print( marker .. "-----\n")
+   print( marker and ( "-----\n" ..marker .. "\n-----" ) or "-----" )
 end
 
 

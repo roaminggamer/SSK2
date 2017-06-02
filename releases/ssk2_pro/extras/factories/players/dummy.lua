@@ -34,7 +34,7 @@ local movep = ssk.actions.movep
 -- =============================================================
 local initialized = false
 local isInvulnerable = false
-local moves = "horiz"
+local camera = "horiz"
 local isInteractive = true
 
 -- =============================================================
@@ -52,7 +52,7 @@ local factory = {}
 function factory.init( params )
 	params = params or {}
 	if(initialized) then return end
-	moves = params.moves or "horiz"
+	camera = params.camera or "horiz"
 	isInteractive = fnn(params.isInteractive, isInteractive)
 	initialized = true
 	isInvulnerable = fnn( params.invulnerable, isInvulnerable )
@@ -100,7 +100,7 @@ function factory.new( group, x, y, params )
 		-- Maintain forward velocity
 		--
 		local vx, vy = self:getLinearVelocity()
-		if( moves == "horiz" ) then			
+		if( camera == "horiz" ) then			
 			self:setLinearVelocity( common.playerVelocity, vy )
 		else
 			self:setLinearVelocity( vx, -common.playerVelocity )
@@ -185,7 +185,7 @@ function factory.new( group, x, y, params )
 	--
 	-- Start tracking the player with the camera (ignore movement in y-axis)
 	--
-	if( moves == "horiz" ) then
+	if( camera == "horiz" ) then
 		ssk.camera.tracking( player, params.world, { lockY = true } )		
 	else
 		ssk.camera.tracking( player, params.world, { lockX = true } )		
@@ -199,7 +199,7 @@ function factory.new( group, x, y, params )
 		ignoreList( { "onOneTouch", "enterFrame" }, self )
 	end; player:addEventListener( "finalize" )
 
-	if( moves == "horiz" ) then
+	if( camera == "horiz" ) then
 		player:setLinearVelocity( common.playerVelocity, 0 )	
 	else
 		player:setLinearVelocity( 0, -common.playerVelocity )	

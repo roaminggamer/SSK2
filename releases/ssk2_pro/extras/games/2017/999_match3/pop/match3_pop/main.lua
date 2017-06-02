@@ -46,7 +46,7 @@ local function runTest( test )
 	local layers = ssk.display.quickLayers( nil, "underlay", "background", "content", "buttons", "overlay" )
 
 	ssk.display.newImageRect( layers.underlay, centerX, centerY, 
-	           "images/protoBack.png", 
+	           "images/ui/protoBack.png", 
 	           { w = 760, h = 1140 } )
 
 	if( test == 1 ) then

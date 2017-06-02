@@ -207,8 +207,8 @@ mgr:addButtonPreset( "default_back", params )
 -- ============================
 local params = 
 { 
-	unselImgSrc  = imagePath .. "soundOff.png",
-	selImgSrc    = imagePath .. "soundOn.png",
+	selImgSrc  = imagePath .. "soundOff.png",
+	unselImgSrc    = imagePath .. "soundOn.png",
 	w 			 = 100,
 	h 			 = 100,
 	touchOffset  = {1,2},

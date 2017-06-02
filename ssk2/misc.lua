@@ -330,6 +330,7 @@ end
 -- { { "button 1", opt_func1 }, { "button 2", opt_func2 }, ...}
 --
 misc.easyAlert = function( title, msg, buttons )
+	buttons = buttons or { {"OK"} }
 	local function onComplete( event )
 		local action = event.action
 		local index = event.index
@@ -1031,6 +1032,42 @@ function misc.pingPong( obj, params )
 		pingF( obj, true )		
 	end
 end
+
+--
+-- Lorem ipsum generator
+--
+local data = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+
+local tmp = string.split( data, "%." )
+for i = 1, #tmp do
+	tmp[i] = string.trim( tmp[i] ) .. "."
+end
+data = tmp 
+tmp = nil
+function misc.getLorem( len, sep, exactLength )		
+	sep = sep or " "
+	exactLength = fnn( exactLength, true )
+	if( not len ) then return data[1] end
+
+	local data2 = ""
+	local index = 1
+
+	while( string.len( data2 ) < len ) do
+		data2 = data2 .. sep .. data[index]
+		data2 = string.trim( data2 )
+		index = index + 1
+		index = (index > #data) and 1 or index
+	end
+
+	if( exactLength ) then
+		data2 = string.sub( data2, 1, len-1 )
+		data2 = string.trim( data2 ) .. "."
+	end
+
+	return data2
+end
+
+
 
 
 -- ========================================================================

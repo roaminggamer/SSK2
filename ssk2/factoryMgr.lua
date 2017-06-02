@@ -106,6 +106,16 @@ function factoryMgr.new( name, group, x, y, params )
 	return factories[name].new( group, x, y, params )
 end
 
+
+-- ==
+--    get( name ) - Return a direct reference to the named factory object.
+--                  This allows you to access custom function on the factory 
+--                   if you choose to add them.
+-- ==
+function factoryMgr.get( name )
+	return factories[name]
+end
+
 -- =============================================================
 -- Following only needed for editor ready factories
 -- =============================================================

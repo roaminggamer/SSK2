@@ -33,7 +33,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = true
 
-ssk.getVersion = function() return "2017.009" end
+ssk.getVersion = function() return "2017.010" end
 
 local initialized = false
 ssk.init = function( params )
@@ -102,6 +102,7 @@ ssk.init = function( params )
 	local_require "ssk2.extensions.native"
 	local_require "ssk2.extensions.string"
 	local_require "ssk2.extensions.table"
+	local_require "ssk2.extensions.timer2"
 	local_require "ssk2.extensions.transition"
 
 	local_require "ssk2.system"

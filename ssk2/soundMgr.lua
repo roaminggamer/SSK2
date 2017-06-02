@@ -5,8 +5,7 @@
 -- Last Validated: 25 JAN 2017
 -- =============================================================
 -- Development Notes:
--- 1. Consider adding 'altVolume' capability.
--- 2. Investigate ability to play various sound types in mulitple channels.  For now, disallow for voice and music.
+-- 1. Investigate ability to play various sound types in mulitple channels.  For now, disallow for voice and music.
 
 local soundMgr = {}
 _G.ssk.soundMgr = soundMgr
@@ -225,9 +224,10 @@ function soundMgr.add( name, path, params )
 	record.soundType 		= soundType
 	record.minTweenTime 	= params.minTweenTime
 	record.sticky 			= params.sticky
-	record.altVolume		= params.altVolume -- NOTE: not currently used
+	record.altVolume		= params.altVolume -- Modifies this sound's volume as a multiplier
 	record.playing 		= {}
-	
+
+
 	if( preload )	then
 		if( soundType == "effect" ) then
 			record.handle = audio.loadSound( path, baseDir )
@@ -300,6 +300,16 @@ function soundMgr.load( name )
 
 	return true
 end
+
+-- removeAll( ) - Stop, release, then remove ALL sound records.
+--
+function soundMgr.removeAll(  )
+	soundMgr.stopAll()
+	soundMgr.releaseAll( nil, true )
+	allSounds = {}
+end
+
+
 
 -- releaseAll( releaseType, force ) - Release sound resources.
 --
@@ -379,10 +389,11 @@ end
 
 -- stop( name ) - Stop a sound.
 --
-function soundMgr.stop( name )	
+function soundMgr.stop( name, soundType )	
 	local record = allSounds[name]
 	if( not record ) then return false end
 	if( not record.loaded ) then return true end
+	if( soundType ~= nil and record.soundType ~= soundType ) then return end
 
 	-- Stop any 'plays' of this sound
 	for k, v in pairs( record.playing ) do
@@ -514,6 +525,23 @@ local function onSound( event )
 	end
 
 	if( channel ) then
+
+		-- Apply Volume Settings To This Specific Channel
+		local altVolume 	= record.altVolume or 1
+		local soundType 	= record.soundType
+		local volume = 0
+		if( soundType == "effect" and sfxEn ) then
+			volume = altVolume * sfxVolume * globalVolume
+		
+		elseif( soundType == "voice" and voiceEn ) then
+			volume = altVolume * voiceVolume * globalVolume
+		
+		elseif( soundType == "music" and musicEn ) then
+			volume = altVolume * musicVolume * globalVolume
+		end
+		audio.setVolume( volume, { channel = channel } )
+
+
 
 		-- Generate a generic onComplete to clean up 
 		--

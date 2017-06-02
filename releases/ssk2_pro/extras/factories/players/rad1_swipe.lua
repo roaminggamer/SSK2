@@ -43,6 +43,9 @@ local initialized = false
 
 local debugEn 				= true
 
+local camera = "horiz"
+local isInteractive = true
+
 local difficulty 			= 1
 
 local diffMult 			= 1
@@ -68,9 +71,8 @@ local vCur 					= vBase
 -- =============================================================
 -- Forward Declarations
 -- =============================================================
-local moves = "horiz"
-local isInteractive = true
 local setDifficulty
+
 -- =============================================================
 -- Factory Module Begins
 -- =============================================================
@@ -82,7 +84,7 @@ local factory = {}
 function factory.init( params )
 	params = params or {}
 	if(initialized) then return end
-	moves = params.moves or "horiz"
+	camera = params.camera or "horiz"
 	isInteractive = fnn(params.isInteractive, isInteractive)
 
 	setDifficulty(1)
@@ -286,7 +288,7 @@ function factory.new( group, x, y, params )
 	--
 	-- Start tracking the player with the camera (ignore movement in y-axis)
 	--
-	if( params.moves == "horiz" ) then
+	if( params.camera == "horiz" ) then
 		ssk.camera.tracking( player, params.world, { lockY = true } )		
 	else
 		ssk.camera.tracking( player, params.world, { lockX = true } )		

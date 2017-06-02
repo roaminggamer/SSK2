@@ -34,6 +34,7 @@ local normVec = ssk.math2d.normalize;local vector2Angle = ssk.math2d.vector2Angl
 local angle2Vector = ssk.math2d.angle2Vector;local scaleVec = ssk.math2d.scale
 
 
+local face = ssk.actions.face
 local movep = ssk.actions.movep
 
 -- =============================================================
@@ -41,28 +42,21 @@ local movep = ssk.actions.movep
 -- =============================================================
 local initialized = false
 
+local debugEn 				= true
+
 local cameraStyle = "horiz"
 local enableWrapping
 local wrapRect
 
-local debugEn 				= true
-
-local thrustBase 			= 15
-
-local bulletSpeed 		= 500
-local bulletTime			= 1000
-local firePeriod			= 200
-
-local autoFire 			= false
-
+local moveRate 			= 400
 local faceRate 			= 180
+local firePeriod 			= 250
+local bulletSpeed 		= 500
 
 -- =============================================================
 -- Forward Declarations
 -- =============================================================
-local bulletEnterFrame
-local bulletFinalize
-
+local setDifficulty
 -- =============================================================
 -- Factory Module Begins
 -- =============================================================
@@ -79,15 +73,6 @@ function factory.init( params )
 
 	enableWrapping = fnn(params.enableWrapping, false)
 
-	autoFire = fnn(params.autoFire, false)
-	
-
-
-	thrustBase 	= fnn( params.thrustBase, thrustBase )
-	faceRate 	= params.rotRate or params.faceRate or faceRate
-	bulletSpeed = params.bulletSpeed or bulletSpeed
-	bulletTime 	= params.bulletTime or bulletTime
-	firePeriod 	= params.firePeriod or firePeriod
 
 	initialized = true
 end
@@ -96,6 +81,7 @@ end
 --    reset() - Reset any per-game logic/settings.
 -- ==
 function factory.reset( params )
+	--setDifficulty(1)
 end
 
 -- ==
@@ -108,14 +94,19 @@ function factory.new( group, x, y, params )
 	local player = newImageRect( group, x, y, "images/misc/arrow.png",
 		{ 	w = params.size or 40, h = params.size or 40, alpha = 1, 
 		   myColor = myColor, fill = common.colors.green, 
-		   dA = 0,
-		   thrustPercent = 0,
+		   moving = false,
+		   moveDeclineFactor  = 0.95,		   		   
+		   moveRate = 0,
+		   minRate = 100,
+		   faceRate  = 0,
 		   firing = false, 
+		   fireAngle = 0,
 		   faceAngle = 0 }, 
-		{	isFixedRotation = false, 
-			radius = 18, gravityScale = 0,
-		   density = 1, linearDamping = 1, 
+		{	isFixedRotation = false, radius = 18, gravityScale = 0,
+		   density = 1, --linearDamping = 2, 
 			calculator = myCC, colliderName = "player" } )
+
+
 
 
 	function player.collision( self, event ) 
@@ -123,6 +114,7 @@ function factory.new( group, x, y, params )
 		local phase = event.phase
 		local isPlatform = (event.other.colliderName == "platform")
 
+		--[[
 		if( phase == "began" ) then
 
 			if( other.colliderName == "coin" ) then
@@ -139,6 +131,7 @@ function factory.new( group, x, y, params )
 				return
 			end
 
+
 			if( other.colliderName == "danger" ) then
 				self:stopCamera()
 				display.remove( self )
@@ -146,43 +139,63 @@ function factory.new( group, x, y, params )
 				post("onSound", { sound = "died" } )
 				return
 			end
-
 		elseif( phase == "ended" ) then
+
 		end
+		--]]
 	end; player:addEventListener( "collision" )
 
 	-- Two-touch handlers
-	player.onJoystick = function( self, event )
-		if( isDestroyed == true or isRunning == false ) then ignore( "onJoystick", self ); return; end
-		self.firing = (event.phase ~= "ended" and autoFire)
+	player.onLeftJoystick = function( self, event )
+		if( isDestroyed == true or isRunning == false ) then ignore( "onLeftJoystick", self ); return; end
 		if( event.phase == "moved" ) then
 			self.faceAngle = event.angle
 		end
-		self.thrustPercent = event.percent
+
+		if( event.state == "on" ) then
+			self.moving = true
+			self.moveRate = moveRate * event.percent/100
+		else
+			self.moving = false
+		end
 		return true
-	end; listen( "onJoystick", player )
+	end
+	listen( "onLeftJoystick", player )
 
+	player.onRightJoystick = function( self, event )
+		if( isDestroyed == true or isRunning == false ) then ignore( "onRightJoystick", self ); return; end
 
-
+		if( event.state == "on" ) then
+			self.firing = true
+			self.fireAngle = event.angle
+		else
+			self.firing = false
+		end
+		return true
+	end
+	listen( "onRightJoystick", player )
 
 	-- enterFrame code to handler turning and trail drawing calls
 	--
-	player.enterFrame = function( self )		
-		local dt = ssk.getDT()/1000
+	player.enterFrame = function( self, event )		
+		if( isDestroyed == true or isRunning == false ) then ignore( "enterFrame", self ); return; end
 
-		-- Turn
-		ssk.actions.face( self, { angle = self.faceAngle or self.rotation, rate = faceRate })
-		--ssk.actions.face( self, { angle = self.faceAngle or self.rotation })
+		--local ds = ssk.getDT()/1000
+		face( self, { angle = self.faceAngle or self.rotation, rate = faceRate })
 
-		-- Move
-		local mag = thrustBase * self.thrustPercent/100
-		if( mag > 0 ) then
-			ssk.actions.movep.thrustForward( self, { rate = mag } )
+		local rate = self.moveRate
+
+		if( not self.moving ) then			
+			self.moveRate = self.moveRate * self.moveDeclineFactor 
+			self.moveRate = (self.moveRate < self.minRate ) and 0 or self.moveRate
 		end
 
+		movep.forward( self, { rate = self.moveRate })
+		--print( self.moveRate )
 		if( self.firing ) then
 			self:fire()
 		end
+
 
 		if( wrapRect ) then
 			ssk.actions.scene.rectWrap( self, wrapRect )
@@ -192,6 +205,23 @@ function factory.new( group, x, y, params )
 	end
 	listen( "enterFrame", player )
 
+	player.lastFireTime = getTimer()
+	function player.fire( self )
+		local curTime = getTimer()
+		if( curTime - self.lastFireTime < firePeriod ) then
+			return
+		end
+		
+		self.lastFireTime = curTime
+
+		local bullet = newCircle( self.parent, self.x, self.y, 
+			                     	{ size = self.contentWidth/2 },
+			                     	{ calculator = myCC, colliderName = "bullet" }  )
+		local vec = angle2Vector( self.fireAngle, true )
+		vec = scaleVec( vec, bulletSpeed )
+		bullet:setLinearVelocity( vec.x, vec.y )
+		transition.to( bullet, { delay = bulletTime, onComplete = display.remove } )
+	end
 
 	--
 	-- Start tracking the player with the camera (ignore movement in y-axis)
@@ -208,39 +238,11 @@ function factory.new( group, x, y, params )
 		ssk.camera.tracking( player, params.world )		
 	end
 
-
 	--
 	-- Create wrapping rect?
 	--	
 	if( cameraStyle == "asteroids" or enableWrapping ) then
 		wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + (params.size or 40), h = fullh + (params.size or 40)} )
-		common.wrapRect = wrapRect
-	end
-
-
-	player.lastFireTime = getTimer()
-	function player.fire( self )
-		local curTime = getTimer()
-		if( curTime - self.lastFireTime < firePeriod ) then
-			return
-		end
-		
-		self.lastFireTime = curTime
-
-		local vx,vy = self:getLinearVelocity()
-
-		local bullet = newCircle( self.parent, self.x, self.y, 
-			                     	{ size = self.contentWidth/4 },
-			                     	{ calculator = myCC, colliderName = "bullet" }  )
-		local vec = angle2Vector( self.rotation, true )
-		vec = scaleVec( vec, bulletSpeed )
-		bullet:setLinearVelocity( vec.x + vx, vec.y + vy )
-		transition.to( bullet, { delay = bulletTime, alpha = 0, time = 100, onComplete = display.remove } )
-		bullet.enterFrame = bulletEnterFrame
-		listen( "enterFrame", bullet )
-
-		bullet.finalize = bulletFinalize
-		bullet:addEventListener("finalize")
 	end
 
 	--
@@ -248,25 +250,12 @@ function factory.new( group, x, y, params )
 	-- when removed.
 	--	
 	player.finalize = function( self )
-		ignoreList( { "onJoystick", "enterFrame" }, self )
+		ignoreList( { "onRightJoystick", "onLeftJoystick", "enterFrame" }, self )
 	end; player:addEventListener( "finalize" )
 
 
 	return player
 end
-
--- enterFrame code to handler turning and trail drawing calls
---
-bulletEnterFrame = function( self )			
-	if( wrapRect ) then
-		ssk.actions.scene.rectWrap( self, common.wrapRect )
-	end
-end
-
-bulletFinalize = function( self )
-	ignoreList( { "enterFrame" }, self )
-end
-
 
 
 return factory

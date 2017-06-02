@@ -57,10 +57,23 @@ local function hasbit(x, p) return x % (p + p) >= p end
 local function setbit(x, p) return hasbit(x, p) and x or x + p end
 local function clearbit(x, p) return hasbit(x, p) and x - p or x end
 
+-- https://github.com/ponywolf/ponyblitz/blob/master/com/ponywolf/ponytiled.lua
+local function centerAnchor(obj)
+  if obj.contentBounds then 
+    local bounds = obj.contentBounds
+    local actualCenterX, actualCenterY =  (bounds.xMin + bounds.xMax)/2 , (bounds.yMin + bounds.yMax)/2
+    obj.anchorX, obj.anchorY = 0.5, 0.5  
+    obj.x = actualCenterX
+    obj.y = actualCenterY 
+  end
+end
+
 local dataCache = {}
 
 local tiledLoader = {}
 if( _G.ssk ) then _G.ssk.tiled = tiledLoader end
+
+ssk.tiled.centerAnchor = centerAnchor
 
 local levelsPath 	= "levels"
 local assetsRoot 	= "levels"
@@ -106,19 +119,21 @@ function tiledLoader.new()
 					local rec = table.deepCopy(objects[i])
 					local gid = tonumber(rec.gid)
 					local flip = {}
-		      	flip.x 	= hasbit(gid, FlippedHorizontallyFlag)
-		      	flip.y 	= hasbit(gid, FlippedVerticallyFlag)          
-		      	flip.xy = hasbit(gid, FlippedDiagonallyFlag) 
+					if( gid ) then
+			      	flip.x 	= hasbit(gid, FlippedHorizontallyFlag)
+			      	flip.y 	= hasbit(gid, FlippedVerticallyFlag)          
+			      	flip.xy = hasbit(gid, FlippedDiagonallyFlag) 
 		      	
-		      	gid = clearbit(gid, FlippedHorizontallyFlag)
-		      	gid = clearbit(gid, FlippedVerticallyFlag)
-		      	gid = clearbit(gid, FlippedDiagonallyFlag)    
+			      	gid = clearbit(gid, FlippedHorizontallyFlag)
+			      	gid = clearbit(gid, FlippedVerticallyFlag)
+			      	gid = clearbit(gid, FlippedDiagonallyFlag)    
+			      end
 		      	rec.gid = gid
 		      	rec.flip = flip
 
 					oRec[#oRec+1] = rec					
-					rec.x = rec.x + rec.width/2
-					rec.y = rec.y - rec.height/2
+					--rec.x = rec.x + rec.width/2
+					--rec.y = rec.y - rec.height/2
 					rec.layer = layerName
 				end
 			end
@@ -151,7 +166,9 @@ function tiledLoader.new()
 		--
 		for i = 1, #oRec do
 			local rec = oRec[i]
-			rec.image = images[rec.gid].image
+			if( rec.gid ) then
+				rec.image = images[rec.gid].image
+			end
 		end		
 	end
 
@@ -161,10 +178,19 @@ function tiledLoader.new()
 	local newImageRect = ssk.display.newImageRect
 	function loader.drawObj( group, rec, params ) 
 		params = params or {}
-   	local obj = newImageRect( nil, rec.x, rec.y, images[rec.gid].image, 
-   		{ w = rec.width, h = rec.height, rec = rec }  )
+		local obj
+		if( rec.gid ) then
+   		obj = newImageRect( nil, rec.x, rec.y, images[rec.gid].image, 
+   			{ w = rec.width, h = rec.height, rotation = rec.rotation, rec = rec, anchorX = 0, anchorY = 1 } )
+   	else
+   		obj = newRect( nil, rec.x, rec.y, 
+   			{ w = rec.width, h = rec.height, rotation = rec.rotation, rec = rec, fill = _P_, anchorX = 0, anchorY = 1 } )
+   	end
    	if( rec.flip.x ) then obj.xScale = -obj.xScale end
    	if( rec.flip.y ) then obj.yScale = -obj.yScale end
+
+   	table.dump(rec)
+   	centerAnchor(obj)
 	end
 
 	--
@@ -204,7 +230,7 @@ function tiledLoader.new()
 
 	-- Get image
 	--
-	function loader.getImage( gid )
+	function loader.getImage( gid )		
 		return images[gid]
 	end
 

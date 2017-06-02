@@ -17,7 +17,7 @@ local strFind     = string.find
 
 local pathSep = ( ssk.system.onWin ) and "\\" or "/"
 
-local RGFiles
+local files
 
 local util = {}
 
@@ -84,7 +84,7 @@ end
 
 -- NOTE - MAY NOT WORK WELL FOR IMAGES, SOUNDS, etc.
 function util.cpFile( src, dst ) -- Copy File
-   retVal = RGFiles.util.writeFile( RGFiles.util.readFile( src ) or "", dst ) 
+   retVal = files.util.writeFile( files.util.readFile( src ) or "", dst ) 
    return true -- NOTE need better error checking
 end
 
@@ -157,14 +157,15 @@ function util.rmFolder( path ) -- Remove Folder
 
    if( not path or 
        string.len( path ) <= 3 or
-       path == ssk.RGFiles.desktop.getDesktopRoot() or 
-       path == ssk.RGFiles.desktop.getMyDocumentsRoot() ) then
+       path == ssk.files.desktop.getDesktopRoot() or 
+       path == ssk.files.desktop.getMyDocumentsRoot() ) then
       print("Woah!  Looks like you're trying to wipe out a whole drive, my documents, or desktop! " )
       return false
    end
 
    local recurse
    recurse = function( child )
+      if( not util.exists( child ) ) then return  end
       local fullPath
       for file in lfs.dir( child ) do
          if( file == "." or file == ".." ) then
@@ -264,7 +265,7 @@ end
 --
 function util.exists( path )
    if not path then return false end
-   path = RGFiles.util.repairPath( path )
+   path = files.util.repairPath( path )
    local attr = lfs.attributes( path )
    return (attr and (attr.mode == "file" or attr.mode == "directory") )
 end
@@ -298,7 +299,7 @@ end
 -- appendFile( dataToWrite, path ) - Append 'dataToWrite' to file at path.
 --
 function util.appendFile( dataToWrite, path )
-   --path = RGFiles.getPath( path, base )
+   --path = files.getPath( path, base )
    --print(path)
 
    local f=io.open(path,"a")
@@ -534,7 +535,7 @@ end
 -- =============================================================
 -- =============================================================
 function util.attach( module )
-   RGFiles = module
+   files = module
    module.util = util
 end
 return util

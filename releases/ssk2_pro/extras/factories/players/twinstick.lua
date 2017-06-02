@@ -43,6 +43,11 @@ local initialized = false
 
 local debugEn 				= true
 
+local cameraStyle = "horiz"
+local enableWrapping
+local wrapRect
+local allowAccel
+
 local initialDifficulty = 1
 local difficulty 			= 1
 
@@ -75,9 +80,6 @@ local faceRate 			= 360
 -- =============================================================
 -- Forward Declarations
 -- =============================================================
-local moves = "horiz"
-local isInteractive = true
-local wrapRect
 local setDifficulty
 -- =============================================================
 -- Factory Module Begins
@@ -90,13 +92,14 @@ local factory = {}
 function factory.init( params )
 	params = params or {}
 	if(initialized) then return end
-	moves = params.moves or "horiz"
-	isInteractive = fnn(params.isInteractive, isInteractive)
-	faceRate = params.faceRate or faceRate
-	bulletSpeed = params.bulletSpeed or bulletSpeed
-	bulletTime = params.bulletTime or bulletTime
-	firePeriod = params.firePeriod or firePeriod
 
+	
+	cameraStyle = params.camera or "horiz"
+
+	enableWrapping = fnn(params.enableWrapping, false)
+
+	allowAccel = fnn(params.allowAccel, false)
+	
 	rotRate_initial = params.rotRate or rotRate_initial
 	vBase_initial = params.vBase or vBase_initial
 	vDelta_initial = params.vDelta or vDelta_initial
@@ -132,8 +135,6 @@ function factory.new( group, x, y, params )
 		{	isFixedRotation = false, radius = 18, gravityScale = 0,
 		   density = 1, linearDamping = 1, 
 			calculator = myCC, colliderName = "player" } )
-
-
 
 
 	function player.collision( self, event ) 
@@ -199,9 +200,9 @@ function factory.new( group, x, y, params )
 		if( isDestroyed == true or isRunning == false ) then ignore( "onLeftJoystick", self ); return; end
 		if( event.state == "on" ) then
 			self.faceAngle = event.angle
-			--thrusting = true
+			thrusting = true
 		else
-			--thrusting = false
+			thrusting = false
 		end
 		return true
 	end
@@ -239,7 +240,7 @@ function factory.new( group, x, y, params )
 
 		-- Adjust vMax
 		vMax = vBase
-		if(thrusting) then vMax = vMax + vDelta end
+		if( allowAccel and thrusting ) then vMax = vMax + vDelta end
 
 		-- Get Current Velocity
 		local vx,vy = self:getLinearVelocity()
@@ -257,7 +258,7 @@ function factory.new( group, x, y, params )
 		vec = scaleVec( vec, vCur )
 		self:setLinearVelocity( vec.x, vec.y )
 
-		if( moves == "asteroids" and wrapRect ) then
+		if( wrapRect ) then
 			ssk.actions.scene.rectWrap( self, wrapRect )
 		end
 
@@ -290,14 +291,24 @@ function factory.new( group, x, y, params )
 	--
 	-- Start tracking the player with the camera (ignore movement in y-axis)
 	--
-	if( moves == "horiz" ) then
+	if( cameraStyle == "none" ) then
+		-- Nothing
+	elseif( cameraStyle == "horiz" ) then
 		ssk.camera.tracking( player, params.world, { lockY = true } )		
-	elseif( moves == "vert" ) then
+	
+	elseif( cameraStyle == "vert" ) then
 		ssk.camera.tracking( player, params.world, { lockX = true } )		
-	elseif( moves == "asteroids" ) then
+
+	elseif( cameraStyle == "omni" ) then
+		ssk.camera.tracking( player, params.world )		
+
+	end
+
+	--
+	-- Create wrapping rect?
+	--	
+	if( cameraStyle == "asteroids" or enableWrapping ) then
 		wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + (params.size or 40), h = fullh + (params.size or 40)} )
-		--wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + 2 * (params.size or 40), h = fullh + 2 * (params.size or 40)} )
-		--wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw, h = fullh } )
 	end
 
 	--

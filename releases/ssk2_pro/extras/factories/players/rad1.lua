@@ -43,6 +43,11 @@ local initialized = false
 
 local debugEn 				= true
 
+local cameraStyle = "horiz"
+local enableWrapping
+local wrapRect
+local allowAccel
+
 local initialDifficulty = 1
 local difficulty 			= 1
 
@@ -61,6 +66,7 @@ local leftThrust 			= false
 local rightThrust 		= false
 
 local rotRate 				= rotRate_initial
+local rotRateMax 			= 360
 local vBase 				= vBase_initial
 local vDelta 				= vDelta_initial
 local vIncr 				= vIncr_initial
@@ -71,10 +77,8 @@ local vCur 					= vBase
 -- =============================================================
 -- Forward Declarations
 -- =============================================================
-local moves = "horiz"
-local isInteractive = true
-local wrapRect
 local setDifficulty
+
 -- =============================================================
 -- Factory Module Begins
 -- =============================================================
@@ -86,20 +90,79 @@ local factory = {}
 function factory.init( params )
 	params = params or {}
 	if(initialized) then return end
-	moves = params.moves or "horiz"
-	isInteractive = fnn(params.isInteractive, isInteractive)
 
-	rotRate_initial = params.rotRate or rotRate_initial
-	vBase_initial = params.vBase or vBase_initial
-	vDelta_initial = params.vDelta or vDelta_initial
-	vIncr_initial = params.vIncr or vIncr_initial
-	vIncr2_initial = params.vIncr2 or vIncr2_initial
+	--table.dump(params,nil,"player.rad1.init()")
+
+	debugEn 				= fnn( params.debugEn, false )
+	
+	cameraStyle 		= params.camera or "horiz"
+
+	enableWrapping 	= fnn(params.enableWrapping, false)
+	
+	allowAccel 			= fnn(params.allowAccel, true)
+
+	rotRate_initial 	= params.rotRate or rotRate_initial
+	rotRateMax  		= params.rotRateMax or rotRateMax
+	vBase_initial 		= params.vBase or vBase_initial
+	vDelta_initial 	= params.vDelta or vDelta_initial
+	vIncr_initial 		= params.vIncr or vIncr_initial
+	vIncr2_initial 	= params.vIncr2 or vIncr2_initial
 	initialDifficulty = params.initialDifficulty or initialDifficulty
 
 	setDifficulty(initialDifficulty)
 
 	initialized = true
 end
+
+function factory.setDifficulty( newDiff, params )
+	params = params or {}
+
+	allowAccel 			= fnn(params.allowAccel, allowAccel)
+
+	debugEn 				= fnn( params.debugEn, debugEn )
+
+	rotRate_initial 	= params.rotRate or rotRate_initial
+	rotRateMax  		= params.rotRateMax or rotRateMax
+	vBase_initial 		= params.vBase or vBase_initial
+	vDelta_initial 	= params.vDelta or vDelta_initial
+	vIncr_initial 		= params.vIncr or vIncr_initial
+	vIncr2_initial 	= params.vIncr2 or vIncr2_initial
+
+	setDifficulty(	newDiff	)
+
+end
+
+function factory.configure( params )
+	params = params or {}
+
+	allowAccel 			= fnn(params.allowAccel, allowAccel)
+
+	debugEn 				= fnn( params.debugEn, debugEn )
+
+	rotRate 				= params.rotRate or rotRate
+
+	rotRateMax  		= params.rotRateMax or rotRateMax
+
+	vBase 				= params.vBase or vBase
+	vMax 					= params.vMax or vMax
+	vDelta 				= params.vDelta or vDelta
+	vIncr 				= params.vIncr or vIncr
+	vIncr2 				= params.vIncr2 or vIncr2
+
+	-- Report
+	if( debugEn ) then
+		print("difficulty == " .. tostring( difficulty ) )
+		print("     vBase == " .. tostring( vBase ) )
+		print("    vDelta == " .. tostring( vDelta ) )
+		print("     vIncr == " .. tostring( vIncr ) )
+		print("    vIncr2 == " .. tostring( vIncr2 ) )
+		print("      vMax == " .. tostring( vMax ) )
+		print("   rotRate == " .. tostring( rotRate ) )
+	end
+
+end
+
+
 
 -- ==
 --    reset() - Reset any per-game logic/settings.
@@ -113,6 +176,9 @@ end
 -- ==
 function factory.new( group, x, y, params )
 	params = params or { }
+	--table.dump(params,nil,"player.rad1.new()")
+
+	debugEn 				= fnn( params.debugEn, debugEn )
 
 	-- Create player 
 	local player = newImageRect( group, x, y, "images/misc/arrow.png",
@@ -131,9 +197,9 @@ function factory.new( group, x, y, params )
 		local isPlatform = (event.other.colliderName == "platform")
 
 		if( phase == "ended" ) then
-			self:setFillColor(unpack(_W_))
+			--self:setFillColor(unpack(_W_))
 		elseif( phase == "began" ) then
-			self:setFillColor(unpack(_R_))
+			--self:setFillColor(unpack(_R_))
 
 			--
 			-- If it is a coin,
@@ -249,8 +315,8 @@ function factory.new( group, x, y, params )
 
 		-- Adjust vMax
 		vMax = vBase
-		if(leftThrust) then vMax = vMax + vDelta end
-		if(rightThrust) then vMax = vMax + vDelta end
+		if( allowAccel and leftThrust ) then vMax = vMax + vDelta end
+		if( allowAccel and rightThrust ) then vMax = vMax + vDelta end
 
 		-- Get Current Velocity
 		local vx,vy = self:getLinearVelocity()
@@ -268,10 +334,9 @@ function factory.new( group, x, y, params )
 		vec = scaleVec( vec, vCur )
 		self:setLinearVelocity( vec.x, vec.y )
 
-		if( moves == "asteroids" and wrapRect ) then
+		if( wrapRect ) then
 			ssk.actions.scene.rectWrap( self, wrapRect )
 		end
-
 
 		--self:drawTrail()
 	end
@@ -280,14 +345,23 @@ function factory.new( group, x, y, params )
 	--
 	-- Start tracking the player with the camera (ignore movement in y-axis)
 	--
-	if( moves == "horiz" ) then
+	if( cameraStyle == "none" ) then
+		-- Nothing
+	elseif( cameraStyle == "horiz" ) then
 		ssk.camera.tracking( player, params.world, { lockY = true } )		
-	elseif( moves == "vert" ) then
+	
+	elseif( cameraStyle == "vert" ) then
 		ssk.camera.tracking( player, params.world, { lockX = true } )		
-	elseif( moves == "asteroids" ) then
+
+	elseif( cameraStyle == "omni" ) then
+		ssk.camera.tracking( player, params.world )		
+	end
+
+	--
+	-- Create wrapping rect?
+	--	
+	if( cameraStyle == "asteroids" or enableWrapping ) then
 		wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + (params.size or 40), h = fullh + (params.size or 40)} )
-		--wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw + 2 * (params.size or 40), h = fullh + 2 * (params.size or 40)} )
-		--wrapRect = newImageRect( group, centerX, centerY, "ssk2/fillT.png", { w = fullw, h = fullh } )
 	end
 
 	--
@@ -317,8 +391,8 @@ setDifficulty = function( newDiff )
 	vCur 					= vBase
 
 	-- Caps
-	if( rotRate > 360 ) then
-		rotRate = 360 
+	if( rotRate > rotRateMax ) then
+		--rotRate = rotRateMax
 	end
 
 	-- Report

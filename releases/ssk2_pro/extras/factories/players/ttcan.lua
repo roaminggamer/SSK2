@@ -44,8 +44,6 @@ local initialized = false
 -- =============================================================
 -- Forward Declarations
 -- =============================================================
-local moves = "horiz"
-local isInteractive = true
 
 -- =============================================================
 -- Factory Module Begins
@@ -58,8 +56,7 @@ local factory = {}
 function factory.init( params )
 	params = params or {}
 	if(initialized) then return end
-	moves = params.moves or "horiz"
-	isInteractive = fnn(params.isInteractive, isInteractive)
+	
 	initialized = true
 end
 
