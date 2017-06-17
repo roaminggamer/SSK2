@@ -65,6 +65,8 @@ ssk.init = function( params )
 	if( params.enableAutoListeners == nil ) then params.enableAutoListeners = true end
 	if( params.useExternal == nil ) then params.useExternal = false; end
 
+	ssk.__exportCore = params.exportCore
+
 	-- Snag the debug level setting
 	ssk.__debugLevel = params.debugLevel or 0
 
@@ -197,7 +199,7 @@ ssk.init = function( params )
 	--  
 	--	Export any Requested Features
 	--
-	if( params.exportCore ) then ssk.core.export() end
+	if( ssk.__exportCore ) then ssk.core.export() end
 	if( params.exportColors ) then ssk.colors.export() end
 	if( params.exportSystem ) then ssk.system.export() end
 

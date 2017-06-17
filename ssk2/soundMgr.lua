@@ -547,7 +547,7 @@ local function onSound( event )
 		--
 		local function onComplete( self )
 			record.playing[channel] = nil
-			if( event.onComplete ) then
+			if( event.onComplete and type(event.onComplete) == "function" ) then
 				event.onComplete()
 			end
 		end
