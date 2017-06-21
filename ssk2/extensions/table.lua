@@ -374,7 +374,18 @@ table.print_r = function ( t )
    else
       sub_print_r(t," ")
    end
+   return table.concat(print_r_cache, "\n")
 end
+
+--
+-- Safe call to table.print_r that returns printable result.
+-- Warning! Uses _G.trace() from core.functions
+--
+function table.xinspect( t )
+    local status, retval = pcall(table.print_r, t)
+    return retval
+end
+
 
 
 -- ==

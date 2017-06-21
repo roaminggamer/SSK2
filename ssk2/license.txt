@@ -1,20 +1,45 @@
 Super Starter Kit 2 (SSK2)
 
 Author: Roaming Gamer, LLC.
-Copyright (C) Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+Copyright (C) Roaming Gamer, LLC. 2008-2017 (All Rights Reserved)
 
 SUPPORT
 =======
-> Please read instructions here: https://roaminggamer.github.io/RGDocs/pages/SSK2/#help
-> Please do not e-mail me directly.  Use the forums (as outlined on docs page) instead.
+> I do not provide unpaid direct support to individuals.
+> I will answer forums posts.
+> Please be sure to read the docs here: https://roaminggamer.github.io/RGDocs/pages/SSK2/#help
+> Please do not e-mail me.  
+> Please do not private message me.  
+> IF YOU HAVE A QUESTION, *PLEASE* USE THE FORUMS.
+
+HOW TO POST TO FORUMS
+=====================
+** WARNING **  ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** 
+
+   If I can't easily read and understand your post... 
+   I'm probably not going to spend a lot of time responding.
+
+** WARNING **  ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING **  ** WARNING ** 
+
+Post here: https://forums.coronalabs.com/forum/553-other-third-party-tools/
+
+Title like this --> SSK2: Question Summary Here
+
+Body like this --> 
+
++ Version of SSK2 you're using.
++ Summary of issue or idea
+
+Additional, clear, concise, and precise paragraphs, and sentences supporting post.
+
+...
+
 
 LICENSE
 =======
-Many hours of genuine hard work have gone into this project.  Please do not redistribute or illegally sell this package. 
+I am constantly developing this software to provide you with a better development experience and any suggestions are welcome. As noted above, just post questions and ideas to the forums.
 
-I am constantly developing this software to provide you with a better development experience and any suggestions are welcome. 
-
-> SSK2 is a PAID product.
+> SSK2 is a FREE product.
 > SSK2 can be used in a free or commercial game.
 > SSK2 can be used in a free or commercial app.
 > SSK2 can be used without crediting the author (Roaming Gamer, LLC.).

@@ -3,9 +3,23 @@
 ====
 
 2017.010
-* Both - New math.* extension: math.isOdd()
-* Both - New math.* extension: math.isEven()
-
++ lite + PRO merged into a single FREE release.
++ New math.* extension: math.isOdd()
++ New math.* extension: math.isEven()
++ Modified core/variables.lua to allow for 're-calculation on resize'  Calling: ssk.core.calculateGlobals() will re-calculate.
++ Improved 'marker' code in table.dump(), etc.
++ Fixed typo in [Files](libraries/files) library.
++ Swapped image order for "default_sound" button preset.
++ Fixed typo in [Factory Manager](libraries/factorymgr)
++ Added new function to  [Factory Manager](libraries/factorymgr) - get( name ) returns reference to named factory.
++ Added new custom editor features to [Factory Manager](libraries/factorymgr).  I'm working on making it easier to implement in-game editors with factories.
++ Modified [Easy Alert](libraries/misc/#easyalert) so that passing a blank buttons list will default to a single 'OK' button that simply closes the dialog.
++ Added features to Sound Manager](libraries/soundMgr): altVolume field to further attenuate specific sounds within a category, removeAll() to stop and release all sounds.
++ Incorporated fixes to [Tiled Loader](libraries/tiled) to optionally switch pieces to 'center-anchored', support rotated elements.
++ Incorporated timer2 timer-library extention from [Jason Schroeder's library](http://www.jasonschroeder.com/2015/02/25/timer-2-0-library-for-corona-sdk/).
++ Added: _G.unrequire( path )
++ Added: _G.trace( msg [, depth ] ) - A function and variable debug tracing helper.
++ Added: table.xinspect( tbl ) - A safe version of table.print_r()
 
 2017.009 
 * Both - Fixed bug in pex.lua where particle emitter was not added to (passed) group.
