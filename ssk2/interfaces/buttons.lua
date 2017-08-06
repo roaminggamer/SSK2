@@ -1176,7 +1176,8 @@ function buttons:touch( params )
                   if( onEvent ) then result = result and onEvent( buttonEvent ) end
                end					
             end
-            theButton:setHighlight(isWithinBounds,true)
+            --theButton:setHighlight(isWithinBounds,true)
+            theButton:setHighlight(theButton.isPressed,true)
 
          elseif(buttonType == "radio") then -- RADIO BUTTON
 

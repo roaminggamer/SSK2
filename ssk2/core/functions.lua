@@ -96,7 +96,7 @@ end
 --
 -- unrequire( path ) - Basic un-require.  
 --
-function unrequire(path)
+function _G.unrequire(path)
     package.loaded[path] = nil
     rawset(_G, path, nil)
     return true

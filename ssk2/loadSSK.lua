@@ -3,9 +3,6 @@
 -- =============================================================
 -- SSK PRO Loader
 -- =============================================================
---   Last Updated: 23 FEB 2017
--- Last Validated: 23 FEB 2017
--- =============================================================
 -- Development Notes:
 -- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
 -- 2. Add event reflector to PRO
@@ -33,7 +30,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = true
 
-ssk.getVersion = function() return "2017.010" end
+ssk.getVersion = function() return "2017.011" end
 
 local initialized = false
 ssk.init = function( params )
@@ -134,6 +131,8 @@ ssk.init = function( params )
 	local_require "ssk2.dialogs.custom"
 
 	local_require "ssk2.factoryMgr"
+
+	local_require "ssk2.vScroller"
 
 	-- =============================================================
 	-- Load SSK Pro Components

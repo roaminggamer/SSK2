@@ -2,6 +2,17 @@
 2017
 ====
 
+2017.011
++ table.dump() can take 'note' argument 2nd or 3rd field now - UPDATE
++ Filled rectangle toggle buttons do not properly update - FIXED
++ Safety code in 'stopCamera' method of tracking camera. - ADDED
++ Documents and Destkop roots not properly discovered on OS X - FIXED
++ Added ability to 'stop' a blocker created with misc.blockTouchesForDuration( duration, subtle ) instead of relying on an internal timer.
++ Added third default images (square) for dialog tray.
++ WIP: logger tool, event reflector tool, vScroller.
+
+
+
 2017.010
 + lite + PRO merged into a single FREE release.
 + New math.* extension: math.isOdd()

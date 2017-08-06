@@ -561,8 +561,12 @@ misc.blockTouchesForDuration = function( duration, subtle )
 	blocker.touch = function() return true end
 	blocker:addEventListener( "touch" )
 
-	blocker.timer = function(self)
+	function blocker.stopBlocking( self )
 		if( not self.removeSelf ) then return end
+		if( blocker.myTimer ) then
+			timer.cancel(blocker.myTimer)
+			blocker.myTimer = nil
+		end
 		local function onComplete()
 			if( not self.removeSelf ) then return end
 			ignore("enterFrame", blocker)
@@ -572,7 +576,14 @@ misc.blockTouchesForDuration = function( duration, subtle )
 		end
 		transition.to( blocker, { alpha = 0, time = 250, onComplete = onComplete } )		
 	end
-	timer.performWithDelay( duration, blocker )
+
+	blocker.timer = function(self)
+		if( not self.removeSelf ) then return end
+		blocker.myTimer = nil
+		self:stopBlocking()
+	end
+	blocker.myTimer = timer.performWithDelay( duration, blocker )
+	return blocker
 end
 
 misc.easyRemoteImage = function( curImg, fileName, imageURL, baseDirectory ) 
@@ -1065,6 +1076,11 @@ function misc.getLorem( len, sep, exactLength )
 	end
 
 	return data2
+end
+
+
+function misc.getUTCStamp()
+	return os.date("!%y%m%d%H%M%S")
 end
 
 

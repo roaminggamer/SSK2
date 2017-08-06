@@ -134,9 +134,13 @@ function camera.tracking( trackObj, world, params )
 	end; world:addEventListener( "finalize" )
 
 	function trackObj.stopCamera( self )
-		ignore("enterFrame", world)
-		world:removeEventListener("finalize")
-		world.finalize = nil		
+		if( isValid(world) ) then
+			ignoreList( {"enterFrame"}, world )
+			if( world.finalize ) then
+				world:removeEventListener("finalize")
+				world.finalize = nil		
+			end
+		end
 	end
 end
 

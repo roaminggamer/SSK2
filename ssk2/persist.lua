@@ -51,6 +51,7 @@ persist.set = function( fileName, fieldName, value, params )
 	record[fieldName] = value
 
 	if(params.save ~= false ) then 
+		--print("save", record, fileName, fieldName, value, system.getTimer())
 		tableSave( record, fileName, params.base )
 	end
 end

@@ -181,7 +181,7 @@ end
 function soundMgr.setDebugLevel( level )
 	debugLevel = fnn(level, 0)
 
-	if( debugLevel ) then
+	if( debugLevel > 0 ) then
 		print("firstEffectChannel == " .. tostring(firstEffectChannel) )
 		print("firstVoiceChannel  == " .. tostring(firstVoiceChannel) )
 		print("firstMusicChannel  == " .. tostring(firstMusicChannel) )
