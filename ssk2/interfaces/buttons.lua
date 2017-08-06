@@ -41,6 +41,8 @@ function buttons:addButtonPreset( presetName, params )
 
    entry.unselRectEn       = (params.unselRectFillColor) and (not params.unselImgSrc) 
    entry.selRectEn         = (params.selRectFillColor) and (not params.selImgSrc) 
+   entry.toggledRectEn     = (params.toggledRectFillColor) and (not params.toggledImgSrc) 
+   entry.lockedRectEn     = (params.lockedRectFillColor) and (not params.lockedImgSrc) 
    entry.buttonType   		= fnn(params.buttonType, "push" )
    entry.labelText 		   = fnn(params.labelText, "")
    entry.labelSize     	   = fnn(params.labelSize, 20)
@@ -128,8 +130,8 @@ function buttons:newButton( parentGroup, params )
 
       local name1 = prefix .. "RectEn"
       local name2 = prefix .. "RectFillColor"
-      local name3 = prefix.. "StrokeColor"
-      local name4 = prefix.. "Rect"
+      local name3 = prefix .. "StrokeColor"
+      local name4 = prefix .. "Rect"
 
       if(buttonInstance[name1]) then
          local obj
@@ -476,9 +478,8 @@ function buttons:newButton( parentGroup, params )
 
       -- TOGGLE AND RADIO IMAGE BUTTONS
       if( isToggleRadio ) then
-
          -- BUTTONS WITH TOGGLED IMAGE         
-         if(self.toggledImg) then            
+         if(self.toggledImg) then
             if( isEnd ) then
                if( self.isPressed ) then
                   self.toggledImg.isVisible = true
@@ -508,6 +509,39 @@ function buttons:newButton( parentGroup, params )
                self.toggledImg.isVisible = (not vis and self.isPressed)
                if(self.selImg) then self.selImg.isVisible = vis end
                if(self.unselImg) then self.unselImg.isVisible = not vis end               
+            end
+
+         -- BUTTONS WITH TOGGLED RECT         
+         elseif(self.toggledRect) then
+            if( isEnd ) then
+               if( self.isPressed ) then
+                  self.toggledRect.isVisible = true
+
+                  -- Handle Selected Image
+                  if(self.selRect) then 
+                     self.selRect.isVisible = false
+                  end
+
+                  -- Finally Handle Not Selected Image
+                  if(self.unselRect) then
+                     self.unselRect.isVisible = false
+                  end
+
+               else
+                  self.toggledRect.isVisible = false
+
+                  -- Handle Selected Image
+                  if(self.selRect) then self.selRect.isVisible = self.isPressed end
+
+                  -- Finally Handle Not Selected Image
+                  if(self.unselRect) then
+                     self.unselRect.isVisible = not self.isPressed
+                  end
+               end               
+            else                  
+               self.toggledRect.isVisible = (not vis and self.isPressed)
+               if(self.selRect) then self.selRect.isVisible = vis end
+               if(self.unselRect) then self.unselRect.isVisible = not vis end               
             end
 
 

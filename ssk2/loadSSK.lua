@@ -30,7 +30,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = true
 
-ssk.getVersion = function() return "2017.011" end
+ssk.getVersion = function() return "2017.012" end
 
 local initialized = false
 ssk.init = function( params )

@@ -81,6 +81,7 @@ function scene:create( event )
 
    examples[#examples+1] = { "Easy Interfaces - Basic Buttons", "tests.easyIFC.001_basicButtons" }
    examples[#examples+1] = { "Easy Interfaces - Complex Buttons", "tests.easyIFC.004_complexButtons" }
+   examples[#examples+1] = { "Easy Interfaces - Complex Buttons 2", "tests.easyIFC.005_complexButtons2" }
    examples[#examples+1] = { "Easy Interfaces - Quick Labels", "tests.easyIFC.002_quick_labels" }
    examples[#examples+1] = { "Easy Interfaces - Effects", "tests.easyIFC.003_effects" }
 
@@ -127,7 +128,8 @@ if( ssk.__isPro ) then examples[#examples+1] = { "Tiled Loader Test #1", "tests.
    examples[#examples+1] = { "Various -  Pex Loader", "tests.various.020_pex" }
 
    --runLast = true
-
+   
+   
    --print(#examples)
 
    -- Automatically generate and place buttons to run each sample:
