@@ -132,7 +132,7 @@ require("ssk2.files.RGFiles_tests").attach( RGFiles )
 if( _G.ssk ) then
 	ssk.files = RGFiles
 else 
-	_G.ssk = { RGFiles = RGFiles }
+	_G.ssk = { files = RGFiles }
 end
 
 return RGFiles

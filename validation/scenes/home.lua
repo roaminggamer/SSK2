@@ -127,6 +127,8 @@ if( ssk.__isPro ) then examples[#examples+1] = { "Tiled Loader Test #1", "tests.
 
    examples[#examples+1] = { "Various -  Pex Loader", "tests.various.020_pex" }
 
+   examples[#examples+1] = { "Various -  Easy Bench", "tests.various.021_easyBench" }
+
    --runLast = true
    
    

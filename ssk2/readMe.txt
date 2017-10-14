@@ -1,15 +1,14 @@
 Super Starter Kit 2 (SSK2): Read Me File 
 
-SSK2 Release: 2016.001
+SSK2 Release: 2017.014
 
-Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+
+Copyright Roaming Gamer, LLC. 2008-2017 (All Rights Reserved)
 -------------------------------------------------------------------------------
-
 
 Documentation
 -------------
 You can find the full documentation for SSK2 online here: https://roaminggamer.github.io/RGDocs/pages/SSK2/
-
 
 
 Validation Sampler

@@ -71,7 +71,8 @@ function test.run( group, params )
 		self.y = event.y
 	end
 	local tmp = newRect( group, 45, top + 200,  { fill = randomColor(), mouse = onMouse } )	
-	table.dump(tmp)
+	--table.dump(tmp)
+	tmp:toBack()
 
 	-- finalize
 	local function onFinalize( self, event  ) 

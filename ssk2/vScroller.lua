@@ -20,6 +20,7 @@ function vScroller.new( group, x, y, params )
    local backFill       = params.backFill
    local hideBack       = fnn( params.hideBack, backFill == nil )
    local autoScroll     = fnn(params.autoScroll, false )
+   local scrollBuffer   = params.scrollBuffer
 
    local widget = require( "widget" )
    widget.setTheme( params.widgetTheme or "widget_theme_android_holo_dark")
@@ -64,7 +65,8 @@ function vScroller.new( group, x, y, params )
          end
       
       elseif( event.phase == "moved" ) then
-         local dragTrigger = ( mAbs(event.y - event.yStart) > (params.dragDist or 10 ) )
+         local dragTrigger = ( mAbs(event.y - event.yStart) > (params.dragDist or 10 ) ) or 
+                             ( mAbs(event.x - event.xStart) > (params.dragDist or 10 ) )
          if( not target.dragged and dragTrigger ) then 
             --print("DRAGGED!")
          end
@@ -93,15 +95,15 @@ function vScroller.new( group, x, y, params )
       width                         = cw,
       height                        = ch,
 
-      hideBack                      = hideBack,
+      hideBackground                = hideBack,
       backgroundColor               = backFill,
 
       isBounceEnabled               = fnn(params.isBounceEnabled, true),
       isVBounceEnabled              = fnn(params.isBounceEnabled, true),
       isHBounceEnabled              = fnn(params.isHBounceEnabled, false),
       
-      horizontalScrollingDisabled   = fnn(params.horizontalScrollingDisabled, true),
-      verticalScrollingDisabled     = fnn(params.verticalScrollingDisabled, false),
+      horizontalScrollDisabled      = fnn(params.horizontalScrollingDisabled, true),
+      verticalScrollDisabled        = fnn(params.verticalScrollingDisabled, false),
       
       listener                      = listener
    }
@@ -148,6 +150,108 @@ function vScroller.new( group, x, y, params )
       params = params or {}
       local ox    = params.ox or 0
       local oy    = params.oy or 0
+      local x     = 0
+      local y     = 0
+
+
+      -- groups are placed by <0,0> as upper-left corner (start of content)
+      -- Where content moves down and right
+      if( obj.__isGroup and not obj.__isContainer ) then
+         x = ox
+         y = totalH + oy 
+
+      -- All other objects are placed by their relative anchors just like normal objects
+      else         
+         x = ox + obj.contentWidth * obj.anchorX
+         y = oy + totalH + obj.contentHeight * obj.anchorY                  
+      end
+
+      obj.x = x
+      obj.y = y
+
+      -- SCROLL BUFFER
+      local _scrollBuffer = self._scrollBuffer
+      if( scrollBuffer and _scrollBuffer ) then
+         display.currentStage:insert( _scrollBuffer )                  
+      else
+         _scrollBuffer = display.newRect( cw/2, 0, 10, scrollBuffer )
+         _scrollBuffer.anchorY = 0
+         _scrollBuffer.isVisible = false
+         self._scrollBuffer = _scrollBuffer
+      end
+
+      totalH = totalH + obj.contentHeight + oy
+
+      -- SCROLL BUFFER
+      if( scrollBuffer and _scrollBuffer ) then
+         self:insert( _scrollBuffer )
+         _scrollBuffer.y = totalH
+      end
+
+      self:insert( obj )
+
+
+      if( autoScroll or params.autoScroll ) then
+         local toY = obj.y + obj.contentHeight - ch
+         --scroller:setScrollHeight( obj.contentHeight + 400 )
+         if( scrollBuffer ) then
+            toY = toY + scrollBuffer
+         end
+
+         print( "vscroller ", scroller.contentHeight, ch, toY, obj.contentHeight )
+         if( toY > 0 ) then            
+            --print("Scroll to" .. -toY)
+            if( scrollBuffer ) then
+               scroller:scrollToPosition( { y = -toY, time = 500 })
+            else
+               scroller:scrollToPosition( { y = -toY, time = 500 })
+            end
+         end
+      end
+   end
+
+   --[[
+   function scroller.insertContent_alt( self, obj, params )
+      params = params or {}
+      local ox    = params.ox or 0
+      local oy    = params.oy or 0
+      local x     = 0
+      local y     = 0
+
+
+      -- Objects in group must be placed right and below <0,0>
+      if( obj.__isGroup and not obj.__isContainer ) then
+         --print( obj.contentWidth)
+         --print( obj.contentHeight)
+         x = ox + obj.contentWidth/2
+         y = totalH + oy + obj.contentHeight/2
+      else
+         x = ox + obj.contentWidth * obj.anchorX
+         y = oy + totalH + obj.contentHeight * obj.anchorY         
+      end
+
+      obj.x = x
+      obj.y = y
+
+      totalH = totalH + obj.contentHeight + oy
+
+      self:insert( obj )
+
+      if( params.autoScroll ) then
+         local toY = obj.y + obj.contentHeight - ch
+         if( toY > 0 ) then            
+            --print("Scroll to" .. -toY)
+            scroller:scrollToPosition( { y = -toY, time = 500 })
+         end
+      end
+   end
+   ]]
+
+   --[[
+   function scroller.insertContent_old( self, obj, params )
+      params = params or {}
+      local ox    = params.ox or 0
+      local oy    = params.oy or 0
       local x     = ox + obj.contentWidth * obj.anchorX
       local y     = oy + totalH + obj.contentHeight * obj.anchorY
 
@@ -172,6 +276,7 @@ function vScroller.new( group, x, y, params )
          end
       end
    end
+   --]]
 
    function scroller.insertText( self, text, params )
       params = params or {}

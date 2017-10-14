@@ -1,13 +1,14 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
+--   Last Updated: 18 AUG 2017
+-- Last Validated: 18 AUG 2017
 -- =============================================================
--- Development Notes:
--- 1. Consider adding delay to save to make this more battery efficient and less likely to 
---    block under heavy usage.
+-- Changes:
+-- 18 AUG 2017 - Saves are now defered 15 ms.  This allows multipe-sets
+--               in the same window to coallesce into a single save.
 -- =============================================================
+local saveDelay = 15
 
 local persist = {}
 if( not _G.ssk ) then
@@ -19,6 +20,50 @@ local fileCache = {}
 
 local tableLoad = table.load
 local tableSave = table.save
+
+local deferedSaves = {}
+local function scheduleSave( record, fileName, base  )
+	local baseName 
+	if( base == nil or base == system.DocumentsDirectory ) then
+		baseName = "documents"
+	elseif( base == system.TemporaryDirectory ) then
+		baseName = "documents"
+	else -- RG: not perfect, but shoul rarely be hit.
+		baseName = "other"
+	end
+	--
+	local saveName = fileName .. '_' .. baseName
+	--
+	if( deferedSaves[saveName] ) then return end
+	--
+	deferedSaves[saveName] = {
+		id = -1,
+		func = 
+		function()
+			deferedSaves[saveName] = nil
+			tableSave( record, fileName, base ) 
+		end
+	}
+	--
+	deferedSaves[saveName].id = timer.performWithDelay( saveDelay, deferedSaves[saveName].func )	
+end
+-- Force run oustanding saves if suspend or exit occurs
+local function onSystemEvent( event )
+	if( event.type == 'applicationSuspend' or 
+		 event.type == 'applicationExit') then
+		for k,v in pairs( deferedSaves ) do
+			timer.cancel(v.id)
+			v.func()
+			deferedSaves[k] = nil
+		end
+	end
+end  
+Runtime:addEventListener( "system", onSystemEvent )
+
+persist.setSaveDelay = function( delay )
+	delay = tonumber(delay) or 15
+	saveDelay = (delay <= 0 ) and 15 or delay
+end
 
 persist.setSecure = function( )
 	tableLoad = table.secure_load
@@ -50,10 +95,7 @@ persist.set = function( fileName, fieldName, value, params )
 
 	record[fieldName] = value
 
-	if(params.save ~= false ) then 
-		--print("save", record, fileName, fieldName, value, system.getTimer())
-		tableSave( record, fileName, params.base )
-	end
+	scheduleSave( record, fileName, params.base   )
 end
 
 persist.setDefault = function( fileName, fieldName, value, params )
@@ -68,9 +110,7 @@ persist.setDefault = function( fileName, fieldName, value, params )
 
 	record.defaults[fieldName] = value
 
-	if(params.save ~= false ) then 
-		tableSave( record, fileName, params.base )
-	end
+	scheduleSave( record, fileName, params.base   )
 end
 
 return persist

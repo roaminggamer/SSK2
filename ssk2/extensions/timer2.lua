@@ -124,7 +124,13 @@ end
 ----------------------------------------
 -- MODIFY TIMER.CANCEL
 ----------------------------------------
-function timer.cancel(...)
+--function timer.cancel(...)
+--	local timerID
+--	if( arg ) then
+--		timerID = arg[1]
+--	end
+	--print("CANCELLING", unpack(arg), system.getTimer() )
+function timer.cancel( timerID )
 	if timerID == nil then
 		for i = #timers, 1, -1 do
 			if not timers[i].exclude then

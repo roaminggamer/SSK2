@@ -19,6 +19,7 @@ local vector2Angle      = ssk.math2d.vector2Angle
 local scaleVec          = ssk.math2d.scale
 local addVec            = ssk.math2d.add
 local subVec            = ssk.math2d.sub
+local diffVec           = ssk.math2d.diff
 local getNormals        = ssk.math2d.normals
 local lenVec            = ssk.math2d.length
 local lenVec2           = ssk.math2d.length2
@@ -111,7 +112,6 @@ movep.limitAV = function( obj, params )
 	end
 end
 
-
 -- Move object forward at fixed velocity
 movep.forward = function( obj, params )
 	if( not isValid( obj ) ) then return end
@@ -133,7 +133,6 @@ movep.forward = function( obj, params )
 end
 
 
-local lastThrustForwardTime = {}
 -- Move object forward at fixed velocity
 movep.thrustForward = function( obj, params )
 	if( not isValid( obj ) ) then return end
@@ -171,6 +170,62 @@ movep.impulseForward = function( obj, params )
 	local v = angle2Vector( obj.rotation, true )
 	v = scaleVec( v, mag )
 	obj:applyLinearImpulse( v.x, v.y, obj.x, obj.y )
+end
+
+
+-- Move object toward an angle or object
+movep.toward = function( obj, params )
+	if( not isValid( obj ) ) then return end
+	params = params or {}
+	local curTime = getTimer()
+	if( not obj.__last_forward_time ) then
+		obj.__last_forward_time = curTime
+	end
+	local dt = curTime - obj.__last_forward_time
+	obj.__last_forward_time = curTime
+
+	local rate = params.rate or 100
+
+	local v
+	if(params.angle) then		
+		v = angle2Vector( params.angle, true )
+	else
+		v = diffVec( obj, params.target )
+		v = normVec( v )
+	end
+	v = scaleVec( v, rate )
+
+	obj:setLinearVelocity( v.x, v.y )
+end
+
+-- Thrust object toward an angle or object
+movep.thrustToward = function( obj, params )
+	if( not isValid( obj ) ) then return end
+	params = params or {}
+
+	local curTime = getTimer()
+	if( not obj.__last_thrust_forward_time) then
+		obj.__last_thrust_forward_time = curTime
+	end
+	local dt = curTime - obj.__last_thrust_forward_time
+	obj.__last_thrust_forward_time = curTime
+
+	local rate = params.rate or 100
+
+	if( not params.ignoreMass ) then
+		rate = rate * obj.mass
+	end
+
+	local v
+	if(params.angle) then		
+		v = angle2Vector( params.angle, true )
+	else
+		v = diffVec( obj, params.target )
+		v = normVec( v )
+	end
+
+	v = scaleVec( v, rate )
+	obj:applyForce( v.x, v.y, obj.x, obj.y )
 end
 
 return movep

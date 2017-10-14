@@ -30,7 +30,7 @@ _G.ssk = {}
 
 _G.ssk.__isPro = true
 
-ssk.getVersion = function() return "2017.012" end
+ssk.getVersion = function() return "2017.013" end
 
 local initialized = false
 ssk.init = function( params )
@@ -167,6 +167,12 @@ ssk.init = function( params )
 		local_require("ssk2.external.global_lock") -- Portable random library
 		local_require("ssk2.external.rle") -- Run Length Encoder
 	end
+
+	-- =============================================================
+	-- Various
+	-- =============================================================
+	local_require( "ssk2.easyBench" ) -- Easy Benchmarking Lib
+
 
 	-- =============================================================
 	-- Finialize measurements and show report (if measuring enabled)

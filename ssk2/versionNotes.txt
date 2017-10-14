@@ -1,6 +1,24 @@
 ====
 2017
 ====
+2017.014
++ added new actions.* movers: movep.toward and movep.thrustToward
++ Fixed `cancel()` bug found in timer2 timer.* extension.
++ Fixed typo in RGFiles.* standalone module export naming.
++ Added eachBench benchmarking library.
++ Updated persist.* to efficiently handle multiple saves in same clock/period thus saving battery live and completely eradicating slowdown in these cases.
++ Added soundMgr.mute() function.
++ Continued to modify WIP vscroller lib.
+
+
+
+2017.013
++ Added save coalescing feature to save battery life and simplify ssk.persist.* usage.
++ Added new function ssk.persist.setSaveDelay( delay ) to change delay from default of 15 ms to 'delay' ms.
+
+
+2017.012
+No notes.
 
 2017.011
 + table.dump() can take 'note' argument 2nd or 3rd field now - UPDATE
