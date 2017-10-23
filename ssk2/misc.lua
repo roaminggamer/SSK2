@@ -233,7 +233,7 @@ misc.createEasyMemMeter = function( x , y, width, fontSize )
 			target.y = target._y0 + dy
 
 			if(event.phase == "ended" or event.phase == "cancelled") then
-				display.getCurrentStage():setFocus( nil, eventID )
+				display.getCurrentStage():setFocus( target, nil )
 				target.isFocus = false
 			end
 		end

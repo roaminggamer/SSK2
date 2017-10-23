@@ -198,7 +198,7 @@ function vScroller.new( group, x, y, params )
             toY = toY + scrollBuffer
          end
 
-         print( "vscroller ", scroller.contentHeight, ch, toY, obj.contentHeight )
+         --print( "vscroller ", scroller.contentHeight, ch, toY, obj.contentHeight )
          if( toY > 0 ) then            
             --print("Scroll to" .. -toY)
             if( scrollBuffer ) then

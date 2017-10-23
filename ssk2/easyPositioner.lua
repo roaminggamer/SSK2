@@ -233,7 +233,7 @@ easyPositioner.attach = function( obj )
 			easyMoverText.text = "< " .. target.x .. ", " .. target.y .. " >"
 
 			if(event.phase == "ended" or event.phase == "cancelled") then
-				display.getCurrentStage():setFocus( nil, eventID )
+				display.getCurrentStage():setFocus( target, nil )
 				target.isFocus = false
 				if( curObject and target ~= curObject ) then
 					if( curObject.stroke and curObject.stroke.effect ) then

@@ -42,6 +42,7 @@ ssk_system.onDevice       = ( ssk_system.onAndroid or
 -- Device 
 -- https://www.theiphonewiki.com/wiki/Main_Page
 -- http://www.everymac.com/ultimate-mac-lookup/
+-- https://www.theiphonewiki.com/wiki/Models#iPhone
 -- =============================================================
 ssk_system.oniPhone4       = ( string.find( system.getInfo("architectureInfo"), "iPhone4" ) ~= nil )
 ssk_system.oniPhone5       = ( string.find( system.getInfo("architectureInfo"), "iPhone5,1" ) ~= nil ) or
@@ -57,10 +58,17 @@ ssk_system.oniPhone7       = ( string.find( system.getInfo("architectureInfo"), 
                            ( string.find( system.getInfo("architectureInfo"), "iPhone9,3" ) ~= nil )
 ssk_system.oniPhone7Plus   = ( string.find( system.getInfo("architectureInfo"), "iPhone9,2" ) ~= nil ) or
                            ( string.find( system.getInfo("architectureInfo"), "iPhone9,4" ) ~= nil )
+ssk_system.oniPhone8   = ( string.find( system.getInfo("architectureInfo"), "iPhone10,1" ) ~= nil ) or
+                           ( string.find( system.getInfo("architectureInfo"), "iPhone10,4" ) ~= nil )
+ssk_system.oniPhone8Plus   = ( string.find( system.getInfo("architectureInfo"), "iPhone10,2" ) ~= nil ) or
+                           ( string.find( system.getInfo("architectureInfo"), "iPhone10,5" ) ~= nil )
+ssk_system.oniPhoneX       = ( string.find( system.getInfo("architectureInfo"), "iPhone10,3" ) ~= nil ) or
+                           ( string.find( system.getInfo("architectureInfo"), "iPhone10,6" ) ~= nil )
 ssk_system.oniPhone        = ssk_system.oniPhone4 or 
                            ssk_system.oniPhone5 or ssk_system.oniPhone5s or ssk_system.oniPhone5c or 
                            ssk_system.oniPhone6 or ssk_system.oniPhone6s or ssk_system.oniPhone6Plus or ssk_system.oniPhone6sPlus or
-                           ssk_system.oniPhone7 or ssk_system.oniPhone7Plus
+                           ssk_system.oniPhone7 or ssk_system.oniPhone7Plus or
+                           ssk_system.oniPhone8 or ssk_system.oniPhone8Plus or ssk_system.oniPhoneX
 ssk_system.oniPad          = ( string.find( system.getInfo("architectureInfo"), "iPad" ) ~= nil )
 ssk_system.oniPadPro       = ( string.find( system.getInfo("architectureInfo"), "iPad6,7" ) ~= nil ) or
                            ( string.find( system.getInfo("architectureInfo"), "iPad6,8" ) ~= nil )
