@@ -89,3 +89,12 @@ math.getUID = function( rlen )
   return tmp
 end
 
+math.getUID2 = function( rlen )
+	local template ='xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'
+	return string.gsub(template, '[xy]', 
+		function (c)
+			local v = (c == 'x') and mRand(0, 0xf) or mRand(8, 0xb)
+			return string.format('%x', v)
+		end)
+end
+

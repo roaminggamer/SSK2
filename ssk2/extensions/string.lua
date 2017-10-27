@@ -357,3 +357,69 @@ function string.first_upper(str)
 	return str:gsub("^%l", string.upper)
 end
 
+
+-- ==
+--    containsToken() - EFM
+-- ==
+function string.containsToken( line, token )
+	line = string.lower(line or "")
+	token = string.lower(token or "")
+	return string.match( line, token ) ~= nil
+end
+
+-- ==
+--    getParts() - EFM
+-- ==
+function string.getParts( line, startAt )
+	local parts = string.split( line, " " )
+	startAt = tonumber(startAt)
+	if(startAt) then
+		local parts2 = {}
+		for i = startAt, #parts do
+			parts2[#parts2+1] = parts[i]
+		end
+		return parts2
+	end
+	return parts
+end
+
+-- ==
+--    extractRemainder() - EFM
+-- ==
+function string.extractRemainder( line, startAt )
+	startAt = startAt or 2
+	local parts = string.split( line, " " )
+	local remainder = ""
+	for i = startAt, #parts do
+		remainder = remainder .. " " .. parts[i]
+	end
+	remainder = string.trim( remainder )
+	return remainder
+end
+
+-- ==
+--    extractPairs() - EFM
+-- ==
+function string.extractPairs( line, startAt )
+	startAt = startAt or 2
+	local parts = string.split( line, " " )
+	local pairsTable = {}
+	for i = startAt, #parts, 2 do
+		local k = parts[i]
+		local v = parts[i+1]
+		if( v == "true" ) then
+			v = true
+		elseif( v == "false" ) then
+			v = false
+		elseif( tonumber(v) ) then 
+			v = tonumber(v)
+		end
+		pairsTable[k] = v	
+	end
+	return pairsTable
+end
+
+
+
+
+
