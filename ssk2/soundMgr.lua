@@ -79,14 +79,21 @@ end
 --
 local muted = false
 local lastVolume 
+--[[
 function soundMgr.mute( isMuted, fadeTime ) 
-	print("soundMgr.mute() ", isMuted)
+	print("soundMgr.mute() ", isMuted, fadeTime, getTimer() ) 
 	isMuted = fnn( isMuted, false )
 	if( isMuted == muted ) then return end
 	if( isMuted == false and not lastVolume ) then return end
 
 	if( isMuted ) then
 		lastVolume = globalVolume
+		print("lastVolume", lastVolume)
+		for k,v in pairs(allSounds) do
+			if( table.count(v.playing or {}) > 0 ) then
+				table.print_r(v.playing)
+			end
+		end
 
 		if(tonumber(fadeTime)) then
 			audio.fade( { time = fadeTime, volume = 0 } )
@@ -95,6 +102,7 @@ function soundMgr.mute( isMuted, fadeTime )
 		end
 		
 	else
+		print("lastVolume", lastVolume)
 		if(tonumber(fadeTime)) then
 			audio.fade( { time = fadeTime, volume = lastVolume } )
 		else
@@ -102,6 +110,58 @@ function soundMgr.mute( isMuted, fadeTime )
 		end
 		
 		lastVolume = nil
+	end
+	muted = isMuted
+end
+--]]
+function soundMgr.mute( isMuted, fadeTime ) 
+	--print("soundMgr.mute() ", isMuted, fadeTime, getTimer() ) 
+	isMuted = fnn( isMuted, false )
+	
+	local playing = {}
+	for k,v in pairs(allSounds) do		
+		for l, m in pairs(v.playing) do
+			playing[m]=m
+		end
+	end
+	--for k,v in pairs( playing ) do 
+		--table.dump(v)
+	--end
+
+	if( isMuted == muted ) then return end
+	if( isMuted == false and not lastVolume ) then return end
+
+	if( isMuted ) then
+		lastVolume = globalVolume	
+		for k,v in pairs( playing ) do 
+			if(tonumber(fadeTime)) then
+				audio.fade( { time = fadeTime, channel = v.channel, volume = 0 } )
+			else
+				audio.setVolume( 0, { channel = v.channel } )
+			end
+		end
+	
+		--		
+		if(tonumber(fadeTime)) then
+			timer.performWithDelay( tonumber(fadeTime), function() audio.setVolume( 0 ) end )			
+		else
+			audio.setVolume( 0 )
+		end
+		
+	else
+
+		audio.setVolume( lastVolume )
+		lastVolume = nil
+		--
+		for k,v in pairs( playing ) do 
+			if(tonumber(fadeTime)) then
+				--print("fade up to 1", v.channel, v.volume)
+				audio.fade( { time = fadeTime, channel = v.channel, volume = v.volume } )
+			else
+				--print("fade up to 2", v.channel, v.volume)
+				audio.setVolume( v.volume, { channel = v.channel } )
+			end
+		end
 	end
 	muted = isMuted
 end
@@ -361,7 +421,6 @@ function soundMgr.releaseAll( releaseType, force )
 				end
 				v.playing = {}
 
-
 				audio.dispose( v.handle )
 
 				v.handle = nil
@@ -408,6 +467,7 @@ end
 -- stopAll( stopType ) - Stop all sounds (in a category).
 --
 function soundMgr.stopAll( stopType )
+	--print(table.count(allSounds), "sound count")
 	for k,v in pairs( allSounds ) do
 		if( stopType == nil or stopType == v.soundType ) then
 			-- Stop any 'plays' of this sound
@@ -417,6 +477,8 @@ function soundMgr.stopAll( stopType )
 			v.playing = {}
 		end
 	end
+	-- ENSURE ALL SOUNDS ARE STOPPED
+	if( stopType == nil ) then audio.stop() end
 end
 
 -- stop( name ) - Stop a sound.
@@ -597,8 +659,22 @@ local function onSound( event )
 
 		-- Track this sound so we can stop it later (and for music check)
 		--
-		record.playing[channel] = { handle = handle, channel = channel, time = getTimer() }
+		record.playing[channel] = { handle = handle, channel = channel, time = getTimer(), volume = volume }
 	end
 end; Runtime:addEventListener( "onSound", onSound )
+
+--[[
+timer.performWithDelay(
+	500,
+	function()
+		local function key( event ) 
+		   if(event.phase == "up" and event.descriptor == "1" ) then
+		   	soundMgr.mute(true, 500)
+		   elseif(event.phase == "up" and event.descriptor == "2" ) then
+		   	soundMgr.mute(false, 500)
+		   end
+		end; listen("key",key)
+	end )
+--]]
 
 return soundMgr

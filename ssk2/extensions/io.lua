@@ -58,7 +58,7 @@ else
          fileName = system.pathForFile( fileName, base )
       end
       fileName = io.repairPath( fileName )
-      local f=io.open(fileName,"r")
+      local f=io.open(fileName,"rb")
       if (f == nil) then 
          return nil
       end
@@ -82,7 +82,7 @@ else
          fileName = system.pathForFile( fileName, base )
       end
       fileName = io.repairPath( fileName )
-      local f=io.open(fileName,"w")
+      local f=io.open(fileName,"wb")
       if (f == nil) then 
          return nil
       end
@@ -105,7 +105,7 @@ else
          fileName = system.pathForFile( fileName, base )
       end
       if not fileName then return false end
-      local f=io.open(fileName,"a")
+      local f=io.open(fileName,"ab")
       if (f == nil) then 
          return nil
       end
@@ -133,7 +133,7 @@ else
          fileName = system.pathForFile( fileName, base )
       end
       fileName = io.repairPath( fileName )
-      local f=io.open(fileName,"r")
+      local f=io.open(fileName,"rb")
       if (f == nil) then 
          return fileContents
       end

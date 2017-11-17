@@ -307,6 +307,7 @@ end
 --    
 -- ==
 function table.dump(theTable, padding, marker ) -- Sorted
+   --print(debug.traceback()) -- EFM uncomment to help you find table.dump() in your code
    if(marker == nil and type(padding) == "string" ) then
       marker = padding
       padding = 30
@@ -343,7 +344,7 @@ function table.dump(theTable, padding, marker ) -- Sorted
    else
       print("empty")
    end
-   print( marker and ( "-----\n" ..marker .. "\n-----" ) or "-----" )
+   print( marker and ( "-----\n" ..marker .. "\n-----" ) or "-----" )   
 end
 
 
@@ -351,6 +352,7 @@ end
 --    table.print_r( theTable ) - Dumps indexes and values inside multi-level table (for debug)
 -- ==
 table.print_r = function ( t ) 
+   --print(debug.traceback()) -- EFM uncomment to help you find table.print_r() in your code
    --local depth   = depth or math.huge
    local print_r_cache={}
    local function sub_print_r(t,indent)

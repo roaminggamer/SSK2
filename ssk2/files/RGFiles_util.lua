@@ -203,7 +203,7 @@ function util.saveTable( tbl, path, secure )
    local security = ssk.security
    if(secure and security.getKeyString() == nil) then return false end
 
-   local fh = io.open( path, "w" )
+   local fh = io.open( path, "wb" )
    if( fh ) then
       local toWrite = json.encode( tbl )
       if( secure) then
@@ -223,7 +223,7 @@ function util.prettySaveTable( tbl, path, secure )
    local security = ssk.security
    if(secure and security.getKeyString() == nil) then return false end
 
-   local fh = io.open( path, "w" )
+   local fh = io.open( path, "wb" )
    if( fh ) then
       local toWrite = json.prettify( tbl )
       if( secure) then
@@ -240,7 +240,7 @@ end
 --
 function util.loadTable( path, secure )
    local security = ssk.security
-   local fh = io.open( path, "r" )
+   local fh = io.open( path, "rb" )
    if( fh ) then
       local contents = fh:read( "*a" )
       io.close( fh )
