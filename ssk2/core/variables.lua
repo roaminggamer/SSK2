@@ -48,7 +48,7 @@ function _G.ssk.core.calculateGlobals()
 	_G.ssk.core.left 				= (_G.ssk.core.left>=0) and math.abs(_G.ssk.core.left) or _G.ssk.core.left
 	_G.ssk.core.top           	= (_G.ssk.core.top>=0) and math.abs(_G.ssk.core.top) or _G.ssk.core.top
 
-	ssk.core.export()
+	if(ssk.core.export) then ssk.core.export() end
 end
 _G.ssk.core.calculateGlobals()
 
