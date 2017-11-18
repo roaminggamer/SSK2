@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Tiled Loader
--- =============================================================
---   Last Updated: 20 DEC 2016
--- Last Validated: 
 -- =============================================================
 -- Development Notes:
 -- -none-

@@ -25,7 +25,6 @@ function math.isEven(num)
 end
 
 
-
 function math.normRot( toNorm )
 	if( type(toNorm) == "table" ) then
 		while( toNorm.rotation >= 360 ) do toNorm.rotation = toNorm.rotation - 360 end		
@@ -94,4 +93,30 @@ math.getUID2 = function( rlen )
 			return string.format('%x', v)
 		end)
 end
+
+-- BEGIN LUME >>>>>>>>
+-- Adapted from: https://github.com/rxi/lume
+--
+-- This content is free software; you can redistribute it and/or modify it
+-- under the terms of the MIT license. See LICENSE for details.
+function math.clamp(x, min, max)
+	min = min or x
+	max = max or x
+  return x < min and min or (x > max and max or x)
+end
+function math.sign(x)
+  return x < 0 and -1 or 1
+end
+function math.lerp(a, b, amount)
+  return a + (b - a) * math.clamp(amount, 0, 1)
+end
+function math.smooth(a, b, amount)
+  local t = math.clamp(amount, 0, 1)
+  local m = t * t * (3 - 2 * t)
+  return a + (b - a) * m
+end
+-- <<<<<<  END LUME
+
+
+
 

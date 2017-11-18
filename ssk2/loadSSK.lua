@@ -1,8 +1,6 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
--- SSK PRO Loader
--- =============================================================
 -- Development Notes:
 -- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
 -- 2. Add event reflector?
@@ -111,7 +109,7 @@ ssk.init = function( params )
 	local_require( "ssk2.external.proxy" ) -- Adds "propertyUpdate" events to any Corona display object.; Source unknown
 	local_require( "ssk2.external.wait" ) -- Adapted from Steven Johnson's work (ggcrunchy) https://github.com/ggcrunchy/samples
 	local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
-	local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
+	_G.ssk.class = local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
 	local_require("ssk2.external.portableRandom") -- Portable random library
 	local_require("ssk2.external.global_lock") -- Portable random library
 	local_require("ssk2.external.rle") -- Run Length Encoder

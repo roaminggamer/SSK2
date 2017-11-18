@@ -1,12 +1,8 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- native.* - Extension(s)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
-
 function native.newScaledTextField( centerX, centerY, width, desiredFontSize )
 
     local fontSize = desiredFontSize or 0

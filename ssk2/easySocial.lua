@@ -1,13 +1,8 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Easy Social Features - Currently ONLY Rating
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
--- Developmet Notes:
--- 1. Add back 'sharing' function later.
 
 local social = {}
 _G.ssk.social = social

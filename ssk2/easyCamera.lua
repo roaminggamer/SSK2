@@ -1,13 +1,10 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Various 'Basic' Cameras 
 --
 -- While these can be used out-of-the-box, the purpose of this module
 -- is to give you a 'starting' point for your own custom camera logic.
--- =============================================================
---   Last Updated: 03 DEC 2016
--- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local camera = {}

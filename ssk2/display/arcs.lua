@@ -1,15 +1,8 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Arc Factories
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
--- Development Notes:
--- 1. Fix Poly Arc
---
-
 -- Create the display class if it does not yet exist
 --
 local displayExtended = {}

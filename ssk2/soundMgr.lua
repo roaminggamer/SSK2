@@ -1,12 +1,6 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 25 JAN 2017
--- Last Validated: 25 JAN 2017
--- =============================================================
--- Development Notes:
--- 1. Investigate ability to play various sound types in mulitple channels.  For now, disallow for voice and music.
-
 local soundMgr = {}
 _G.ssk.soundMgr = soundMgr
 

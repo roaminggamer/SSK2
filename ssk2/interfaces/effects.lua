@@ -1,15 +1,9 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
--- =============================================================
--- 
--- =============================================================
---   Last Updated: 05 DEC 2016
--- Last Validated: 29 NOV 2016
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Development Notes:
 -- 1. Some features still not exposed/documented.
 -- 2. Easy Fly Out Not Ready yet
-
 -- ==
 --    isInBounds( obj, obj2 ) - Is the center of obj over obj2 (inside its axis aligned bounding box?)
 -- ==

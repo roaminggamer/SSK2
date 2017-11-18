@@ -1,13 +1,6 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
---  NOT READY FOR PUBLIC CONSUMPTION
--- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
-
-
 local customButtons = {}
 local private = {}
 

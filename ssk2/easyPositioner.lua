@@ -1,14 +1,9 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Easy Positioner Tool
 -- =============================================================
---   Last Updated: 06 JAN 2017
--- Last Validated: 
--- =============================================================
--- Development Notes:
--- 1. This needs to be improved to better handle all possible anchorX/Y values
---
+
 local easyPositioner = {}
 
 local easyMoverTray

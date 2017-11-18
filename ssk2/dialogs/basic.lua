@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Basic Dialog (Tray)
--- =============================================================
---   Last Updated: 03 JAN 2017
--- Last Validated: 
 -- =============================================================
 local mAbs = math.abs
 local pairs = pairs

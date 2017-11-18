@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Extensions Loader
--- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
 -- =============================================================
 require("ssk2.extensions.display")
 require("ssk2.extensions.io")

@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Particle Emitter (Loader/Creator)
--- =============================================================
---   Last Updated: 15 DEC 2016
--- Last Validated: 
 -- =============================================================
 local json 		= require "json"
 local function round(val, n) if (n) then  return math.floor( (val * 10^n) + 0.5) / (10^n); else return math.floor(val+0.5); end end

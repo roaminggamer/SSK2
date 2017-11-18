@@ -1,10 +1,6 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
-
 _G.ssk = _G.ssk or {}
 local points = {}
 _G.ssk.points = points

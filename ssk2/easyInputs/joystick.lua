@@ -1,12 +1,8 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Joystick Helper (Used by Easy Interface Factories)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
-
 local getTimer  = system.getTimer
 
 local debugLevel = ssk.__debugLevel or 0

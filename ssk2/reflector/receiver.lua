@@ -1,5 +1,5 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2009-2016
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- This tool uses the free AutoLan by M.Y. Developers
 -- http://www.mydevelopersgames.com/AutoLAN/Features.html
