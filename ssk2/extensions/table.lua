@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- table.* - Extension(s)
--- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local json = require( "json" )
@@ -225,37 +222,6 @@ function table.load( fileName, base )
    end
 end
 
--- ==
---    table.dumpu( theTable [, padding ] ) - Dumps indexes and values inside single-level table (for debug) (UNSORTED)
--- ==
-function table.dumpu(theTable, padding, marker )
-   if(marker == nil and type(padding) == "string" ) then
-      marker = padding
-      padding = 30
-   else
-      padding = padding or 30
-   end
-   print("\Table Dump:")
-   print("-----")
-   if(theTable) then
-      for k,v in pairs(theTable) do 
-         local key = tostring(k)
-         local value = tostring(v)
-         local keyType = type(k)
-         local valueType = type(v)
-         local keyString = key .. " (" .. keyType .. ")"
-         local valueString = value .. " (" .. valueType .. ")" 
-
-         keyString = keyString:rpad(padding)
-         valueString = valueString:rpad(padding)
-
-         print( keyString .. " == " .. valueString ) 
-      end
-   else
-      print("empty")
-   end
-   print( marker and ( "-----\n" ..marker .. "\n-----" ) or "-----" )
-end
 
 -- ==
 --    table.secure_save( theTable, fileName [, base ] ) - Saves table to file (Uses JSON library as intermediary)
@@ -486,6 +452,11 @@ function table.removeByRef(t, obj)
 end
 
 
+-- ==
+--    repairIndicies() - Repairs numberic indicies in case where table had both numeric and 
+--    non-numeric indicies; was JSON encoded then decoded.  At this point numeric indicies
+--    have been converted to strings.  This function fixes that issue.
+-- ==
 function table.repairIndicies( theTable )
    for k,v in pairs( theTable ) do
       if(tonumber(k) and type(k) == "string") then
@@ -590,50 +561,6 @@ function table.toString ( t, flat )
    for i = 1, #tmp do
       output = output .. tmp[i]
    end
-   return output
-end
-
-function table.toString_old( t, flat )
-   local output = {}
-   local print_r_cache={}
-   local function sub_print_r(t,indent)
-      local function assemble(string)
-         output[#output + 1] = string
-      end
-      if (print_r_cache[tostring(t)]) then
-         assemble(indent.."*"..tostring(t))
-      else
-         print_r_cache[tostring(t)]=true
-         if (type(t)=="table") then
-            for pos,val in pairs(t) do
-               if (type(val)=="table") then
-                  if( flat ) then
-                     assemble(indent..tostring(t).." {")
-                  else
-                     assemble(indent.."["..pos.."] => "..tostring(t).." {")
-                  end                        
-                  sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                  assemble(indent..string.rep(" ",string.len(pos)+6).."}")
-               elseif (type(val)=="string") then
-                  if( flat ) then
-                     assemble(indent .. val)
-                  else
-                     assemble(indent.."["..pos..'] => "'..val..'"')
-                  end
-               else
-                  if( flat ) then
-                     assemble(indent .. tostring(val))
-                  else
-                     assemble(indent.."["..pos.."] => "..tostring(val))
-                  end
-               end
-            end
-         else
-            assemble(indent..tostring(t))
-         end
-      end
-   end
-   sub_print_r(t,"  ")
    return output
 end
 

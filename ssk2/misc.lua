@@ -1,12 +1,6 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
--- Development Notes:
--- Add EasyFPSMeter
-
 local misc = {}
 _G.ssk = _G.ssk or {}
 _G.ssk.misc = misc

@@ -1,28 +1,22 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- io.* - Extension(s)
 -- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
--- =============================================================
-
-local lfs = require "lfs"
-
-local strGSub     = string.gsub
-local strSub      = string.sub
-local strFormat   = string.format
-local strFind     = string.find
-
+local lfs      = require "lfs"
+local strGSub  = string.gsub
+local onWin       = ( system.getInfo("platform") == "Win" )
+local onOSX       = ( system.getInfo("platform") == "Mac OS X" )
+local onAndroid   = ( system.getInfo("platform") == "Android" ) 
 
 -- 
 -- repairPath( path ) -- Converts path to 'OS' correct style of back- or forward- slashes
 -- 
 function io.repairPath( path )
-   if( ssk.system.onOSX or ssk.system.onAndroid ) then
+   if( onOSX or onAndroid ) then
       path = strGSub( path, "\\", "/" )
       path = path strGSub( path, "//", "/" )
-   elseif( ssk.system.onWin ) then
+   elseif( onWin ) then
       path = strGSub( path, "/", "\\" )
    end
    return path

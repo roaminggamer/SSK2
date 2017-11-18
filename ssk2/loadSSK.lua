@@ -5,7 +5,7 @@
 -- =============================================================
 -- Development Notes:
 -- 1. In future, add extras/particleTrail.lua w/ CBE, prism, newEmitter, ++
--- 2. Add event reflector to PRO
+-- 2. Add event reflector?
 -- =============================================================
 
 -- ==
@@ -28,9 +28,7 @@ local measure 		= false
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-_G.ssk.__isPro = true
-
-ssk.getVersion = function() return "2017.014" end
+ssk.getVersion = function() return "2017.11.18" end
 
 local initialized = false
 ssk.init = function( params )
@@ -39,40 +37,12 @@ ssk.init = function( params )
 	{ 
 		gameFont 				= native.systemFont,
 		measure 					= false, -- Print out memory usage for SSK libraries.
-
-		exportCore 				= true, -- Export core variables as globals		
-		exportSystem			= false,-- Export ssk system variables as globals
-		exportColors 			= true, -- Export easy colors as globals
-
-		useExternal 			= false, -- Use external contents (must be downloaded and installed first)
-
-		enableAutoListeners 	= true, -- Allow ssk.display.* functions to automatically start listeners if
-		                             -- the are passed in the build parameters
-
-		math2DPlugin 			= false, -- Use math2d plugin if found
-
 		debugLevel 				= 0, -- Some modules use this to print extra debug messages
 		                          -- Typical levels are 0, 1, 2 (where 2 is the most verbose)
 	}
 
-	-- Set defaults if not supplied explicitly
-	if( params.exportCore == nil ) then params.exportCore = true; end
-	if( params.exportSystem == nil ) then params.exportSystem = false; end
-	if( params.exportColors == nil ) then params.exportColors = true; end
-	if( params.enableAutoListeners == nil ) then params.enableAutoListeners = true end
-	if( params.useExternal == nil ) then params.useExternal = false; end
-
-	ssk.__exportCore = params.exportCore
-
 	-- Snag the debug level setting
 	ssk.__debugLevel = params.debugLevel or 0
-
-	--
-	-- Enables automatic attachment of event listeners in extended display library
-	--
-	ssk.__enableAutoListeners = params.enableAutoListeners
-
-		-- EFM custom path here
 
 	--
 	-- Track the font users asked for as their gameFont 
@@ -93,8 +63,7 @@ ssk.init = function( params )
 	-- =============================================================
 	-- Load SSK Lite Components
 	-- =============================================================
-	local_require( "ssk2.core" )
-
+	local_require "ssk2.core"
 	local_require "ssk2.extensions.display"
 	local_require "ssk2.extensions.io"
 	local_require "ssk2.extensions.math"
@@ -103,75 +72,49 @@ ssk.init = function( params )
 	local_require "ssk2.extensions.table"
 	local_require "ssk2.extensions.timer2"
 	local_require "ssk2.extensions.transition"
-
 	local_require "ssk2.system"
-
 	local_require "ssk2.colors"
-
 	local_require "ssk2.display"
-
-	ssk.__math2DPlugin = params.math2DPlugin
 	local_require "ssk2.math2d"
-
 	local_require "ssk2.cc"
-
 	local_require "ssk2.actions.actions"
-
 	local_require "ssk2.easyIFC"
-
 	local_require "ssk2.easyInputs"
-
 	local_require "ssk2.easyCamera"
-
 	local_require "ssk2.misc"
-
 	local_require "ssk2.pex"
-
 	local_require "ssk2.dialogs.basic"
 	local_require "ssk2.dialogs.custom"
-
 	local_require "ssk2.factoryMgr"
-
 	local_require "ssk2.vScroller"
-
-	-- =============================================================
-	-- Load SSK Pro Components
-	-- =============================================================
-	if( _G.ssk.__isPro ) then
-		local_require "ssk2.android"
-		local_require "ssk2.security"
-		local_require "ssk2.persist"
-		local_require "ssk2.points"
-		local_require "ssk2.soundMgr"
-		local_require "ssk2.easySocial"
-		local_require "ssk2.shuffleBag"
-		local_require "ssk2.meters"
-		local_require "ssk2.files"
-		local_require "ssk2.tiledLoader"
-		local_require "ssk2.easyPositioner"
-		local_require "ssk2.adHelpers.adHelpers"
-	end
+-- =============================================================
+	local_require "ssk2.android"
+	local_require "ssk2.security"
+	local_require "ssk2.persist"
+	local_require "ssk2.points"
+	local_require "ssk2.soundMgr"
+	local_require "ssk2.easySocial"
+	local_require "ssk2.shuffleBag"
+	local_require "ssk2.meters"
+	local_require "ssk2.files"
+	local_require "ssk2.tiledLoader"
+	local_require "ssk2.easyPositioner"
+	local_require "ssk2.adHelpers.adHelpers"
+	local_require "ssk2.easyBench" -- Easy Benchmarking Lib
 	
 	-- =============================================================
 	-- External Libs/Modules (Written by others and used with credit.)
 	-- =============================================================
-	if( params.useExternal ) then
-		--_G.ssk.autolan = {}
-		--_G.ssk.autolan.client = local_require( "ssk2.external.mydevelopers.autolan.Client" )
-		--_G.ssk.autolan.server = local_require( "ssk2.external.mydevelopers.autolan.Server" )
-		local_require( "ssk2.external.proxy" ) -- Adds "propertyUpdate" events to any Corona display object.; Source unknown
-		local_require( "ssk2.external.wait" ) -- Adapted from Steven Johnson's work (ggcrunchy) https://github.com/ggcrunchy/samples
-		local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
-		local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
-		local_require("ssk2.external.portableRandom") -- Portable random library
-		local_require("ssk2.external.global_lock") -- Portable random library
-		local_require("ssk2.external.rle") -- Run Length Encoder
-	end
-
-	-- =============================================================
-	-- Various
-	-- =============================================================
-	local_require( "ssk2.easyBench" ) -- Easy Benchmarking Lib
+	_G.ssk.autolan = {}
+	_G.ssk.autolan.client = local_require( "ssk2.external.mydevelopers.autolan.Client" )
+	_G.ssk.autolan.server = local_require( "ssk2.external.mydevelopers.autolan.Server" )
+	local_require( "ssk2.external.proxy" ) -- Adds "propertyUpdate" events to any Corona display object.; Source unknown
+	local_require( "ssk2.external.wait" ) -- Adapted from Steven Johnson's work (ggcrunchy) https://github.com/ggcrunchy/samples
+	local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
+	local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
+	local_require("ssk2.external.portableRandom") -- Portable random library
+	local_require("ssk2.external.global_lock") -- Portable random library
+	local_require("ssk2.external.rle") -- Run Length Encoder
 
 
 	-- =============================================================
@@ -202,11 +145,11 @@ ssk.init = function( params )
 	ssk.core.init( params.launchArgs or {} )
 
 	--  
-	--	Export any Requested Features
+	--	Export Core, Colors, System
 	--
-	if( ssk.__exportCore ) then ssk.core.export() end
-	if( params.exportColors ) then ssk.colors.export() end
-	if( params.exportSystem ) then ssk.system.export() end
+	ssk.core.export()
+	ssk.colors.export()
+	ssk.system.export()
 
 	-- =============================================================
 	-- FIN

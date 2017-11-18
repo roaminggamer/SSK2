@@ -19,12 +19,8 @@ local _RGDisplay = {}
 
 shallowCopy( require( "ssk2.display.extended" ), _RGDisplay )
 shallowCopy( require( "ssk2.display.layers" ), _RGDisplay )
-
-if( _G.ssk.__isPro ) then
-	shallowCopy( require( "ssk2.display.arcs" ), _RGDisplay )
-	
-	shallowCopy( require( "ssk2.display.lines" ), _RGDisplay )
-end
+shallowCopy( require( "ssk2.display.arcs" ), _RGDisplay )
+shallowCopy( require( "ssk2.display.lines" ), _RGDisplay )
 
 _G.ssk.display = _RGDisplay
 

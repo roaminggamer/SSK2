@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- string.* - Extension(s)
--- =============================================================
---   Last Updated: 16 JAN 2017
--- Last Validated: 16 JAN 2017
 -- =============================================================
 
 local strLen = string.len

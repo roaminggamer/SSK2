@@ -1,10 +1,7 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Display Factories
--- =============================================================
---   Last Updated: 29 NOV 2016
--- Last Validated: 29 NOV 2016
 -- =============================================================
 
 local displayExtended = {}
@@ -17,8 +14,7 @@ local display_newImageRect 	= display.newImageRect
 local display_newSprite 		= display.newSprite
 
 -- Lists of 'listeners' that will be automatically hooked up up and started IF:
--- 1. enableAutoListeners is `true`
--- 2. The listener is supplied in the `visualParams` parameters table.
+-- The listener is supplied in the `visualParams` parameters table.
 --
 local autoRuntimeListeners = { 
 	"accelerometer",
@@ -75,7 +71,7 @@ local addBody
 local addBehaviors
 
 -- ==
---    ssk.display.newRect() - Extends display.newRect() by adding visual parameters and physics parameters.
+--    rgsk.display.newRect() - Extends display.newRect() by adding visual parameters and physics parameters.
 -- ==
 function displayExtended.newRect( group, x, y, visualParams, bodyParams, behaviorsList )
 	group = group or display.currentStage
@@ -118,20 +114,13 @@ function displayExtended.newRect( group, x, y, visualParams, bodyParams, behavio
 	dObj.y = y
 	
 	applyVisualParams( dObj, visualParams )
-	
-	if(bodyParams) then
-		addBody(dObj, bodyParams) 
-		if( dObj.density and not dObj.mass ) then
-			dObj.mass = 0.001 * width * height * dObj.density
-		end
+	addBody(dObj, bodyParams) 
+
+	for k,v in pairs( autoListeners ) do
+		if( dObj[v] ) then dObj:addEventListener( v ) end
 	end
-	if( ssk.__enableAutoListeners ) then
-		for k,v in pairs( autoListeners ) do
-			if( dObj[v] ) then dObj:addEventListener( v ) end
-		end
-		for k,v in pairs( autoRuntimeListeners ) do
-			if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
-		end
+	for k,v in pairs( autoRuntimeListeners ) do
+		if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
 	end
 
 	if(behaviorsList) then addBehaviors(dObj, behaviorsList) end
@@ -139,7 +128,7 @@ function displayExtended.newRect( group, x, y, visualParams, bodyParams, behavio
 end
 
 -- ==
---    ssk.display.newCircle() - Extends display.newCircle() by adding visual parameters and physics parameters.
+--    rgsk.display.newCircle() - Extends display.newCircle() by adding visual parameters and physics parameters.
 -- ==
 function displayExtended.newCircle( group, x, y, visualParams, bodyParams, behaviorsList )
 	group = group or display.currentStage
@@ -163,21 +152,15 @@ function displayExtended.newCircle( group, x, y, visualParams, bodyParams, behav
 	applyVisualParams( dObj, visualParams )
 
 	if(bodyParams) then 
-		local bodyParams = table.shallowCopy(bodyParams)
-		bodyParams.radius = radius
-		addBody(dObj, bodyParams) 
-		if( dObj.density ) then
-			dObj.mass = 0.001 * math.pi * radius * radius * dObj.density
-		end
+		bodyParams.radius = bodyParams.radius or radius		
 	end
+	addBody(dObj, bodyParams) 
 
-	if( ssk.__enableAutoListeners ) then
-		for k,v in pairs( autoListeners ) do
-			if( dObj[v] ) then dObj:addEventListener( v ) end
-		end
-		for k,v in pairs( autoRuntimeListeners ) do
-			if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
-		end
+	for k,v in pairs( autoListeners ) do
+		if( dObj[v] ) then dObj:addEventListener( v ) end
+	end
+	for k,v in pairs( autoRuntimeListeners ) do
+		if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
 	end
 	
 	if(behaviorsList) then addBehaviors(dObj, behaviorsList) end
@@ -185,7 +168,7 @@ function displayExtended.newCircle( group, x, y, visualParams, bodyParams, behav
 end
 
 -- ==
---    ssk.display.newImage() - Extends display.newImage() by adding visual parameters and physics parameters.
+--    rgsk.display.newImage() - Extends display.newImage() by adding visual parameters and physics parameters.
 -- ==
 function displayExtended.newImage( group, x, y, imgSrc, visualParams, bodyParams, behaviorsList )
 	group = group or display.currentStage
@@ -204,20 +187,13 @@ function displayExtended.newImage( group, x, y, imgSrc, visualParams, bodyParams
 	local width  = dObj.contentWidth
 	local height = dObj.contentHeight
 
-	if(bodyParams) then 
-		addBody(dObj, bodyParams, imgSrc) 
-		if( dObj.density and not dObj.mass ) then
-			dObj.mass = 0.001 * width * height * dObj.density
-		end
-	end
+	addBody(dObj, bodyParams, imgSrc) 
 
-	if( ssk.__enableAutoListeners ) then
-		for k,v in pairs( autoListeners ) do
-			if( dObj[v] ) then dObj:addEventListener( v ) end
-		end
-		for k,v in pairs( autoRuntimeListeners ) do
-			if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
-		end
+	for k,v in pairs( autoListeners ) do
+		if( dObj[v] ) then dObj:addEventListener( v ) end
+	end
+	for k,v in pairs( autoRuntimeListeners ) do
+		if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
 	end
 
 	if(behaviorsList) then addBehaviors(dObj, behaviorsList) end
@@ -225,7 +201,7 @@ function displayExtended.newImage( group, x, y, imgSrc, visualParams, bodyParams
 end
 
 -- ==
---    ssk.display.imageRect() - Extends display.newImageRect() by adding visual parameters and physics parameters.
+--    rgsk.display.imageRect() - Extends display.newImageRect() by adding visual parameters and physics parameters.
 -- ==
 function displayExtended.newImageRect( group, x, y, imgSrc, visualParams, bodyParams, behaviorsList )
 	group = group or display.currentStage
@@ -264,7 +240,6 @@ function displayExtended.newImageRect( group, x, y, imgSrc, visualParams, bodyPa
 			sheetData.infoFile = strGSub(sheetData.infoFile,"%.png","")
 			sheetData.info = require(sheetData.infoFile)
 			sheetData.sheet = graphics.newImageSheet( sheetData.imgFile, sheetData.info:getSheet() )
-			--table.dump(sheetData)
 		end		
 		local frameIndex = sheetData.info:getFrameIndex(visualParams.frameName)
 		dObj = display_newImageRect( group, sheetData.sheet, frameIndex, width, height )
@@ -281,20 +256,13 @@ function displayExtended.newImageRect( group, x, y, imgSrc, visualParams, bodyPa
 
 	applyVisualParams( dObj, visualParams )
 
-	if(bodyParams) then 
-		addBody(dObj, bodyParams, imgSrc) 
-		if( dObj.density and not dObj.mass ) then
-			dObj.mass = 0.001 * width * height * dObj.density
-		end
-	end
+	addBody(dObj, bodyParams, imgSrc) 
 
-	if( ssk.__enableAutoListeners ) then
-		for k,v in pairs( autoListeners ) do
-			if( dObj[v] ) then dObj:addEventListener( v ) end
-		end
-		for k,v in pairs( autoRuntimeListeners ) do
-			if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
-		end
+	for k,v in pairs( autoListeners ) do
+		if( dObj[v] ) then dObj:addEventListener( v ) end
+	end
+	for k,v in pairs( autoRuntimeListeners ) do
+		if( dObj[v] ) then Runtime:addEventListener( v, dObj ) end
 	end
 
 	if(behaviorsList) then addBehaviors(dObj, behaviorsList) end
@@ -303,7 +271,7 @@ end
 
 
 -- ==
---    ssk.display.sprite() - Extends display.newImageRect() by adding visual parameters and physics parameters.
+--    rgsk.display.sprite() - Extends display.newImageRect() by adding visual parameters and physics parameters.
 -- ==
 function displayExtended.newSprite( group, x, y, imgSrc, sequenceData, visualParams, bodyParams, behaviorsList )
 	group = group or display.currentStage
@@ -356,12 +324,7 @@ function displayExtended.newSprite( group, x, y, imgSrc, sequenceData, visualPar
 
 	applyVisualParams( dObj, visualParams )
 
-	if(bodyParams) then
-		addBody(dObj, bodyParams, imgSrc) 
-		if( dObj.density and not dObj.mass ) then
-			dObj.mass = 0.001 * width * height * dObj.density
-		end
-	end
+	addBody(dObj, bodyParams, imgSrc)
 
 	if(behaviorsList) then addBehaviors(dObj, behaviorsList) end
 
@@ -387,7 +350,7 @@ function displayExtended.newSprite( group, x, y, imgSrc, sequenceData, visualPar
 end
 
 -- ==
---    initDPP() - Sets the default body parameters for all ssk created display objects that have bodies
+--    initDPP() - Sets the default body parameters for all rgsk created display objects that have bodies
 -- ==
 initDPP = function()
 	dpp = {}
@@ -411,7 +374,7 @@ initDPP = function()
 end
 
 -- ==
---    ssk.display.listDPP() - (For Debug).  Prints current default physics parameters
+--    rgsk.display.listDPP() - (For Debug).  Prints current default physics parameters
 -- ==
 function displayExtended.listDPP()
 	print("dpp (Default Physical Params):")
@@ -423,14 +386,14 @@ end
 
 
 -- ==
---    ssk.display.getDPP() - Returns the default physics parameters.
+--    rgsk.display.getDPP() - Returns the default physics parameters.
 -- ==
 function displayExtended.getDPP(name)
 	return dpp[name]
 end
 
 -- ==
---    ssk.display.setDPP() - Replaces the DPP table with a new one.
+--    rgsk.display.setDPP() - Replaces the DPP table with a new one.
 -- ==
 function displayExtended.setDPP(name,value)
 	dpp[name] = value
@@ -533,6 +496,7 @@ end
 --    addBody() - Local function for adding bodies to the extended display objects.
 -- ==
 addBody = function( obj, bodyParams, imageFile )
+	if( not bodyParams ) then return end
 	-- Copy basic body params into local params	
 	local params = 
 	{

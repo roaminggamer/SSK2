@@ -1,8 +1,5 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
--- =============================================================
---   Last Updated: 18 AUG 2017
--- Last Validated: 18 AUG 2017
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 -- Changes:
 -- 18 AUG 2017 - Saves are now defered 15 ms.  This allows multipe-sets

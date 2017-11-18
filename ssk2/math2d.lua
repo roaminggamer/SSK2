@@ -1,8 +1,5 @@
 -- =============================================================
--- Copyright Roaming Gamer, LLC. 2008-2016 (All Rights Reserved)
--- =============================================================
---   Last Updated: 12 JAN 2017
--- Last Validated: 12 JAN 2017
+-- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
 
 -- Localizing math functions for speedup!
@@ -25,22 +22,6 @@ if( not _G.ssk ) then
 	_G.ssk = {}
 end
 _G.ssk.math2d = math2do
-
-
-if( ssk.__math2DPlugin ) then
-	local function loadPlugin()
-		return require( "plugin.math2d" )
-	end
-	local loaded,msg = pcall( loadPlugin, nil )
-
-	if( loaded )  then
-		math2do = nil
-		_G.ssk.math2d = loadPlugin() 
-		print(loaded, "Loaded plugin version of math2d")
-		return _G.ssk.math2d
-	end
-end
-
 
 -- ==
 --    ssk.math2d.add( ... [ , altRet ]) - Calculates the sum of two vectors: <x1, y1> + <x2, y2> == <x1 + x2 , y1 + y2>
