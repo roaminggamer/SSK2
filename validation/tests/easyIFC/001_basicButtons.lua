@@ -91,22 +91,55 @@ function test.run( group, params )
    curX = curX + 150
    easyIFC:presetToggle( group, "default_rg", curX, curY, nil, nil, "", onToggle )
 
-   -- Radio Buttons
+   -- Radio Buttons Set A
+   local groupA = display.newGroup()
+   group:insert(groupA)
    curX = startX
-   curY = curY + 200
+   curY = curY + 150
    local function onRelease( event )
    	print( event.target:getText(), event.target:pressed() )
    end
-   easyIFC:presetRadio( group, "default", curX, curY, 180, 50, "Radio Button 1", onRelease )
+   easyIFC:presetRadio( groupA, "default", curX, curY, 180, 50, "Radio Button 1", onRelease )
 
    curX = curX + 200
-   easyIFC:presetRadio( group, "default_radio", curX, curY, 35, 35, "Radio Button 2", onRelease )
+   easyIFC:presetRadio( groupA, "default_radio", curX, curY-10, 35, 35, "Radio Button 2", onRelease )
 
    curX = curX + 200
-   easyIFC:presetRadio( group, "default_radio", curX, curY, 35, 35, "Radio Button 3", onRelease )
+   easyIFC:presetRadio( groupA, "default_radio", curX, curY-10, 35, 35, "Radio Button 3", onRelease )
 
    curX = curX + 200
-   easyIFC:presetRadio( group, "default_radio", curX, curY, 35, 35, "Radio Button 4", onRelease )
+   easyIFC:presetRadio( groupA, "default_radio", curX, curY-10, 35, 35, "Radio Button 4", onRelease )
+
+   local outline = newRect( groupA, centerX, curY, { fill = _T_, strokeWidth = 2, w = fullw-4, h = 80 })
+   local label = display.newText( groupA, "Radio Set A", left+ 5, outline.y - 45, "Raleway-Light.ttf", 22 )
+   label.anchorX = 0
+   label.anchorY = 1
+
+
+   -- Radio Buttons Set B
+   local groupB = display.newGroup()
+   group:insert(groupB)
+   curX = startX
+   curY = curY + 120
+   local function onRelease( event )
+      print( event.target:getText(), event.target:pressed() )
+   end
+   easyIFC:presetRadio( groupB, "default", curX, curY, 180, 50, "Radio Button 1", onRelease )
+
+   curX = curX + 200
+   easyIFC:presetRadio( groupB, "default_radio", curX, curY-10, 35, 35, "Radio Button 2", onRelease )
+
+   curX = curX + 200
+   easyIFC:presetRadio( groupB, "default_radio", curX, curY-10, 35, 35, "Radio Button 3", onRelease )
+
+   curX = curX + 200
+   easyIFC:presetRadio( groupB, "default_radio", curX, curY-10, 35, 35, "Radio Button 4", onRelease )
+
+   local outline = newRect( groupB, centerX, curY, { fill = _T_, strokeWidth = 2, w = fullw-4, h = 80 })
+   local label = display.newText( groupB, "Radio Set B", left+ 5, outline.y - 45, "Raleway-Light.ttf", 22 )
+   label.anchorX = 0
+   label.anchorY = 1
+
 
 end
 

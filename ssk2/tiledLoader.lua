@@ -95,8 +95,8 @@ function tiledLoader.new()
 
 	-- Load and pre-process level
 	--
-	function loader.load( path, params )   
-		params = params or {}
+	function loader.load( path, lparams )   
+		lparams = lparams or {}
 
 		-- Raw Tiled Level
 		data = table.deepCopy(require( levelsPath .. "." .. path ))
@@ -174,6 +174,7 @@ function tiledLoader.new()
 	--
 	local newImageRect = ssk.display.newImageRect
 	function loader.drawObj( group, rec, params ) 
+		group = group or display.currentStage
 		params = params or {}
 		local obj
 		if( rec.gid ) then
@@ -185,9 +186,7 @@ function tiledLoader.new()
    	end
    	if( rec.flip.x ) then obj.xScale = -obj.xScale end
    	if( rec.flip.y ) then obj.yScale = -obj.yScale end
-
-   	table.dump(rec)
-   	centerAnchor(obj)
+   	centerAnchor(obj)   	
 	end
 
 	--
@@ -235,7 +234,7 @@ function tiledLoader.new()
 	-- Get image
 	--
 	function loader.getImagePath( gid )
-		return images[gid].path
+		return images[gid].image
 	end
 
 	--
