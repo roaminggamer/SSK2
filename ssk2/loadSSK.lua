@@ -26,7 +26,7 @@ local measure 		= false
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2017.11.18" end
+ssk.getVersion = function() return "2017.11.20" end
 
 local initialized = false
 ssk.init = function( params )
@@ -103,9 +103,9 @@ ssk.init = function( params )
 	-- =============================================================
 	-- External Libs/Modules (Written by others and used with credit.)
 	-- =============================================================
-	_G.ssk.autolan = {}
-	_G.ssk.autolan.client = local_require( "ssk2.external.mydevelopers.autolan.Client" )
-	_G.ssk.autolan.server = local_require( "ssk2.external.mydevelopers.autolan.Server" )
+	--_G.ssk.autolan = {}
+	--_G.ssk.autolan.client = local_require( "ssk2.external.mydevelopers.autolan.Client" )
+	--_G.ssk.autolan.server = local_require( "ssk2.external.mydevelopers.autolan.Server" )
 	local_require( "ssk2.external.proxy" ) -- Adds "propertyUpdate" events to any Corona display object.; Source unknown
 	local_require( "ssk2.external.wait" ) -- Adapted from Steven Johnson's work (ggcrunchy) https://github.com/ggcrunchy/samples
 	local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
