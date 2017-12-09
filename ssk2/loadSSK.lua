@@ -26,7 +26,7 @@ local measure 		= false
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2017.12.04" end
+ssk.getVersion = function() return "2017.12.08" end
 
 local initialized = false
 ssk.init = function( params )

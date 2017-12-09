@@ -15,11 +15,11 @@ local architectureInfo      = system.getInfo("architectureInfo")
 -- Environment
 -- =============================================================
 ssk_system.onSimulator    = ( platformEnvironment == "simulator" )
-ssk_system.oniOS          = ( platformName == "iPhone OS" ) 
-ssk_system.onAndroid      = ( platformName == "Android" ) 
-ssk_system.onWinPhone     = ( platformName == "WinPhone" )
-ssk_system.onOSX          = ( platformName == "Mac OS X" )
-ssk_system.onAppleTV      = ( platformName == "tvOS" )
+ssk_system.oniOS          = ( platformName == "ios" ) 
+ssk_system.onAndroid      = ( platformName == "android" ) 
+ssk_system.onWinPhone     = false -- No longer supported
+ssk_system.onOSX          = ( platformName == "macos" )
+ssk_system.onAppleTV      = ( platformName == "tvos" )
 --[[
 ssk_system.onAndroidTV 	= ( (system.getInfo("androidDisplayDensityName") == "tvdpi") or
                       		    (tostring(system.getInfo("androidDisplayApproximateDpi")) == "213" ) ) 
@@ -29,13 +29,14 @@ ssk_system.onAndroidTV	= ( la and la.android and
                                 la.android.intent and la.android.intent.category and
                                 la.android.intent.category.LEANBACK_LAUNCHER )
 
-ssk_system.onWin          = ( platformName == "Win" )
+ssk_system.onWin          = ( platformName == "win32" )
 ssk_system.onNook         = ( targetAppStore == "nook" )
 ssk_system.onAmazon       = ( targetAppStore == "amazon" or
 	                            ( string.find( system.getInfo("model"), "Fire" ) ~= nil ) )
 ssk_system.onDesktop      = ( ( ssk_system.onOSX or ssk_system.onWin ) and 
 	                            not ssk_system.onSimulator )
-ssk_system.onDevice       = ( ssk_system.onAndroid or 
+ssk_system.onDevice       = ( not ssk_system.onSimulator and
+                              ssk_system.onAndroid or 
 	                            ssk_system.oniOS or 
 	                            ssk_system.onAppleTVOS or 
 	                            ssk_system.onAndroidTV  )
