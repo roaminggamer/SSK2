@@ -5,22 +5,17 @@ Copyright (C) Roaming Gamer, LLC. 2008-2017 (All Rights Reserved)
 
 SUPPORT
 =======
-> I do not provide unpaid direct support to individuals.
-> I will answer forums posts.
+> I WILL ONLY ANSWER FORUMS POSTS.
+> I do not provide UNPAID direct support to individuals.
+
 > Please be sure to read the docs here: https://roaminggamer.github.io/RGDocs/pages/SSK2/#help
 > Please do not e-mail me.  
 > Please do not private message me.  
+
 > IF YOU HAVE A QUESTION, *PLEASE* USE THE FORUMS.
 
 HOW TO POST TO FORUMS
 =====================
-** WARNING **  ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** 
-
-   If I can't easily read and understand your post... 
-   I'm probably not going to spend a lot of time responding.
-
-** WARNING **  ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING ** ** WARNING **  ** WARNING ** 
-
 Post here: https://forums.coronalabs.com/forum/553-other-third-party-tools/
 
 Title like this --> SSK2: Question Summary Here
@@ -34,7 +29,6 @@ Additional, clear, concise, and precise paragraphs, and sentences supporting pos
 
 ...
 
-
 LICENSE
 =======
 I am constantly developing this software to provide you with a better development experience and any suggestions are welcome. As noted above, just post questions and ideas to the forums.
@@ -46,7 +40,7 @@ I am constantly developing this software to provide you with a better developmen
 > SSK2 can be used without crediting the project (SSK2).
 > SSK2 is NOT free to sell for anything.
 > SSK2 is NOT free to credit yourself with.
-> SSK2 is NOT to be distributed in any form (other than in an game/app binary.)
+> SSK2 source is NOT to be distributed in any form.
 
 Thanks for you support.
 
@@ -61,3 +55,4 @@ NOTE TO EDUCATORS
 =================
 If you wish to use SSK2 in your course(s) and/or course materials, please contact me here:
 roaminggamer+ssk2@gmail.com.
+

@@ -26,7 +26,7 @@ local measure 		= false
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2017.12.08" end
+ssk.getVersion = function() return "2017.12.10" end
 
 local initialized = false
 ssk.init = function( params )
@@ -97,7 +97,6 @@ ssk.init = function( params )
 	local_require "ssk2.files"
 	local_require "ssk2.tiledLoader"
 	local_require "ssk2.easyPositioner"
-	local_require "ssk2.adHelpers.adHelpers"
 	local_require "ssk2.easyBench" -- Easy Benchmarking Lib
 	
 	-- =============================================================

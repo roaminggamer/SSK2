@@ -1,5 +1,5 @@
 # Super Starter Kit 2
-(**Latest Release:** `2017.009`)
+(**Latest Release:** `2017.12.10`)
 
 [Find the full docs here.](https://roaminggamer.github.io/RGDocs/pages/SSK2/)
 
