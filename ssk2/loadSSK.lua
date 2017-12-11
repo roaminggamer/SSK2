@@ -26,7 +26,7 @@ local measure 		= false
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2017.12.10" end
+ssk.getVersion = function() return "2017.12.11" end
 
 local initialized = false
 ssk.init = function( params )
@@ -41,6 +41,9 @@ ssk.init = function( params )
 
 	-- Snag the debug level setting
 	ssk.__debugLevel = params.debugLevel or 0
+
+	-- LaunchArgs
+	ssk.launchArgs = params.launchArgs or {} 
 
 	--
 	-- Track the font users asked for as their gameFont 
@@ -65,7 +68,6 @@ ssk.init = function( params )
 	local_require "ssk2.extensions.display"
 	local_require "ssk2.extensions.io"
 	local_require "ssk2.extensions.math"
-	local_require "ssk2.extensions.native"
 	local_require "ssk2.extensions.string"
 	local_require "ssk2.extensions.table"
 	local_require "ssk2.extensions.timer2"
