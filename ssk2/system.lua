@@ -53,7 +53,6 @@ ssk_system.targetDevice          = not ssk_system.targetDesktop
 -- http://www.everymac.com/ultimate-mac-lookup/
 -- https://www.theiphonewiki.com/wiki/Models#iPhone
 -- =============================================================
-print("YO!", ssk_system.onDevice)
 if( ssk_system.onDevice ) then
    ssk_system.oniPhone4       = ( string.find( architectureInfo, "iPhone4" ) ~= nil )
    ssk_system.oniPhone5       = ( string.find( architectureInfo, "iPhone5,1" ) ~= nil ) or
@@ -92,7 +91,6 @@ else
    local width = math.floor((display.actualContentWidth/display.contentScaleX)+0.5)
    local height = math.floor((display.actualContentHeight/display.contentScaleY)+0.5)
    local wh = string.format("%d_%d", width, height )
-   print("--------------------------", wh )
    ssk_system.oniPhone4       = wh == "640_960"
    ssk_system.oniPhone5       = wh == "640_1136"
    ssk_system.oniPhone5c      = false -- SAME ASPECT RATIO AS oniPhone5
