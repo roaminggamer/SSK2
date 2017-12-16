@@ -10,7 +10,6 @@ _G.ssk.android = android
 
 if( ssk.system.onAndroid ) then
    function android.captureBackButton( noCB, yesCB )
-      -- Called immediately after scene has moved onscreen:
       local alert
       local function onComplete( event )
          if "clicked" == event.action then

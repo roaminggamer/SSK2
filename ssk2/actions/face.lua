@@ -3,7 +3,7 @@
 -- =============================================================
 -- Actions Library - Facing Functions
 -- =============================================================
-function face( obj, params )
+local function face( obj, params )
 	local target = params.target or obj._target 
 	local angle  = params.angle
 	local doPause = params.pause
