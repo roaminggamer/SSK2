@@ -34,7 +34,7 @@ local gCount2
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2018.01.02" end
+ssk.getVersion = function() return "2018.01.20" end
 
 local initialized = false
 ssk.init = function( params )
@@ -46,6 +46,10 @@ ssk.init = function( params )
 		debugLevel 				= 0, -- Some modules use this to print extra debug messages
 		                          -- Typical levels are 0, 1, 2 (where 2 is the most verbose)
 	}
+
+	-- Ensure there is a gameFont
+	params.gameFont = params.gameFont or native.systemFont
+	ssk.__gameFont = params.gameFont
 
 	-- WIP Featuer to support HTML5
 	_G.HTML5_MODE = (params.html5 == true)
@@ -144,6 +148,17 @@ ssk.init = function( params )
 		ssk.__deltaTime = curTime - self.__lastTime
 		self.__lastTime = curTime
 	end; Runtime:addEventListener("enterFrame",ssk)
+
+	-- =============================================================
+	-- Current Orientation Detection
+	-- =============================================================
+	ssk.__currentOrientation = (display.contentWidth<display.contentHeight) and "portrait" or "landscapeRight"
+	local function onOrientationChange( event )
+    ssk.__currentOrientation = event.type
+ 	end  
+	Runtime:addEventListener( "orientation", onOrientationChange )
+	function ssk.orientation() return ssk.__currentOrientation end
+
 
 	-- =============================================================
 	-- Initialize The Core

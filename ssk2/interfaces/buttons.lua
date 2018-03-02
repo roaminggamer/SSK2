@@ -42,7 +42,7 @@ function buttons:addButtonPreset( presetName, params )
    entry.labelSize     	   = fnn(params.labelSize, 20)
    entry.labelColor    	   = fnn(params.labelColor, {1,1,1,1})
    entry.selLabelColor 	   = fnn(params.selLabelColor, params.labelColor, {1,1,1,1})
-   entry.labelFont 		   = fnn(params.labelFont, ssk.__gameFont, native.systemFontBold)
+   entry.labelFont 		   = fnn(params.font, params.labelFont, ssk.__gameFont, native.systemFontBold)
    entry.labelOffset 		= fnn(params.labelOffset, {0,0})
    entry.labelHorizAlign 	= fnn(params.labelHorizAlign, "center" )
    entry.baseFolder 	      = fnn(params.baseFolder, system.ResourceDirectory )
@@ -94,7 +94,7 @@ function buttons:newButton( parentGroup, params )
    buttonInstance.labelColor[4]     = buttonInstance.labelColor[4]  or 1
    buttonInstance.selLabelColor[4]  = buttonInstance.selLabelColor[4]  or 1
 
-   buttonInstance.labelFont         = fnn(buttonInstance.labelFont, native.systemFontBold)
+   buttonInstance.labelFont         = fnn(buttonInstance.font, buttonInstance.labelFont, native.systemFontBold)
    buttonInstance.labelOffset       = fnn(buttonInstance.labelOffset, {0,0})
    buttonInstance.labelHorizAlign 	= fnn(buttonInstance.labelHorizAlign, "center" )
    buttonInstance.emboss            = fnn(buttonInstance.emboss, false)

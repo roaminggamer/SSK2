@@ -526,6 +526,15 @@ function util.findFileInPath( fileToFind, folderToSearch )
    return recurse()
 end   
 
+-- Not well tested yet. 180120
+function util.size( file )
+  local fh = io.open(file, "rb")
+  if( not fh ) then return 0 end
+  local size = assert(fh:seek("end"))
+  fh:close()
+  return size
+end
+
 -- =============================================================
 -- =============================================================
 function util.attach( module )
