@@ -148,8 +148,6 @@ local angle2Vec 	= math2d.angle2Vec
 local angle2Vec2 	= math2d.angle2Vec2
 local vec2Angle 	= math2d.vec2Angle
 local normVec 		= math2d.normVec
-local lenVec 		= math2d.lenVec
-local lenVec2 		= math2d.lenVec2
 
 local lenVecR 		= rmath2d.length
 

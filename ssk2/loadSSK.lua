@@ -34,7 +34,7 @@ local gCount2
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2018.01.20" end
+ssk.getVersion = function() return "2018.03.17" end
 
 local initialized = false
 ssk.init = function( params )
@@ -51,6 +51,7 @@ ssk.init = function( params )
 	params.gameFont = params.gameFont or native.systemFont
 	ssk.__gameFont = params.gameFont
 
+
 	-- WIP Featuer to support HTML5
 	_G.HTML5_MODE = (params.html5 == true)
 
@@ -63,7 +64,8 @@ ssk.init = function( params )
 	--
 	-- Track the font users asked for as their gameFont 
 	--
-	ssk.gameFont = params.gameFont or native.systemFont
+	--
+	function ssk.gameFont() return ssk.__gameFont end
 
 	-- =============================================================
 	-- If measuring, get replacement 'require'

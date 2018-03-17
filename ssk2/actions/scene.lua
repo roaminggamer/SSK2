@@ -15,7 +15,7 @@ local subVec            		= ssk.math2d.sub
 local diffVec            		= ssk.math2d.diff
 local getNormals        		= ssk.math2d.normals
 local lenVec            		= ssk.math2d.length
-local lenVec2           		= ssk.math2d.length2
+local len2Vec           		= ssk.math2d.length2
 local normVec           		= ssk.math2d.normalize
 local segmentCircleIntersect	= ssk.math2d.segmentCircleIntersect
 local distanceBetween         = ssk.math2d.distanceBetween
@@ -74,12 +74,12 @@ scene.circWrap = function( objectToWrap, point, radius )
 	local errorMargin = 0.01
 	local x, y, rx, ry = objectToWrap.x, objectToWrap.y, objectToWrap._rx, objectToWrap._ry
 	local vec = diffVec( rx, ry, x, y, true )		
-	local len2 = lenVec2( vec )
+	local len2 = len2Vec( vec )
 	if( len2 <= errorMargin ) then return end 
 
 	-- If we're less than radius from center, skip all subsequent calculations
 	local ox, oy = x - point.x, y - point.y
-	if(lenVec2(ox,oy) < radius * radius) then
+	if(len2Vec(ox,oy) < radius * radius) then
 		objectToWrap._rx = objectToWrap.x
 		objectToWrap._ry = objectToWrap.y
 		return 

@@ -15,7 +15,7 @@ local subVec            = ssk.math2d.sub
 local diffVec           = ssk.math2d.diff
 local getNormals        = ssk.math2d.normals
 local lenVec            = ssk.math2d.length
-local lenVec2           = ssk.math2d.length2
+local len2Vec           = ssk.math2d.length2
 local normVec           = ssk.math2d.normalize
 
 local isValid 			= display.isValid
@@ -86,7 +86,7 @@ movep.limitV = function( obj, params )
 	local vx,vy = obj:getLinearVelocity()
 	local rate 	= params.rate or 100
 
-	if(lenVec2( vx, vy ) <= ( rate ^ 2) ) then return end
+	if(len2Vec( vx, vy ) <= ( rate ^ 2) ) then return end
 
 	local vec = normVec({ x = vx, y = vy } )
 	vec = scaleVec( vec, rate )

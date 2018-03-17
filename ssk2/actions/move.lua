@@ -14,7 +14,7 @@ local addVec            = ssk.math2d.add
 local subVec            = ssk.math2d.sub
 local getNormals        = ssk.math2d.normals
 local lenVec            = ssk.math2d.length
-local lenVec2           = ssk.math2d.length2
+local len2Vec           = ssk.math2d.length2
 local normVec           = ssk.math2d.normalize
 
 local isValid 			= display.isValid

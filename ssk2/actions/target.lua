@@ -13,7 +13,7 @@ local addVec            = ssk.math2d.add
 local subVec            = ssk.math2d.sub
 local getNormals        = ssk.math2d.normals
 local lenVec            = ssk.math2d.length
-local lenVec2           = ssk.math2d.length2
+local len2Vec           = ssk.math2d.length2
 local normVec           = ssk.math2d.normalize
 
 local fnn 				= _G.fnn
@@ -69,7 +69,7 @@ target.loseAtMaxDistance = function( obj, params )
 	maxDist = maxDist ^ 2
 
 	local dist = subVec( obj, obj._target )
-	dist = lenVec2( dist )
+	dist = len2Vec( dist )
 
 	if( dist >= maxDist ) then 
 		obj._target = nil
@@ -114,7 +114,7 @@ target.acquireNearest = function( obj, params )
 	for k,v in pairs( targets ) do
 		if( isValid( v ) and not v._targeter ) then
 			dist = subVec( obj, v )
-			dist = lenVec2( dist )
+			dist = len2Vec( dist )
 			if( dist <= maxDist ) then
 				maxDist = dist
 				newTarget = v

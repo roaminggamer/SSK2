@@ -25,4 +25,14 @@ function display.newGroup( ... )
 	return group
 end
 
+-- removeWithDelay( func ) - Remove an object in the next frame or after delay
+--
+function display.removeWithDelay( obj, delay )
+    delay = delay or 1    
+    timer.performWithDelay(delay, 
+        function() 
+            display.remove( obj )
+        end )
+end
+
 
