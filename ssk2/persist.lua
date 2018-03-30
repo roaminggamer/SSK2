@@ -67,18 +67,36 @@ persist.setSecure = function( )
 	tableSave = table.secure_save
 end
 
+-- DEBUG FEATURE TO GET ENTIRE RECORD
+persist.getRaw = function( fileName )
+	params			= params or {}
+	local record 	= fileCache[fileName] 
+	if( record == nil ) then		
+		record = tableLoad( fileName, params.base ) or { defaults = {} }
+	end
+
+	fileCache[fileName] = record
+
+	return record
+end
+
 persist.get = function( fileName, fieldName, params )
 	params			= params or {}
 	local record 	= fileCache[fileName] 
 	if( record == nil ) then		
 		record = tableLoad( fileName, params.base ) or { defaults = {} }
 	end
+
+	fileCache[fileName] = record
+	
 	if( record[fieldName] == nil ) then
 		record[fieldName] = record.defaults[fieldName]
 	end
+	
 	if( tonumber(record[fieldName]) ) then
 		return tonumber(record[fieldName])
 	end
+	
 	return record[fieldName] 
 end
 
@@ -86,13 +104,16 @@ persist.set = function( fileName, fieldName, value, params )
 	params		= params or {}
 
 	local record = fileCache[fileName] 
+
 	if( not record ) then
 		record = tableLoad( fileName, params.base ) or { defaults = {} }
 	end
 
+	fileCache[fileName] = record
+
 	record[fieldName] = value
 
-	scheduleSave( record, fileName, params.base   )
+	scheduleSave( record, fileName, params.base  )
 end
 
 persist.setDefault = function( fileName, fieldName, value, params )

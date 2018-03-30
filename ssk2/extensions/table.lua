@@ -470,10 +470,17 @@ function table.repairIndicies( theTable )
 end
 
 -- ==
---    getRandom() - Numerically indexed tables ONLY
+--    getRandom() - Handles any index style.
 -- ==
 table.getRandom = function( t )
-   if( #t == 0 ) then return nil end
+   if( #t == 0 ) then 
+      if( table.count(t) == 0 ) then return nil end
+      local tmp = {}
+      for k,v in pairs(t) do
+         tmp[#tmp+1] = v
+      end
+      return tmp[mRand(1,#tmp)]
+   end
    return t[mRand(1,#t)]
 end
 

@@ -657,6 +657,11 @@ local function onSound( event )
 	end
 end; Runtime:addEventListener( "onSound", onSound )
 
+function soundMgr.stopListener( )	
+	Runtime:removeEventListener( "onSound", onSound )
+end
+
+
 --[[
 timer.performWithDelay(
 	500,
