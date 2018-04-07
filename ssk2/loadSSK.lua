@@ -34,7 +34,7 @@ local gCount2
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2018.03.29" end
+ssk.getVersion = function() return "2018.04.02" end
 
 local initialized = false
 ssk.init = function( params )
