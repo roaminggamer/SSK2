@@ -67,16 +67,24 @@ persist.setSecure = function( )
 	tableSave = table.secure_save
 end
 
+-- DANGER: DESTROYS ENTIRE FILE CONTENTS!
+persist.reset = function( fileName, params )
+	params = params or {}
+	local record = { defaults = {} }
+	fileCache[fileName] = record
+	scheduleSave( record, fileName, params.base  )	
+	return record
+end
+
+
 -- DEBUG FEATURE TO GET ENTIRE RECORD
-persist.getRaw = function( fileName )
-	params			= params or {}
+persist.getRaw = function( fileName, params  )
+	params = params or {}
 	local record 	= fileCache[fileName] 
 	if( record == nil ) then		
 		record = tableLoad( fileName, params.base ) or { defaults = {} }
 	end
-
 	fileCache[fileName] = record
-
 	return record
 end
 

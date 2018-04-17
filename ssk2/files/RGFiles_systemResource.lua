@@ -30,6 +30,19 @@ function systemResource.getPath( path )
 	return fullPath
 end
 
+function systemResource.getPath( path )
+	local fullPath
+	if( ssk.system.onAndroid ) then
+		fullPath = path
+	else
+		fullPath = RGFiles.resourceRoot .. path
+	end
+	fullPath = RGFiles.util.repairPath( fullPath )
+	return fullPath
+end
+
+
+
 -- =============================================================
 -- =============================================================
 function systemResource.attach( module )

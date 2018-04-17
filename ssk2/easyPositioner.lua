@@ -144,16 +144,45 @@ function easyPositioner.start()
 				undo = { curObject, curObject.x, curObject.y }
 				curObject.x = curObject.x + moveBy
 				easyMoverText.text = "< " .. curObject.x .. ", " .. curObject.y .. " >"		
+
+			elseif( keyName == "f" ) then
+				curObject:toFront()
+
+			elseif( keyName == "b" ) then
+				curObject:toBack()
+
+			elseif( keyName == "escape" ) then
+				if( curObject ) then
+					if( curObject.stroke and curObject.stroke.effect ) then
+						curObject.stroke.effect = nil
+						curObject.strokeWidth = curObject._origStrokeWidth
+					else
+						curObject.strokeWidth = curObject._origStrokeWidth
+					end
+					--					
+					curObject._autoFront = nil
+				end
+				curObject = nil
 			end
-			curObject:toFront()
-			
+			if( curObject and curObject._autoFront ) then
+				curObject:toFront()
+			end			
 		end
 	end; listen( "key", onKey )
 end
 
 -- Attach positioner code to an object
 --
-easyPositioner.attach = function( obj )
+easyPositioner.attach = function( obj, params )
+ 	params = params or {}
+ 	--
+ 	local showAnts = fnn( params.ants, true )
+ 	local autoFront = fnn( params.autoFront, true )
+ 	--
+ 	obj._autoFront = autoFront
+ 	--
+ 	print(showAnts, autoFront)
+ 	--
 	local strokeColor = { 0.5, 0.5, 0.5 }
 	local textColor = { 0, 0, 0}
 	local trayWidth = 150
@@ -210,10 +239,17 @@ easyPositioner.attach = function( obj )
 
 				curObject = target
 				curObject:setStrokeColor(1,1,1)
-				curObject.stroke.effect = "generator.marchingAnts"
-				curObject._origStrokeWidth = curObject.strokeWidth
-				curObject.strokeWidth = 4
-				curObject:toFront()
+				if( showAnts ) then
+					curObject.stroke.effect = "generator.marchingAnts"
+					curObject._origStrokeWidth = curObject.strokeWidth
+					curObject.strokeWidth = 4
+				else
+					curObject._origStrokeWidth = curObject.strokeWidth
+					curObject.strokeWidth = 1
+				end
+				if( autoFront ) then
+					curObject:toFront()
+				end
 
 			end
 			easyMoverText.text = "< " .. target.x .. ", " .. target.y .. " >"
@@ -234,14 +270,26 @@ easyPositioner.attach = function( obj )
 					if( curObject.stroke and curObject.stroke.effect ) then
 						curObject.stroke.effect = nil
 						curObject.strokeWidth = curObject._origStrokeWidth
+					else
+						curObject.strokeWidth = curObject._origStrokeWidth
 					end
+					--
+					curObject._autoFront = nil
+					--
 					curObject = target
 					curObject:setStrokeColor(1,1,1)
-					curObject.stroke.effect = "generator.marchingAnts"
-					curObject._origStrokeWidth = curObject.strokeWidth
-					curObject.strokeWidth = 4
+					if( showAnts ) then
+						curObject.stroke.effect = "generator.marchingAnts"
+						curObject._origStrokeWidth = curObject.strokeWidth
+						curObject.strokeWidth = 4
+					else
+						curObject._origStrokeWidth = curObject.strokeWidth
+						curObject.strokeWidth = 1
+					end
 
-					curObject:toFront()
+					if( autoFront ) then
+						curObject:toFront()
+					end
 
 					local sx = curObject.xScale
 					local sy = curObject.yScale

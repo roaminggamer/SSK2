@@ -134,7 +134,7 @@ else
       end
 
       for line in f:lines() do
-         fileContents[ #fileContents + 1 ] = line
+         fileContents[ #fileContents + 1 ] = string.trim(line)
       end
 
       io.close( f )

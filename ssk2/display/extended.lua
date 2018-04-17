@@ -474,7 +474,7 @@ local function pillShape( obj, params )
 	local yScale 	= params.yScale or 1
 	local offsetX 	= params.offsetX or 0
 	local offsetY 	= params.offsetY or 0
-	local x,y = obj.offsetX or 0, obj.offsetY or 0	
+	local x,y = params.offsetX or 0, params.offsetY or 0	
 	ow = ow * 0.5 * (xScale or 1)
 	oh = oh * 0.5 * (yScale or 1)
 	local shape = 
@@ -534,8 +534,8 @@ addBody = function( obj, bodyParams, imageFile )
 	end
 
 	-- Add Pillshape
-	if( params.pillParams ) then
-		params.shape = pillShape( obj, params.pillParams )
+	if( bodyParams.pillParams ) then
+		params.shape = pillShape( obj, bodyParams.pillParams )
 	end
 
 	-- add the body (square or circular)
