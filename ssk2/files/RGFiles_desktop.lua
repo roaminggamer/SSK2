@@ -65,6 +65,22 @@ function desktop.explore( path )
    return retVal
 end
 
+--
+-- discoverWindowsDrives( path ) -- Return table containing list of valid drives.
+
+function desktop.discoverWindowsDrives( )
+   local validDrives = {}
+
+   local drives = "cdefghijklmnopqrstuvwxyz"
+   for i = 1, string.len( drives ) do
+      local path = string.sub( drives, i, i ) .. ":/"
+      if( RGFiles.util.exists( path ) ) then
+         validDrives[#validDrives+1] = path
+      end
+   end
+   return validDrives, #validDrives
+end
+
 
 -- =============================================================
 -- =============================================================

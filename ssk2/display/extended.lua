@@ -531,6 +531,8 @@ addBody = function( obj, bodyParams, imageFile )
 		local outlineCoarseness = fnn( bodyParams.outlineCoarseness, dpp.outlineCoarseness )
 		local imageOutline = graphics.newOutline( outlineCoarseness, imageFile )
 		params.outline = imageOutline
+	elseif( bodyParams.imageOutline) then
+		params.outline = bodyParams.imageOutline
 	end
 
 	-- Add Pillshape
