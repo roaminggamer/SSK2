@@ -251,6 +251,17 @@ function string:rpad(len, char)
 end
 
 -- ==
+--    string.triml(s) - Trim whitespace from left-side of string only.
+--    string.trimr(s) - Trim whitespace from right-side of string only.
+-- ==
+function string.triml(s)
+    return s:match"^%s*(.*)"
+end
+function string.trimr(s)
+    return s:match"(.-)%s*$"
+end
+
+-- ==
 --    Sergey Stuff - Nice bits from Sergey's code: https://gist.github.com/Lerg
 -- ==
 function string.trim(s)
