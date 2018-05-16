@@ -34,7 +34,7 @@ local gCount2
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2018.04.02" end
+ssk.getVersion = function() return "2018.05.16" end
 
 local initialized = false
 ssk.init = function( params )
@@ -132,7 +132,8 @@ ssk.init = function( params )
 	local_require( "ssk2.external.randomlua" ) -- Various 'math.random' alternatives
 	_G.ssk.class = local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
 	local_require("ssk2.external.portableRandom") -- Portable random library
-	local_require("ssk2.external.global_lock") -- Portable random library
+	local_require("ssk2.external.ponyfont") -- Pony Font - Bitmap Fonts Utility
+	local_require("ssk2.external.global_lock") -- Globals locking utility
 
 
 	-- =============================================================

@@ -62,7 +62,7 @@ function social.rate( params )
 		print("Warning! - ssk.social.rate() - Cannot Open URL: ", url ) 
 	end
 
-	if( params.debugEn ) then print("ssk.social.rate() - Opening URL: ", url ) end
+	if( params.debugEn ) then print("ssk2.social.rate() - Opening URL: ", url ) end
 	system.openURL( url )	
 	return true
 end

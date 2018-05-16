@@ -93,7 +93,7 @@ function test.run( group, params )
    -- ***************************************
    -- Attach a Tracking Camera To Player + World
    -- ***************************************
-   ssk.camera.tracking( player, layers.world )
+   ssk.camera.tracking( player, layers.world, { disableSubPixel = true } )
 
 end
 

@@ -91,6 +91,7 @@ function camera.tracking( trackObj, world, params )
 	local lockX = params.lockX 
 	local lockY = params.lockY
 	local centered = fnn( params.centered, false)
+	local disableSubPixel = fnn( params.disableSubPixel, false )
 
 	local lx = 0
 	local ly = 0
@@ -117,6 +118,10 @@ function camera.tracking( trackObj, world, params )
 		local dy = 0
 		if(not lockX) then dx = trackObj.x - lx end		
 		if(not lockY) then dy = trackObj.y - ly end
+		if( disableSubPixel ) then
+			dx = math.round(dx)
+			dy = math.round(dy)
+		end
 		if(dx ~= 0 or dy ~= 0) then	
 			world:translate(-dx,-dy)
 			lx = trackObj.x
