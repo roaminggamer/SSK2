@@ -133,6 +133,9 @@ ssk.init = function( params )
 	_G.ssk.class = local_require("ssk2.external.30log") -- http://yonaba.github.io/30log/
 	local_require("ssk2.external.portableRandom") -- Portable random library
 	local_require("ssk2.external.ponyfont") -- Pony Font - Bitmap Fonts Utility
+	if( params.enableUTF8 ) then
+		ssk.ponyFont.enableUTF8()
+	end
 	local_require("ssk2.external.global_lock") -- Globals locking utility
 
 

@@ -34,7 +34,12 @@ _G.ssk.ponyFont = M
 -- build settings
 -- https://docs.coronalabs.com/plugin/utf8/index.html
 
-local utf8 = require("plugin.utf8") -- or require("lua-utf8") via luarocks 
+--local utf8 = require("plugin.utf8") -- or require("lua-utf8") via luarocks 
+local utf8
+
+function M.enableUTF8()
+  utf8 = require("plugin.utf8")
+end
 
 -- property update events by Jonathan Beebe
 -- https://coronalabs.com/blog/2012/05/01/tutorial-property-callbacks/
@@ -115,7 +120,7 @@ function M.newText(options)
       elseif tag == 'page' then
         font.spritesheets[1 + t.id] = { file = t.file, frames = {} }
       elseif tag == 'char' then
-        if tonumber(t.id) > 255 then
+        if( tonumber(t.id) > 255 and utf8 )then
           t.letter = utf8.char(t.id)        
         else
           t.letter = string.char(t.id)
