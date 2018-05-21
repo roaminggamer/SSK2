@@ -61,7 +61,9 @@ function vScroller.new( group, x, y, params )
 
          target.dragged = false
 
-         for k,v in pairs( target.potentialNotifyObjects ) do
+         --for k,v in pairs( target.potentialNotifyObjects ) do
+         for i = 1, #target.potentialNotifyObjects do
+            local v = target.potentialNotifyObjects[i]
             if( v.touch and isInBounds( event, v ) ) then 
                target.notifyObjects[v] = v 
             end
@@ -128,7 +130,8 @@ function vScroller.new( group, x, y, params )
    scroller.notifyObjects = {}
 
    function scroller.addTouch( self, obj, onTouch )
-      self.potentialNotifyObjects[obj] = obj
+      --self.potentialNotifyObjects[obj] = obj
+      self.potentialNotifyObjects[#self.potentialNotifyObjects+1] = obj
       obj.touch = onTouch
       --obj:addEventListener("touch")
    end

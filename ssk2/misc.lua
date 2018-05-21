@@ -992,7 +992,7 @@ function misc.pingPong( obj, params )
 	pong.delay = pong.delay or params.delay
 	pong.transition = pong.transition or params.transition
 	ping.tag = ping.tag or tag
-	pong.tag = pong.tag or tag
+	pong.tag = pong.tag or tag	
 
 	--
 	-- Create special 'first' ping/pong records for first transition
@@ -1012,6 +1012,9 @@ function misc.pingPong( obj, params )
 	--
 	-- Ping/Pog onComplete Listener definitions
 	pingF = function( self, isFirst )
+		if( ping.onComplete2 ) then 
+			ping.onComplete2() 
+		end
 		if( isFirst ) then
 			transition.to( self, firstPing )
 		else
@@ -1019,6 +1022,9 @@ function misc.pingPong( obj, params )
 		end
 	end
 	pongF = function( self, isFirst )		
+		if( pong.onComplete2 ) then 
+			pong.onComplete2() 
+		end
 		if( isFirst ) then
 			transition.to( self, firstPong )
 		else
@@ -1074,9 +1080,23 @@ function misc.getLorem( len, sep, exactLength )
 	return data2
 end
 
-
 function misc.getUTCStamp()
 	return os.date("!%y%m%d%H%M%S")
+end
+
+local snapCount = 0
+function misc.enableScreenshotHelper( snapKey )
+
+	local function onKey( event )
+		snapKey = snapKey or "tab"
+	   if( event.phase ~= "up" ) then return end
+	   local key = event.keyName 	   
+	   if( key == snapKey ) then
+	   	snapCount = snapCount + 1
+			local capture = display.captureScreen(true)
+			display.remove(capture)
+	   end
+	end; listen("key",onKey)
 end
 
 
