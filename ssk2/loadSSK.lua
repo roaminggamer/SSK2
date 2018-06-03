@@ -179,7 +179,7 @@ ssk.init = function( params )
 		local gCount1a = countGlobals()
 		ssk[feature].export()
 		local gCount2a = countGlobals()
-		exportMessages[#exportMessages+1] = "Exporting the SSK 2 feature '" .. feature .. "'' added " .. tostring(gCount2a-gCount1a) .. " globals."
+		exportMessages[#exportMessages+1] = "Exporting the SSK 2 feature '" .. feature .. "' added " .. tostring(gCount2a-gCount1a) .. " globals."
 	end
 	doExport( "core" )
 	doExport( "colors" )
