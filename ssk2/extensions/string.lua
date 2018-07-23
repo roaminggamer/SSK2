@@ -427,7 +427,14 @@ function string.extractPairs( line, startAt )
 	return pairsTable
 end
 
+-- ==
+--    removeLast() - EFM
+-- ==
 
-
+function string.removeLast( str, tok )
+	local lastSep = str:match('^.*()' .. tok)
+   if( lastSep == nil) then return "" end
+   return(str:sub(1,lastSep-1))
+end
 
 

@@ -46,7 +46,7 @@ local function easyFlyIn( obj, params )
 	
 	local delay 			= params.delay or 0
 	local time 				= params.time or 250
-	local myEasing 			= params.easing or easing.outBack
+	local myEasing 			= params.myEasing or easing.outBack
 	local startOffsetX		= params.sox or 0
 	local startOffsetY		= params.soy or 0
 	local startDeltaRot		= params.sdr or 0
@@ -97,30 +97,20 @@ local function easyFlyOut( obj, params )
 	
 	local delay 			= params.delay or 0
 	local time 				= params.time or 250
-	local myEasing 			= params.easing or easing.outBack
-	local startOffsetX		= params.sox or 0
-	local startOffsetY		= params.soy or 0
-	local startDeltaRot		= params.sdr or 0
-	local startDeltaScaleX	= params.sdsx or 1
-	local startDeltaScaleY	= params.sdsy or 1
+	local myEasing 		= params.myEasing or easing.outBack
+	local endOffsetX		= params.eox or 0
+	local endOffsetY		= params.eoy or 0
+	local endDeltaRot		= params.edr or 0
+	local endDeltaScaleX	= params.edsx or 0
+	local endDeltaScaleY	= params.edsy or 0
 	local onComplete		= params.onComplete
 
-	local x = obj.x
-	local y = obj.y
-	local xL = (obj.label) and obj.label.x or 0
-	local yL = (obj.label) and obj.label.y or 0
-
-	local rotation = obj.rotation
-	local scaleX = obj.xScale
-	local scaleY = obj.YScale
-
-	obj:translate( startOffsetX, startOffsetY )
-	obj.xScale = obj.xScale * startDeltaScaleX
-	obj.yScale = obj.yScale * startDeltaScaleY
-	obj.rotation = obj.rotation + startDeltaRot
-
-	transition.to( obj, { x = x, y = y, rotation = rotation, xScale = scaleX, yScale = scaleY, 
-		                  transition = myEasing, delay = delay, time = time, onComplete = onComplete } )
+	transition.to( obj, { x = obj.x + endOffsetX,
+		                   y = obj.y + endOffsetY,
+		                   rotation = obj.rotation + endDeltaRot,
+		                   --xScale = obj.xScale + endDeltaScaleX,
+		                   --yScale = obj.yScale + endDeltaScaleY,
+		                   delay = delay, time = time, onComplete = onComplete } )
 	
 end
 
@@ -347,6 +337,9 @@ end
 
 -- ==
 --    Pinch Zoom Drag Code
+--
+--    Code is MIT licensed, see http://www.coronalabs.com/links/code/license
+--    Copyright (C) 2010 Corona Labs Inc. All Rights Reserved.
 -- ==
 local function calculateDelta( previousTouches, event )
 	local id,touch = next( previousTouches )
@@ -527,6 +520,7 @@ local public = {}
 public.isInBounds 			= isInBounds
 public.isInBoundsAlt			= isInBounds_alt
 public.easyFlyIn				= easyFlyIn
+public.easyFlyOut				= easyFlyOut
 public.easySqueeze 			= easySqueeze
 public.easyInflate 			= easyInflate
 

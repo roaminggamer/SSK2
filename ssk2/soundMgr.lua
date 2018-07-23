@@ -69,45 +69,11 @@ function soundMgr.setMaxChannels( music, voice )
 
 end
 
--- setVolume( volume, volType ) 
+-- mute( isMuted, fadeTime )  
 --
 local muted = false
 local lastVolume 
---[[
-function soundMgr.mute( isMuted, fadeTime ) 
-	print("soundMgr.mute() ", isMuted, fadeTime, getTimer() ) 
-	isMuted = fnn( isMuted, false )
-	if( isMuted == muted ) then return end
-	if( isMuted == false and not lastVolume ) then return end
 
-	if( isMuted ) then
-		lastVolume = globalVolume
-		print("lastVolume", lastVolume)
-		for k,v in pairs(allSounds) do
-			if( table.count(v.playing or {}) > 0 ) then
-				table.print_r(v.playing)
-			end
-		end
-
-		if(tonumber(fadeTime)) then
-			audio.fade( { time = fadeTime, volume = 0 } )
-		else
-			audio.setVolume( volume )
-		end
-		
-	else
-		print("lastVolume", lastVolume)
-		if(tonumber(fadeTime)) then
-			audio.fade( { time = fadeTime, volume = lastVolume } )
-		else
-			audio.setVolume( lastVolume )
-		end
-		
-		lastVolume = nil
-	end
-	muted = isMuted
-end
---]]
 function soundMgr.mute( isMuted, fadeTime ) 
 	--print("soundMgr.mute() ", isMuted, fadeTime, getTimer() ) 
 	isMuted = fnn( isMuted, false )
@@ -197,7 +163,7 @@ function soundMgr.setVolume( volume, volType )
 		end
 
 	elseif( volType == "music" ) then
-		musicVolume = musicVolume
+		musicVolume = volume
 		for i = firstMusicChannel, audio.totalChannels do
 			audio.setVolume( volume * globalVolume, { channel = i } )
 		end
@@ -216,7 +182,6 @@ local sfxEn = true
 function soundMgr.enableSFX( enable )
 	sfxEn = enable 
 	if( enable == false ) then
-		soundMgr.stopAll( "effect" )
 		for i = firstEffectChannel, firstVoiceChannel - 1 do
 			audio.setVolume( 0, { channel = i } )
 		end
@@ -234,7 +199,6 @@ local voiceEn = true
 function soundMgr.enableVoice( enable )
 	voiceEn = enable 
 	if( enable == false ) then
-		soundMgr.stopAll( "voice" )
 		for i = firstVoiceChannel, firstMusicChannel - 1 do
 			audio.setVolume( 0, { channel = i } )
 		end
@@ -248,10 +212,9 @@ end
 -- enableMusic( enable ) - Globally enable/disable music
 --
 local musicEn = true
-function soundMgr.enableMusic( enable )
+function soundMgr.enableMusic( enable )	
 	musicEn = enable 
 	if( enable == false ) then
-		soundMgr.stopAll( "music" )
 		for i = firstMusicChannel, audio.totalChannels do
 			audio.setVolume( 0, { channel = i } )
 		end
@@ -475,9 +438,10 @@ function soundMgr.stopAll( stopType )
 	if( stopType == nil ) then audio.stop() end
 end
 
--- stop( name ) - Stop a sound.
+
+-- rewind( name, soundType ) - Stop a sound.
 --
-function soundMgr.stop( name, soundType )	
+function soundMgr.rewind( name, soundType )	
 	local record = allSounds[name]
 	if( not record ) then return false end
 	if( not record.loaded ) then return true end
@@ -485,9 +449,21 @@ function soundMgr.stop( name, soundType )
 
 	-- Stop any 'plays' of this sound
 	for k, v in pairs( record.playing ) do
-		audio.stop( v.channel )
+		audio.rewind( v.channel )
 	end
 	record.playing = {}
+end
+
+
+-- stop( name, soundType  ) - Stop a sound.
+--
+function soundMgr.stop( name, soundType )	
+	local record = allSounds[name]
+	if( not record ) then return false end
+	if( not record.loaded ) then return true end
+	if( soundType ~= nil and record.soundType ~= soundType ) then return end
+	--
+	audio.rewind( record.handle )
 end
 
 
@@ -568,7 +544,7 @@ local function onSound( event )
 			print( "Times:  cur / minTween / last ==> ", curTime, record.minTweenTime, record.lastTime )
 		end
 		if( curTime - record.lastTime < record.minTweenTime ) then			
-			if( debugLevel > -1 ) then 
+			if( debugLevel > 0 ) then 
 				print( "Warning: soundMgr 'onSound' Listener - Tried to play " .. tostring(record.name) .. " too soon (minTweenTime == " .. tostring(record.minTweenTime) .." ms).  Skipping.")
 			end
 			return
@@ -585,7 +561,7 @@ local function onSound( event )
 	elseif( record.soundType == "voice" ) then
 		channel = audio.findFreeChannel( firstVoiceChannel )
 		if( channel >= firstMusicChannel ) then 
-			if( debugLevel > -1 ) then 
+			if( debugLevel > 0 ) then 
 				print( "Warning: soundMgr 'onSound' Listener - No more voice channels available!")
 			end
 			return 
@@ -628,8 +604,6 @@ local function onSound( event )
 			volume = altVolume * musicVolume * globalVolume
 		end
 		audio.setVolume( volume, { channel = channel } )
-
-
 
 		-- Generate a generic onComplete to clean up 
 		--

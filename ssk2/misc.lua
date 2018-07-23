@@ -1099,8 +1099,57 @@ function misc.enableScreenshotHelper( snapKey )
 	end; listen("key",onKey)
 end
 
+-- Get polygon center <x,y> based on vertices
+function misc.offset_xy( t )
+	local sort = table.sort
+	local coordinatesX, coordinatesY = {}, {}
+	local minX, maxX, minY, maxY
+	local function compare( a, b )
+		return a > b
+	end
+	for i = 1, #t*0.5 do
+		coordinatesY[i] = t[i*2]
+	end
+	for i = 1, #t*0.5 do
+		coordinatesX[i] = t[i*2-1]
+	end
+	sort( coordinatesX, compare )
+	maxX = coordinatesX[1]
+	minX = coordinatesX[#coordinatesX]
+	sort( coordinatesY, compare )
+	maxY = coordinatesY[1]
+	minY = coordinatesY[#coordinatesY]
+	local offset_x = (minX+maxX)*0.5
+	local offset_y = (minY+maxY)*0.5
+	return offset_x, offset_y
+end
 
 
+function misc.easySpin( obj, params )
+	params = params or {}
+	local time = params.time or 500
+	local minScale = params.minScale or 0.01
+	local myEasing = params.easing or easing.linear
+	print( time,minScale)
+	--
+	local spin1
+	local spin2
+	spin1 = function( self )
+		self.onComplete = spin2
+		transition.to( self, { xScale = minScale, transition = myEasing, time = time, onComplete = self } )
+	end
+	spin2 = function( self )
+		self.onComplete = spin1
+		transition.to( self, { xScale = 1, transition = myEasing,  time = time, onComplete = self } )
+	end
+	spin1( obj )
+end
+
+
+function misc.safeRequire( path )
+	local safe,mod = pcall( require, path )
+	return (safe and type(mod) == "table") and mod or nil
+end
 
 -- ========================================================================
 

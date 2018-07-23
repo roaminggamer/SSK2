@@ -88,22 +88,38 @@ if( ssk_system.onDevice ) then
                               (system.getInfo( "androidDisplayHeightInInches" ) or 0) > 5 ) 
    ssk_system.onTablet        = ssk_system.onAndroidTablet or ssk_system.oniPad 
 else
-   local width = math.floor((display.actualContentWidth/display.contentScaleX)+0.5)
-   local height = math.floor((display.actualContentHeight/display.contentScaleY)+0.5)
-   local wh = string.format("%d_%d", width, height )
-   ssk_system.oniPhone4       = wh == "640_960"
-   ssk_system.oniPhone5       = wh == "640_1136"
+   local actualWidth = math.floor((display.actualContentWidth/display.contentScaleX)+0.5)
+   local actualHeight = math.floor((display.actualContentHeight/display.contentScaleY)+0.5)
+   local function matchesWH(width,height)
+      return( (width == actualWidth and height == actualHeight) or (height == actualWidth and width == actualHeight) )
+   end
+   local function round(val, n)
+      if (n) then
+         return math.floor( (val * 10^n) + 0.5) / (10^n)
+      else
+         return math.floor(val+0.5)
+      end
+   end
+   local function matchesAR(width,height)
+      local ar1 = round(width/height,4)
+      local ar2 = round(height/width,4)
+      local ar3 = round(actualHeight/actualWidth,4)
+      --print(ar1,ar2,ar3)
+      return( ar3 == ar1 or ar3 == ar2 )
+   end   
+   ssk_system.oniPhone4       = matchesWH(640,960)
+   ssk_system.oniPhone5       = matchesWH(640,1136)
    ssk_system.oniPhone5c      = false -- SAME ASPECT RATIO AS oniPhone5
    ssk_system.oniPhone5s      = false -- SAME ASPECT RATIO AS oniPhone5
-   ssk_system.oniPhone6       = wh == "740_1334"
-   ssk_system.oniPhone6Plus   = wh == "1080_1920"
+   ssk_system.oniPhone6       = matchesWH(740,1334)
+   ssk_system.oniPhone6Plus   = matchesWH(1080,1920)
    ssk_system.oniPhone6s      = false -- SAME ASPECT RATIO AS oniPhone6P
    ssk_system.oniPhone6sPlus  = false -- SAME ASPECT RATIO AS oniPhone6Plus
    ssk_system.oniPhone7       = false -- SAME ASPECT RATIO AS oniPhone6P
    ssk_system.oniPhone7Plus   = false -- SAME ASPECT RATIO AS oniPhone6Plus
    ssk_system.oniPhone8       = false -- SAME ASPECT RATIO AS oniPhone6
    ssk_system.oniPhone8Plus   = false -- SAME ASPECT RATIO AS oniPhone6Plus
-   ssk_system.oniPhoneX       = wh == "1125_2436"
+   ssk_system.oniPhoneX       = matchesWH(1125,2436)
    ssk_system.oniPhone        = ssk_system.oniPhone4 or ssk_system.oniPhone5 or
                               ssk_system.oniPhone5c or ssk_system.oniPhone5s or
                               ssk_system.oniPhone6 or ssk_system.oniPhone6Plus or
@@ -111,9 +127,10 @@ else
                               ssk_system.oniPhone7 or ssk_system.oniPhone7Plus or
                               ssk_system.oniPhone8 or ssk_system.oniPhone8Plus or
                               ssk_system.oniPhoneX
-   ssk_system.oniPadMini      = wh == "768_1024"
-   ssk_system.oniPad          = wh == "1536_2048"
-   ssk_system.oniPadPro       = wh == "1125_2436"
+   ssk_system.oniPadMini      = matchesWH(768,1024)
+   ssk_system.oniPadAir       = matchesWH(1536,2048)
+   ssk_system.oniPadPro       = matchesWH(1125,2436)
+   ssk_system.oniPad          = ssk_system.oniPadMini or ssk_system.oniPadAir or ssk_system.oniPadPro or matchesAR(768,1024)
    ssk_system.onAndroidTablet = false -- EFM detect this... but how?
    ssk_system.onTablet        = ssk_system.oniPadMini or ssk_system.oniPad or ssk_system.oniPadPro or ssk_system.onAndroidTablet
 end

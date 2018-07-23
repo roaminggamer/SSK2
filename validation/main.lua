@@ -24,5 +24,10 @@ _G.ssk.init( { launchArgs 				= ...,
 	            exportSystem 			= true,
 	            debugLevel 				= 0 } )
 
+-- =============================================================
+--ssk.meters.create_fps(true)
+--ssk.meters.create_mem(true)
+-- =============================================================
+
 local composer = require "composer"
 composer.gotoScene( "scenes.home" )

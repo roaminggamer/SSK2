@@ -327,7 +327,7 @@ function buttons:newButton( parentGroup, params )
    -- ==
    --    buttonInstance:disable() - Disable the current button.  (Make button translucent and ignores touches.)
    -- ==
-   function buttonInstance:disable( ) 
+   function buttonInstance:disable( alpha ) 
       self.isEnabled = false
       local prefixes = { "unsel", "sel", "toggled", "locked" }
       
@@ -350,7 +350,7 @@ function buttons:newButton( parentGroup, params )
          end
          self.lockedImg.isVisible = true
       else
-         self.alpha = 0.3
+         self.alpha = alpha or 0.3
       end
       
    end
@@ -682,6 +682,29 @@ function buttons:newButton( parentGroup, params )
       --print(self.x, self.y)
       self.x0 = self.x
       self.y0 = self.y
+   end
+
+   -- ==
+   --    buttonInstance:setSelColor( color ) - Change the selected color.
+   --    buttonInstance:setUnselColor( color ) - Change the unselected color.
+   --
+   --    color - A table containing a color code.
+   -- ==
+   function buttonInstance:setSelColor( color ) 
+      if( self.selRect ) then 
+         self.selRect:setFillColor( unpack(color) )
+      end
+      if( self.selImg ) then 
+         self.selImg:setFillColor( unpack(color) )
+      end
+   end
+   function buttonInstance:setUnselColor( color ) 
+      if( self.selRect ) then 
+         self.unselRect:setFillColor( unpack(color) )
+      end
+      if( self.selImg ) then 
+         self.unselImg:setFillColor( unpack(color) )
+      end
    end
 
    return buttonInstance

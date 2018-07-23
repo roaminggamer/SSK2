@@ -23,7 +23,7 @@ function vScroller.new( group, x, y, params )
    local backFill       = params.backFill
    local hideBack       = fnn( params.hideBack, backFill == nil )
    local autoScroll     = fnn(params.autoScroll, false )
-   local scrollBuffer   = params.scrollBuffer
+   local scrollBuffer   = params.scrollBuffer or 0
 
    local widget = require( "widget" )
    widget.setTheme( params.widgetTheme or "widget_theme_android_holo_dark")
@@ -95,8 +95,8 @@ function vScroller.new( group, x, y, params )
    -- Create a scrollView
    local scroller = widget.newScrollView {
       --parent                      = group,
-      top                           = y - ch/2,
       left                          = x - cw/2,
+      top                           = y - ch/2,
       width                         = cw,
       height                        = ch,
 
@@ -119,7 +119,12 @@ function vScroller.new( group, x, y, params )
 
    group:insert(scroller)
 
-   if( params.placeByTopCenter ) then
+   if( params.placeByTopLeft ) then
+      scroller.anchorX = 0
+      scroller.anchorY = 0
+      scroller.x = x
+      scroller.y = y
+   elseif( params.placeByTopCenter ) then
       scroller.anchorX = 0.5
       scroller.anchorY = 0
       scroller.x = x
@@ -172,49 +177,88 @@ function vScroller.new( group, x, y, params )
          y = oy + totalH + obj.contentHeight * obj.anchorY                  
       end
 
+      x = params.x or x
+      y = params.y or y
+
       obj.x = x
       obj.y = y
 
-      -- SCROLL BUFFER
-      local _scrollBuffer = self._scrollBuffer
-      if( scrollBuffer and _scrollBuffer ) then
-         display.currentStage:insert( _scrollBuffer )                  
+      if( params.skipScrollBuffering ) then 
+         --print("SKIPPING BUFFER ADJUST ", totalH )
+         self:insert( obj )
+
       else
-         _scrollBuffer = display.newRect( cw/2, 0, 10, scrollBuffer )
-         _scrollBuffer.anchorY = 0
-         _scrollBuffer.isVisible = false
-         self._scrollBuffer = _scrollBuffer
-      end
+         --print("ADJUSTING BUFFER ", totalH )
 
-      totalH = totalH + obj.contentHeight + oy
-
-      -- SCROLL BUFFER
-      if( scrollBuffer and _scrollBuffer ) then
-         self:insert( _scrollBuffer )
-         _scrollBuffer.y = totalH
-      end
-
-      self:insert( obj )
-
-
-      if( autoScroll or params.autoScroll ) then
-         local toY = obj.y + obj.contentHeight - ch
-         --scroller:setScrollHeight( obj.contentHeight + 400 )
-         if( scrollBuffer ) then
-            toY = toY + scrollBuffer
+         -- SCROLL BUFFER
+         local _scrollBuffer = self._scrollBuffer
+         if( scrollBuffer and _scrollBuffer ) then
+            display.currentStage:insert( _scrollBuffer )                  
+         else
+            _scrollBuffer = display.newRect( cw/2, 0, 10, scrollBuffer )
+            _scrollBuffer.anchorY = 0
+            _scrollBuffer.isVisible = false
+            self._scrollBuffer = _scrollBuffer
          end
 
-         --print( "vscroller ", scroller.contentHeight, ch, toY, obj.contentHeight )
-         if( toY > 0 ) then            
-            --print("Scroll to" .. -toY)
+         totalH = totalH + obj.contentHeight + oy
+
+         -- SCROLL BUFFER
+         if( scrollBuffer and _scrollBuffer ) then
+            self:insert( _scrollBuffer )
+            _scrollBuffer.y = totalH
+         end
+
+         self:insert( obj )
+
+         if( autoScroll or params.autoScroll ) then
+            local toY = obj.y + obj.contentHeight - ch
             if( scrollBuffer ) then
-               scroller:scrollToPosition( { y = -toY, time = 500 })
-            else
-               scroller:scrollToPosition( { y = -toY, time = 500 })
+               toY = toY + scrollBuffer
+            end
+
+            --print( "vscroller ", scroller.contentHeight, ch, toY, obj.contentHeight )
+            if( toY > 0 ) then            
+               --print("Scroll to" .. -toY)
+               if( scrollBuffer ) then
+                  scroller:scrollToPosition( { y = -toY, time = 500 })
+               else
+                  scroller:scrollToPosition( { y = -toY, time = 500 })
+               end
             end
          end
       end
    end
+
+   function scroller.insertText( self, text, params )
+      params = params or {}
+      local ox          = params.ox or 0
+      local oy          = params.oy or 0
+      local fontColor   = params.fontColor or _W_
+      local fontSize    = params.fontSize or 22
+      local font        = params.font or native.systemFont
+
+      local options = 
+      {
+          text       = text,
+          x          = 0,
+          y          = 0,
+          width      = scroller.contentWidth - ox * 2,
+          font       = font,
+          fontSize   = fontSize,     
+      }   
+      local textObj = display.newText( options )
+      textObj:setFillColor( unpack( fontColor ) )  
+      self:insertContent( textObj, params )
+   end   
+
+   return scroller
+end
+
+
+return vScroller
+
+
 
    --[[
    function scroller.insertContent_alt( self, obj, params )
@@ -283,31 +327,3 @@ function vScroller.new( group, x, y, params )
       end
    end
    --]]
-
-   function scroller.insertText( self, text, params )
-      params = params or {}
-      local ox          = params.ox or 0
-      local oy          = params.oy or 0
-      local fontColor   = params.fontColor or _W_
-      local fontSize    = params.fontSize or 22
-      local font        = params.font or native.systemFont
-
-      local options = 
-      {
-          text       = text,
-          x          = 0,
-          y          = 0,
-          width      = scroller.contentWidth - ox * 2,
-          font       = font,
-          fontSize   = fontSize,     
-      }   
-      local textObj = display.newText( options )
-      textObj:setFillColor( unpack( fontColor ) )  
-      self:insertContent( textObj, params )
-   end   
-
-   return scroller
-end
-
-
-return vScroller
