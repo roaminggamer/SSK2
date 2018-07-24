@@ -1,20 +1,26 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
--- Tiled Loader
--- =============================================================
--- Development Notes:
--- -none-
--- =============================================================
-local physics = require "physics"
+local physics 		= require "physics"
+
 -- ==
 --    Localizations
 -- ==
-local getTimer = system.getTimer
+local topInset, leftInset, bottomInset, rightInset = display.getSafeAreaInsets()
+local getTimer = system.getTimer;local strGSub = string.gsub
+local strMatch = string.match; local strFind = string.find;
+local strSub = string.sub; local strFormat = string.format
+local mFloor = math.floor; local mRand = math.random
+local tSort = table.sort
+
+-- ==
+--    Locals & Helper Functions
+-- ==
+local levelsPath 	= "levels"
+local assetsRoot 	= "levels"
 
 -- Helpers taken from PonyTiled: 
 -- https://github.com/ponywolf/ponytiled/blob/master/com/ponywolf/ponytiled.lua
---
 local FlippedHorizontallyFlag   = 0x80000000
 local FlippedVerticallyFlag     = 0x40000000
 local FlippedDiagonallyFlag     = 0x20000000
@@ -23,29 +29,16 @@ local function hasbit(x, p) return x % (p + p) >= p end
 local function setbit(x, p) return hasbit(x, p) and x or x + p end
 local function clearbit(x, p) return hasbit(x, p) and x - p or x end
 
--- https://github.com/ponywolf/ponyblitz/blob/master/com/ponywolf/ponytiled.lua
-local function centerAnchor(obj)
-  if obj.contentBounds then 
-    local bounds = obj.contentBounds
-    local actualCenterX, actualCenterY =  (bounds.xMin + bounds.xMax)/2 , (bounds.yMin + bounds.yMax)/2
-    obj.anchorX, obj.anchorY = 0.5, 0.5  
-    obj.x = actualCenterX
-    obj.y = actualCenterY 
-  end
-end
 
-local dataCache = {}
-
+-- =============================================================
+-- Module
+-- =============================================================
 local tiledLoader = {}
-if( _G.ssk ) then _G.ssk.tiled = tiledLoader end
-
-ssk.tiled.centerAnchor = centerAnchor
-
-local levelsPath 	= "levels"
-local assetsRoot 	= "levels"
+_G.ssk = _G.ssk or {}
+_G.ssk.tiled = tiledLoader
 
 -- ==
---    new() - EFM
+--    new() - Returns a new loader object containing the processed data for a specified tiled 'level' file.
 -- ==
 function tiledLoader.new( params )
 	params = params or {}
@@ -66,6 +59,9 @@ function tiledLoader.new( params )
 	-- Raw level data
 	local levelData
 
+	-- Logic Records
+	local logic = {}
+
 	-- Processed records for each object
 	local oRec = {}
 
@@ -74,7 +70,7 @@ function tiledLoader.new( params )
 
 	-- Set Path for tiled levels
 	function loader.setLevelsPath( path )
-		levelsPath = string.gsub( path, "%/", "." )
+		levelsPath = strGSub( path, "%/", "." )
 		assetsRoot = path
 	end
 
@@ -93,8 +89,14 @@ function tiledLoader.new( params )
 
 			if( layerData.type == "tilelayer" ) then
 				-- Skip these
-			elseif( layerData.name == "ignore" ) then				
-
+			elseif( layerData.name == "logic" ) then
+				table.print_r(objects[i] )
+				for i = 1, #objects do				
+					logic[#logic+1] = table.deepCopy( objects[i] )
+				end
+				table.print_r(logic[#logic])
+			
+			elseif( layerData.name == "ignore" ) then
 			elseif( layerData.type == "objectgroup" ) then 
 				for i = 1, #objects do
 					local rec = table.deepCopy(objects[i])
@@ -139,10 +141,10 @@ function tiledLoader.new( params )
 				--]]
 				
 				rec.id = nil
-				if( string.match( rec.image, "%.%." ) ) then
-					rec.image = string.gsub(rec.image,"%.%.", "" )
-					while( string.sub( rec.image, 1, 1 ) == "/" ) do
-						rec.image = string.sub( rec.image, 2 )
+				if( strMatch( rec.image, "%.%." ) ) then
+					rec.image = strGSub(rec.image,"%.%.", "" )
+					while( strSub( rec.image, 1, 1 ) == "/" ) do
+						rec.image = strSub( rec.image, 2 )
 					end
 				else
 					rec.image = assetsRoot .. "/" .. rec.image
@@ -164,12 +166,13 @@ function tiledLoader.new( params )
 	--
 	-- Draw Object
 	--
-	local newRect = ssk.display.newRect
-	local newImageRect = ssk.display.newImageRect
+	local newRect = display.newRect
+	local newImageRect = display.newImageRect
 	local newPolygon = display.newPolygon
 	local function drawNumber( group, obj, isIndex, params )
 		local label = display.newText( group, params.num, 
-			                            obj.x, obj.y, native.systemFont, params.numberFontSize or 10 )
+			                            obj.x, obj.y, 
+			                            native.systemFont, params.numberFontSize or 10 )
 		label:setFillColor( unpack( params.numberFill or { 0, 0 , 0 } ) )
 		local scale1 = (label.contentWidth/obj.contentWidth)
 		local scale2 = (label.contentHeight/obj.contentHeight)
@@ -189,8 +192,8 @@ function tiledLoader.new( params )
 		end; label:addEventListener("enterFrame")
 	end
 	--
-	function loader.drawObj( group, rec, params ) 
-		group = group or display.currentStage
+	function loader.drawObj( layers, rec, params ) 
+		layers = layers or display.currentStage
 		params = params or {}
 		--
 		local builders = params.builders or {}
@@ -201,12 +204,19 @@ function tiledLoader.new( params )
 		local ox = params.ox or 0
 		local oy = params.oy or 0
 
+		local group = layers[rec.layer] or layers
+
 		if( buildFunc ) then
-			obj = buildFunc( group, rec.x + ox, rec.y + oy, rec, params )
+			obj = buildFunc( loader, group, rec.x + ox, rec.y + oy, rec, params )
 
 		elseif( rec.gid ) then
-   		obj = newImageRect( group, rec.x + ox, rec.y + oy, images[rec.gid].image, 
-   			{ w = rec.width, h = rec.height, rotation = rec.rotation, rec = rec, anchorX = 0, anchorY = 1 } )
+   		obj = newImageRect( group, images[rec.gid].image, rec.width, rec.height )
+   		obj.x = rec.x + ox
+   		obj.y = rec.y + oy   		
+   		obj.rotation = rec.rotation or 0
+   		obj.rec = rec
+   		obj.anchorX = 0
+   		obj.anchorY = 1
    	
 		elseif( rec.shape == "polygon" ) then
 			local polygon = {}
@@ -216,20 +226,23 @@ function tiledLoader.new( params )
 				polygon[#polygon+1] = vertex.y
 			end			
 			rec.polygon = polygon
-			local x,y = ssk.misc.offset_xy(polygon)
+			local x,y = misc.offset_xy(polygon)
 			rec.x = rec.x + x
 			rec.y = rec.y + y
-			obj = display.newPolygon( group, rec.x, rec.y, rec.polygon)
+			obj = newPolygon( group, rec.x, rec.y, rec.polygon)
    	else
-   		obj = newRect( group, rec.x + ox, rec.y + oy, 
-   			{ w = rec.width, h = rec.height, rotation = rec.rotation, rec = rec, fill = _W_, anchorX = 0, anchorY = 1 } )
+   		obj = newRect( group, rec.x + ox, rec.y + oy, rec.width, rec.height )
+   		obj.rotation = rec.rotation or 0
+   		obj.rec = rec
+   		obj.anchorX = 0
+   		obj.anchorY = 1
    	end
    	
    	if( rec.flip.x ) then obj.xScale = -obj.xScale end
    	if( rec.flip.y ) then obj.yScale = -obj.yScale end
 
    	if( buildFunc == nil ) then  	
-   		centerAnchor(obj)
+   		tiledLoader.centerAnchor(obj)
    		--
 	   	if( params.showNumber and params.num ) then
 	   		drawNumber( group, obj, false, params )
@@ -243,6 +256,20 @@ function tiledLoader.new( params )
 			end
 			loader.amendVisualParams( obj, rec )		
 		end
+
+		if( params.behaviors ) then
+			local behaviors = params.behaviors
+			local myBehaviors = loader.getBehaviors( rec )
+			for behaviorName, behaviorSettings in pairs( myBehaviors ) do
+				-- hack to allow application of same behavior multiple times
+				local tmpName = string.split(behaviorName,"_") 
+				--table.dump(tmpName)
+				if( #tmpName > 2 ) then
+					behaviorName = tmpName[1] .. "_" .. tmpName[2]
+				end
+				behaviors.add( obj, behaviorName, behaviorSettings )
+			end
+		end
    	return obj
 	end
 	
@@ -250,14 +277,14 @@ function tiledLoader.new( params )
 	--
 	-- Draw All Objects
 	--
-	function loader.draw( group, params ) 
-		group = group or display.currentStage
+	function loader.draw( layers, params ) 
+		layers = layers or display.currentStage
 		params = params or {}
 		for i = 1, #oRec do
 			if( params.showNumber ) then
 				params.num = i
 			end
-			loader.drawObj( group, oRec[i], params )
+			loader.drawObj( layers, oRec[i], params )
 		end
 	end
 
@@ -267,6 +294,18 @@ function tiledLoader.new( params )
 		for i = 1, #oRec do func(oRec[i], i) end
 	end
 
+
+	--
+	-- Get Logic - returns logic table
+	function loader.getLogic( ) 
+		return table.deepCopy( logic )
+	end
+
+	--
+	-- For Each Logic - call 'func( rec, index )' for each record from the 'logic' layer.
+	function loader.forEachLogic( func ) 
+		for i = 1, #logic do func(logic[i], i) end
+	end
 
 	--
 	-- Get Render Order
@@ -366,9 +405,8 @@ function tiledLoader.new( params )
 	-- 
 	function loader.getProperties( rec )
 		local names = {}
-		if( rec.properties ~= nil  and rec.properties[name] ~= nil ) then 
+		if( rec.properties ~= nil ) then 
 			for k,v in pairs( rec.properties ) do
-				print(k)
 				names[k]=k
 			end
 		end
@@ -397,7 +435,7 @@ function tiledLoader.new( params )
 		local properties = loader.getProperties( rec )
 		local behaviors = {}
 		for k,v in pairs( properties ) do
-			if( string.match( k, "b_" ) ) then
+			if( strMatch( k, "b_" ) ) then
 				behaviors[k] = properties[k]
 			end
 		end
@@ -500,8 +538,9 @@ function tiledLoader.new( params )
 						shape[#shape+1] = pdr.polygon[i].y + sy - obj.contentHeight/2
 					end
 				else
+					print("UNKNOWN SHAPE? ", pdr.shape )
 					--print(pdr.shape)
-					table.print_r(pdr)
+					--table.print_r(pdr)
 				end								
 			end
 			--table.print_r(bodies)
@@ -574,7 +613,7 @@ function tiledLoader.new( params )
 		--
 		local fill = loader.getProperty( rec, "fill" )
 		if( fill ) then
-			if( string.match(fill,",") ) then
+			if( strMatch(fill,",") ) then
 				fill = string.split(fill,",")
 				for i = 1, 4 do
 					fill[i] = fill[i] or 1
@@ -673,7 +712,7 @@ function tiledLoader.stitch2( name, levelData, params )
 				polygon[#polygon+1] = vertex.y
 			end			
 			rec.polygon = polygon
-			local x,y = ssk.misc.offset_xy(polygon)
+			local x,y = misc.offset_xy(polygon)
 			rec.x = rec.x + x
 			rec.y = rec.y + y
 
@@ -696,17 +735,17 @@ function tiledLoader.stitch2( name, levelData, params )
 		local function compare(a,b)
 		  	return a.y > b.y
 		end
-		table.sort( tmp, compare)
+		tSort( tmp, compare)
 	elseif( dir == "down" ) then
 		local function compare(a,b)
 		  	return a.y < b.y
 		end
-		table.sort( tmp, compare)
+		tSort( tmp, compare)
 	elseif( dir == "right" ) then
 		local function compare(a,b)
 		  	return a.x < b.x
 		end
-		table.sort( tmp, compare)
+		tSort( tmp, compare)
 	end
 	
 	--
@@ -716,4 +755,18 @@ function tiledLoader.stitch2( name, levelData, params )
 	--	
 	return loader, levelData, levelWidth, levelHeight
 end
+
+-- ==
+-- https://github.com/ponywolf/ponyblitz/blob/master/com/ponywolf/ponytiled.lua
+-- ==
+tiledLoader.centerAnchor = function(obj)
+  if obj.contentBounds then 
+    local bounds = obj.contentBounds
+    local actualCenterX, actualCenterY =  (bounds.xMin + bounds.xMax)/2 , (bounds.yMin + bounds.yMax)/2
+    obj.anchorX, obj.anchorY = 0.5, 0.5  
+    obj.x = actualCenterX
+    obj.y = actualCenterY 
+  end
+end
+
 return tiledLoader

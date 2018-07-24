@@ -34,7 +34,7 @@ local gCount2
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2018.07.22" end
+ssk.getVersion = function() return "2018.07.23" end
 
 local initialized = false
 ssk.init = function( params )
@@ -105,6 +105,7 @@ ssk.init = function( params )
 	local_require "ssk2.dialogs.custom"
 	local_require "ssk2.factoryMgr"
 	local_require "ssk2.vScroller"
+	local_require "ssk2.behaviors"
 -- =============================================================
 	local_require "ssk2.android"
 	local_require "ssk2.security"
