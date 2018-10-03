@@ -48,7 +48,7 @@ local function create( group, params )
 	local keyboardEn	= fnn(params.keyboardEn, false)	
 
 	local stickEventName 	= params.stickEventName or "onJoystick"
-	local joyParams 	= params.joyParams or params.joyParams or {}
+	local joyParams 	= params.joyParams or {}
 
 
 	local function onTouch( self, event )
@@ -85,8 +85,8 @@ local function create( group, params )
 	joyParams.inUseAlpha = fnn( joyParams.inUseAlpha, 1 )
 	joyParams.notInUseAlpha = fnn( joyParams.notInUseAlpha, 0.25 )
 
-	local sx = centerX - fullw/2 + 60
-	local sy = centerY + fullh/2 - 60
+	local sx = centerX - fullw/2 + ( joyParams.outerRadius or 60 )
+	local sy = centerY + fullh/2 - ( joyParams.outerRadius or 60 )
 
 	local inputHelper = display.newGroup()
 	group:insert(inputHelper)
