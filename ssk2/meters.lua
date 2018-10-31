@@ -4,15 +4,16 @@
 
 local public = {}
 local getTimer = system.getTimer
-function public.create_fps( allowDrag )
+function public.create_fps( allowDrag, scale )
+	scale = scale or 1
 	local fpsMeter = display.newGroup()
-	fpsMeter.back = display.newRect( fpsMeter, left + 2, top + 2, 100, 25 )
+	fpsMeter.back = display.newRect( fpsMeter, left + 2 * scale, top + 2 * scale, 100 * scale, 25 * scale )
 	fpsMeter.back.anchorX = 0
 	fpsMeter.back.anchorY = 0
 	fpsMeter.lastTime = getTimer()
 	local cx = fpsMeter.back.x + fpsMeter.back.contentWidth/2
 	local cy = fpsMeter.back.y + fpsMeter.back.contentHeight/2
-	fpsMeter.label = display.newText(fpsMeter, "initializing...", cx, cy, native.systemFont, 12 )
+	fpsMeter.label = display.newText(fpsMeter, "initializing...", cx, cy, native.systemFont, 12 * scale )
 	fpsMeter.label:setFillColor( 0,0,0 )
 	fpsMeter.avgWindow = {}
 	fpsMeter.maxWindowSize = display.fps * 2 or 60
@@ -63,31 +64,32 @@ function public.create_fps( allowDrag )
 end
 
 
-function public.create_mem( allowDrag )
+function public.create_mem( allowDrag, scale )
+	scale = scale or 1
 	local hud = display.newGroup()
-	local hudFrame = display.newRect( hud, 0, 0, 240, 80)
+	local hudFrame = display.newRect( hud, 0, 0, 240*scale, 80*scale)
 	hudFrame:setFillColor(0.2,0.2,0.2)
 	hudFrame:setStrokeColor(1,1,0)
 	hudFrame.strokeWidth = 1
-	hudFrame.x = right - hudFrame.contentWidth/2 - 5
-	hudFrame.y = top + hudFrame.contentHeight/2 + 5
+	hudFrame.x = right - hudFrame.contentWidth/2 - 5*scale
+	hudFrame.y = top + hudFrame.contentHeight/2 + 5*scale
 
-	local mMemLabel = display.newText( hud, "Main Mem:", hudFrame.x - hudFrame.contentWidth/2 + 10, hudFrame.y - 15, native.systemFont, 16 )
+	local mMemLabel = display.newText( hud, "Main Mem:", hudFrame.x - hudFrame.contentWidth/2 + 15 * scale, hudFrame.y - hudFrame.contentHeight/2 + 15 * scale, native.systemFont, 16*scale )
 	mMemLabel:setFillColor(1,0.4,0)
 	mMemLabel.anchorX = 0
+	mMemLabel.anchorY = 0
 
-	local tMemLabel = display.newText( hud, "Texture Mem:", hudFrame.x - hudFrame.contentWidth/2 + 10, hudFrame.y + 15, native.systemFont, 16 )
+	local tMemLabel = display.newText( hud, "Texture Mem:", hudFrame.x - hudFrame.contentWidth/2 + 15 * scale , hudFrame.y + hudFrame.contentHeight/2 - 15 * scale, native.systemFont, 16*scale )
 	tMemLabel:setFillColor(0.2,1,0)
 	tMemLabel.anchorX = 0
+	tMemLabel.anchorY = 1
 
 	hud.enterFrame = function( self )
 		self:toFront()
-		--hudFrame.x = right - hudFrame.contentWidth/2 - 5
-		--hudFrame.y = top + hudFrame.contentHeight/2 + 5
-		mMemLabel.x = hudFrame.x - hudFrame.contentWidth/2 + 10
-		mMemLabel.y = hudFrame.y - 15
-		tMemLabel.x = hudFrame.x - hudFrame.contentWidth/2 + 10
-		tMemLabel.y = hudFrame.y + 15
+		mMemLabel.x = hudFrame.x - hudFrame.contentWidth/2 + 10 * scale
+		mMemLabel.y = hudFrame.y - hudFrame.contentHeight/2 + 15 * scale
+		tMemLabel.x = hudFrame.x - hudFrame.contentWidth/2 + 10 * scale
+		tMemLabel.y = hudFrame.y + hudFrame.contentHeight/2 - 15 * scale
 
 		-- Fill in current main memory usage
 		collectgarbage("collect") -- Collect garbage every frame to get 'true' current memory usage

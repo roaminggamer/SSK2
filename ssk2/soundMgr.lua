@@ -457,13 +457,19 @@ end
 
 -- stop( name, soundType  ) - Stop a sound.
 --
-function soundMgr.stop( name, soundType )	
+function soundMgr.stop( name, soundType, noRewind )	
 	local record = allSounds[name]
 	if( not record ) then return false end
 	if( not record.loaded ) then return true end
 	if( soundType ~= nil and record.soundType ~= soundType ) then return end
 	--
-	audio.rewind( record.handle )
+	for k, v in pairs( record.playing ) do
+		if( not noRewind ) then
+			audio.rewind( v.channel )
+		end
+		audio.stop( v.channel )
+	end
+	--audio.rewind( record.handle )
 end
 
 

@@ -366,3 +366,17 @@ local params =
 }
 mgr:addButtonPreset( "default_noads", params )
 
+
+-- ============================
+-- ======= Home Button
+-- ============================
+local params = 
+{ 
+	unselImgSrc  = imagePath .. "settings.png",
+	selImgSrc    = imagePath .. "settings.png",
+	w 			 = 100,
+	h 			 = 100,
+	touchOffset  = {1,2},
+}
+mgr:addButtonPreset( "default_options", params )
+

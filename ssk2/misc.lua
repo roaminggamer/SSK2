@@ -280,13 +280,14 @@ misc.easyBlur = function( group, time, color, params )
 			if( params.onComplete ) then params.onComplete( blur ) end 
 			display.remove( blur )
 		end
-		blur:addEventListener("touch", 
-			function( event ) 
-				if( event.phase == "ended" or event.phase == "cancelled" ) then
-					transition.to( blur, { alpha = 0, time = time, onComplete = blur } )
-				end
-				return true 
-			end )
+		blur.touch = function( self, event ) 
+			print("YO", event.phase)
+			if( event.phase == "ended" or event.phase == "cancelled" ) then
+				transition.to( blur, { alpha = 0, time = time, onComplete = blur } )
+			end
+			return true 
+		end
+		blur:addEventListener("touch" )
 	end
 	transition.to( blur, { alpha = 1, time = time } )
 	return blur

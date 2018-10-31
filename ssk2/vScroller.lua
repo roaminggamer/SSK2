@@ -113,6 +113,8 @@ function vScroller.new( group, x, y, params )
       listener                      = listener
    }
 
+
+
    local totalH = 0
 
    scroller._isvScroller = true
@@ -192,8 +194,8 @@ function vScroller.new( group, x, y, params )
 
          -- SCROLL BUFFER
          local _scrollBuffer = self._scrollBuffer
-         if( scrollBuffer and _scrollBuffer ) then
-            display.currentStage:insert( _scrollBuffer )                  
+         if( scrollBuffer and _scrollBuffer ) then            
+            display.currentStage:insert( _scrollBuffer )
          else
             _scrollBuffer = display.newRect( cw/2, 0, 10, scrollBuffer )
             _scrollBuffer.anchorY = 0
