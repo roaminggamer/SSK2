@@ -3,7 +3,6 @@
 -- =============================================================
 -- Global Functions
 -- =============================================================
-
 local getTimer  = system.getTimer
 local strGSub   = string.gsub
 local strSub    = string.sub
@@ -15,7 +14,7 @@ local mRand     = math.random
 --    fnn( ... ) - Return first argument from list that is not nil.
 --    ... - Any number of any type of arguments.
 -- ==
-function _G.ssk.core.fnn( ... ) 
+function _G.fnn( ... ) 
 	for i = 1, #arg do
 		local theArg = arg[i]
 		if(theArg ~= nil) then return theArg end
@@ -28,7 +27,7 @@ end
 --    val - The value to round.
 --    n - Number of decimal places to round to.
 -- ==
-function _G.ssk.core.round(val, n)
+function _G.round(val, n)
    if (n) then
       return math.floor( (val * 10^n) + 0.5) / (10^n)
    else
@@ -39,7 +38,7 @@ end
 -- nextFrame( func ) - Execute func in new frame. 
 -- From Sergey's code: https://gist.github.com/Lerg
 --
-function _G.ssk.core.nextFrame( func, delay )
+function _G.nextFrame( func, delay )
    delay = delay or 1
    timer.performWithDelay(delay, func )
 end
@@ -47,9 +46,9 @@ end
 -- Shorthand for Runtime:*() functions
 --
 local pairs = _G.pairs
-_G.ssk.core.listen = function( name, listener ) Runtime:addEventListener( name, listener ) end
-_G.ssk.core.ignore = function( name, listener ) Runtime:removeEventListener( name, listener ) end
-_G.ssk.core.ignoreList = function( list, obj )
+_G.listen = function( name, listener ) Runtime:addEventListener( name, listener ) end
+_G.ignore = function( name, listener ) Runtime:removeEventListener( name, listener ) end
+_G.ignoreList = function( list, obj )
    if( not obj ) then return end
    for i = 1, #list do
       local name = list[i]
@@ -59,7 +58,7 @@ _G.ssk.core.ignoreList = function( list, obj )
       end
   end
 end
-_G.ssk.core.autoIgnore = function( name, obj ) 
+_G.autoIgnore = function( name, obj ) 
    if( not display.isValid( obj ) ) then
       ignore( name, obj )
       obj[name] = nil
@@ -68,7 +67,7 @@ _G.ssk.core.autoIgnore = function( name, obj )
    return false 
 end
 
-_G.ssk.core.post = function( name, params, debuglvl )
+_G.post = function( name, params, debuglvl )
    params = params or {}
    local event = {}
    for k,v in pairs( params ) do event[k] = v end
@@ -80,7 +79,7 @@ _G.ssk.core.post = function( name, params, debuglvl )
 end
 
 -- Handy listener clearer (NOTE not fully verified)
-_G.ssk.core.removeListeners = function( obj )
+_G.removeListeners = function( obj )
    if(obj) then
       obj._functionListeners = nil --this will remove all functions listeners
       obj._tableListeners = nil --this will remove all table listeners

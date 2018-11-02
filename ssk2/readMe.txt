@@ -1,6 +1,6 @@
-Super Starter Kit 2 (SSK2): Read Me File 
+Super Starter Kit 2 (SSK3): Read Me File 
 
-SSK2 Release: 2017.014
+SSK3 Release: 2017.014
 
 
 Copyright Roaming Gamer, LLC. 2008-2017 (All Rights Reserved)
@@ -8,15 +8,15 @@ Copyright Roaming Gamer, LLC. 2008-2017 (All Rights Reserved)
 
 Documentation
 -------------
-You can find the full documentation for SSK2 online here: https://roaminggamer.github.io/RGDocs/pages/SSK2/
+You can find the full documentation for SSK3 online here: https://roaminggamer.github.io/RGDocs/pages/ssk3/
 
 
 Validation Sampler
 ------------------
-SSK2 comes with a 'validation sampler' app here: ~/validation/
+SSK3 comes with a 'validation sampler' app here: ~/validation/
 
 > This app is meant to be run in the simulator.
-> It is designed to validate SSK2 features *AND* to provide many working examples for you.
+> It is designed to validate SSK3 features *AND* to provide many working examples for you.
 
 To run the sampler, do the following:
 
@@ -35,9 +35,9 @@ The code for each example/test in the validation can be found in the folder: ~/v
 
 
 
-What is "ssk2j.bat"?
+What is "ssk3j.bat"?
 --------------------
-I work (primarily on Windows).  To make my life easier, I do not copy ssk2 to my work folders.  I use a junction.
+I work (primarily on Windows).  To make my life easier, I do not copy ssk3 to my work folders.  I use a junction.
 
 Junctions are (basically) the windows equivalent of a symbolic link.  
 (https://www.cyberciti.biz/faq/creating-soft-link-or-symbolic-link/)
