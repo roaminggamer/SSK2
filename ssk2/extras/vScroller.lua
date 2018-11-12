@@ -86,7 +86,7 @@ function vScroller.new( group, x, y, params )
          event.dragged = target.dragged
          passOnTouch( target, event )
       else
-         --table.dump( event, nil, "WTF" )
+         --table.dump( event, nil, "WTH" )
       end
       
       return true

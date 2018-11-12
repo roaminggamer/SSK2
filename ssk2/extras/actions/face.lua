@@ -65,4 +65,6 @@ local function face( obj, params )
 		if( obj.rotation >= 360 ) then obj.rotation = obj.rotation - 360 end		
 	end
 end
-return face
+
+_G.ssk.actions = _G.ssk.actions or {}
+_G.ssk.actions.face = face

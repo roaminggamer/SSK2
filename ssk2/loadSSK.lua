@@ -42,6 +42,11 @@ ssk.init = function( params )
 	-- Extras
 	params.extras = params.extras or 
 	{
+		"actions.face",
+		"actions.move",
+		"actions.movep",
+		"actions.scene",
+		"actions.target",
 		"android",
 		"behaviors",
 		"easyBench",

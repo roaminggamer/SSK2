@@ -5,6 +5,9 @@
 -- =============================================================
 local move = {}
 
+_G.ssk.actions = _G.ssk.actions or {}
+_G.ssk.actions.move = move
+
 -- Forward Declarations
 -- SSK
 local angle2Vector      = ssk.math2d.angle2Vector

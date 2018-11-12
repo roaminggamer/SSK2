@@ -4,6 +4,8 @@
 -- Actions Library - Move via Physics Functions
 -- =============================================================
 local movep = {}
+_G.ssk.actions = _G.ssk.actions or {}
+_G.ssk.actions.movep = movep
 
 -- Forward Declarations
 -- SSK

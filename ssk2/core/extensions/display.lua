@@ -40,7 +40,7 @@ function display.pointInRect( point, obj )
 
 	if(not obj) then return false end
 
-	local bounds = obj2.contentBounds
+	local bounds = obj.contentBounds
 	if( point.x > bounds.xMax ) then return false end
 	if( point.x < bounds.xMin ) then return false end
 	if( point.y > bounds.yMax ) then return false end

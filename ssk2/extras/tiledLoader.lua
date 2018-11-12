@@ -1,6 +1,8 @@
 -- =============================================================
 -- Copyright Roaming Gamer, LLC. 2008-2018 (All Rights Reserved)
 -- =============================================================
+-- Tiled Tool Manual: http://docs.mapeditor.org/en/stable/
+-- =============================================================
 local physics 		= require "physics"
 
 -- ==
@@ -12,6 +14,7 @@ local strMatch = string.match; local strFind = string.find;
 local strSub = string.sub; local strFormat = string.format
 local mFloor = math.floor; local mRand = math.random
 local tSort = table.sort
+local isValid = display.isValid
 
 -- ==
 --    Locals & Helper Functions
@@ -28,6 +31,10 @@ local ClearFlag                 = 0x1FFFFFFF
 local function hasbit(x, p) return x % (p + p) >= p end
 local function setbit(x, p) return hasbit(x, p) and x or x + p end
 local function clearbit(x, p) return hasbit(x, p) and x - p or x end
+
+-- Set to 'true' to use more performant operations
+-- Otherwise will attempt to be more accurate.
+local preferPerformance = true
 
 
 -- =============================================================
@@ -133,6 +140,12 @@ function tiledLoader.new( params )
 				local rec = table.shallowCopy( tile )
 				--local doDump = ( rec.id == 5 and rec.height == 64 )
 				images[firstgid+rec.id] = rec
+
+				if(rec.animation) then
+					for i = 1, #rec.animation do
+						rec.animation[i].tileid = firstgid + rec.animation[i].tileid
+					end
+				end
 				--[[
 				if( doDump ) then
 					table.print_r(rec)
@@ -210,13 +223,55 @@ function tiledLoader.new( params )
 			obj = buildFunc( loader, group, rec.x + ox, rec.y + oy, rec, params )
 
 		elseif( rec.gid ) then
-   		obj = newImageRect( group, images[rec.gid].image, rec.width, rec.height )
+			local imgRec = images[rec.gid]
+   		obj = newImageRect( group, imgRec.image, rec.width, rec.height )
    		obj.x = rec.x + ox
    		obj.y = rec.y + oy   		
    		obj.rotation = rec.rotation or 0
    		obj.rec = rec
    		obj.anchorX = 0
    		obj.anchorY = 1
+
+   		-- If this is an animated tile, set up enterFrame listener
+   		-- to change fill over time
+   		if( imgRec.animation ) then
+   			if( preferPerformance ) then
+		   		-- More performant:
+		  			local animation = imgRec.animation
+	   			local animObj = obj
+	   			local curFrame = 1
+		   		local frameAnimator
+		   		table.print_r(animation)
+		   		frameAnimator = function()
+		   			if( not isValid(animObj) ) then return end
+	   				curFrame = curFrame + 1
+	   				curFrame = (curFrame > #animation) and 1 or curFrame
+	   				animObj.fill = { type = "image", filename = images[animation[curFrame].tileid].image }
+		   			timer.performWithDelay( animation[curFrame].duration, frameAnimator )
+		   		end
+		   		timer.performWithDelay( animation[curFrame].duration, frameAnimator )
+		   	else
+	   			-- More acccurate:	
+	   			local animation = imgRec.animation
+	   			local animObj = obj
+		   		local lastT = getTimer()
+		   		local curFrame = 1
+		   		local frameAnimator
+		   		frameAnimator = function()
+		   			if( not isValid(animObj) ) then
+		   				ignore( "enterFrame", frameAnimator )
+		   				return
+		   			end
+		   			local curT = getTimer()
+		   			if( curT - lastT >= animation[curFrame].duration ) then
+		   				lastT = lastT + animation[curFrame].duration 
+		   				curFrame = curFrame + 1
+		   				curFrame = (curFrame > #animation) and 1 or curFrame
+		   				animObj.fill = { type = "image", filename = images[animation[curFrame].tileid].image }
+		   			end	   			
+		   		end; listen("enterFrame", frameAnimator)
+	   		end
+   		end   		
    	
 		elseif( rec.shape == "polygon" ) then
 			local polygon = {}
@@ -226,7 +281,7 @@ function tiledLoader.new( params )
 				polygon[#polygon+1] = vertex.y
 			end			
 			rec.polygon = polygon
-			local x,y = misc.offset_xy(polygon)
+			local x,y = ssk.misc.offset_xy(polygon)
 			rec.x = rec.x + x
 			rec.y = rec.y + y
 			obj = newPolygon( group, rec.x, rec.y, rec.polygon)
@@ -712,7 +767,7 @@ function tiledLoader.stitch2( name, levelData, params )
 				polygon[#polygon+1] = vertex.y
 			end			
 			rec.polygon = polygon
-			local x,y = misc.offset_xy(polygon)
+			local x,y = ssk.misc.offset_xy(polygon)
 			rec.x = rec.x + x
 			rec.y = rec.y + y
 

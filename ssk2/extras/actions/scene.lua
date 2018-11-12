@@ -4,6 +4,9 @@
 -- Actions Library - Scene Functions
 -- =============================================================
 local scene = {}
+_G.ssk.actions = _G.ssk.actions or {}
+_G.ssk.actions.scene = scene
+
 
 -- Forward Declarations
 -- SSK

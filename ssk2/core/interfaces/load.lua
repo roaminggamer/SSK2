@@ -22,5 +22,11 @@ shallowCopy( require( "ssk2.core.interfaces.buttons" ), _rgEasyIFC )
 shallowCopy( require( "ssk2.core.interfaces.sbc" ), _rgEasyIFC )
 shallowCopy( require( "ssk2.core.interfaces.effects" ), _rgEasyIFC )
 shallowCopy( require( "ssk2.core.interfaces.labels" ), _rgEasyIFC ) 
+shallowCopy( require( "ssk2.core.interfaces.button_utils" ), _rgEasyIFC ) 
+
 require "ssk2.core.interfaces.presets.default.presets"
+
+-- Added for backward compatibility
+_rgEasyIFC.isInBounds = display.pointInRect
+
 return _rgEasyIFC

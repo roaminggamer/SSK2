@@ -4,6 +4,9 @@
 -- Actions Library - Target Acquisition Functions
 -- =============================================================
 local target = {}
+_G.ssk.actions = _G.ssk.actions or {}
+_G.ssk.actions.target = target
+
 
 -- Forward Declarations
 local angle2Vector      = ssk.math2d.angle2Vector
