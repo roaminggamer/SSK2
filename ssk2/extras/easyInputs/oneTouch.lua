@@ -145,5 +145,5 @@ end
 local public = {}
 public.create 		= create
 -- =============================================================
-easyInputs.onTouch = public
+easyInputs.oneTouch = public
 return public

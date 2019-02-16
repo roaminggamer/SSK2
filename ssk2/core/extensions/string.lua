@@ -5,6 +5,7 @@
 -- =============================================================
 
 local strLen = string.len
+local strSub = string.sub
 
 function string.truncate( str, maxLen, appendMe )
   if not str then return "" end
@@ -16,6 +17,20 @@ function string.truncate( str, maxLen, appendMe )
   end
   return out
 end
+
+
+-- ==
+--    string:toTable() - Splits every character in a string into a table.
+-- ==
+function string:toTable()
+	local t = {}
+	local len = self:len()
+	for i = 1, len do
+		t[i] = strSub(self,i,i)
+	end
+	return t
+end
+
 
 
 -- ==

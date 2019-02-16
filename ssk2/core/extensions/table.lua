@@ -444,6 +444,21 @@ function table.permute_iter (a)
 end
 
 
+--- construct a table containing all the permutations of a list.
+-- @param a list-like table
+-- @return a table of tables
+-- @usage permute_table {1,2,3} --> {{2,3,1},{3,2,1},{3,1,2},{1,3,2},{2,1,3},{1,2,3}}
+--function permute_table (a)
+--assert_arg(1,a,'table')
+
+function table.permute_table(a)
+    local res = {}
+    local n = #a
+    permgen(a,n,function(t) table.insert(res,table.deepCopy(t)) end)
+    return res
+end
+
+
 -- ==
 --    Sergey Stuff - Nice bits from Sergey's code: https://gist.github.com/Lerg
 -- ==

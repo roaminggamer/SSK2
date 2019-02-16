@@ -18,6 +18,7 @@ local baseMoveByIndex = 3
 local shiftMult = 10
 local curScale = 1
 local rounding = 2
+local ox, oy
 
 local lastMove 
 
@@ -39,22 +40,22 @@ local function snapTo( target )
 	if( snapMode == 2 ) then
 		curObject.x = tleft - curObject.contentWidth/2
 		curObject.y = tcy
-		easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"
+		easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"
 	elseif( snapMode == 3 ) then
 		curObject.x = tright + curObject.contentWidth/2
 		curObject.y = tcy
-		easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"
+		easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"
 	elseif( snapMode == 4 ) then
 		curObject.x = tcx
 		curObject.y = ttop - curObject.contentHeight/2
 	elseif( snapMode == 5 ) then
 		curObject.x = tcx
 		curObject.y = tbot + curObject.contentHeight/2
-		easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"
+		easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"
 	elseif( snapMode == 6 ) then
 		curObject.x = tcx
 		curObject.y = tcy
-		easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"
+		easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"
 	end	
 end
 
@@ -81,9 +82,12 @@ function easyPositioner.stop()
 end
 
 
-function easyPositioner.start( scale, roundTo )
-	curScale = scale or curScale
-	rounding = roundTo or rounding
+function easyPositioner.start( params  )
+	params = params or {}
+	curScale = params.scale or curScale
+	rounding = params.roundTo or rounding
+	ox = params.ox or 0
+	oy = params.oy or 0
 	onKey = function( event )
 		--table.dump(event)
 		local keyName = event.descriptor
@@ -132,22 +136,22 @@ function easyPositioner.start( scale, roundTo )
 			elseif( keyName == "up" ) then
 				undo = { curObject, curObject.x, curObject.y }
 				curObject.y = curObject.y - moveBy
-				easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"		
+				easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"		
 			
 			elseif( keyName == "down" ) then
 				undo = { curObject, curObject.x, curObject.y }
 				curObject.y = curObject.y + moveBy
-				easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"		
+				easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"		
 			
 			elseif( keyName == "left" ) then
 				undo = { curObject, curObject.x, curObject.y }
 				curObject.x = curObject.x - moveBy
-				easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"		
+				easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"		
 			
 			elseif( keyName == "right" ) then
 				undo = { curObject, curObject.x, curObject.y }
 				curObject.x = curObject.x + moveBy
-				easyMoverText.text = "< " .. round( curObject.x, rounding) .. ", " .. round( curObject.y, rounding) .. " >"		
+				easyMoverText.text = "< " .. round( curObject.x - ox, rounding) .. ", " .. round( curObject.y - oy, rounding) .. " >"		
 
 			elseif( keyName == "f" ) then
 				curObject:toFront()
@@ -178,6 +182,7 @@ end
 -- Attach positioner code to an object
 --
 easyPositioner.attach = function( obj, params )
+	print(obj)
  	params = params or {}
  	--
  	local showAnts = fnn( params.ants, true )
@@ -230,7 +235,7 @@ easyPositioner.attach = function( obj, params )
 				easyMoverTray.anchorY = 0
 				easyMoverTray:setStrokeColor(unpack(strokeColor))
 				easyMoverTray.strokeWidth = 2 * curScale
-				easyMoverText = display.newText( "< " .. target.x .. ", " .. target.y .. " >", 
+				easyMoverText = display.newText( "< " .. target.x - ox.. ", " .. target.y  - oy .. " >", 
 											       easyMoverTray.x, 
 											       easyMoverTray.y + curScale * trayHeight/2,
 											       native.systemFont, 12 * curScale )
@@ -256,7 +261,7 @@ easyPositioner.attach = function( obj, params )
 				end
 
 			end
-			easyMoverText.text = "< " .. round( target.x, rounding) .. ", " .. round( target.y, rounding) .. " >"
+			easyMoverText.text = "< " .. round( target.x - ox, rounding) .. ", " .. round( target.y - oy, rounding) .. " >"
 
 
 		elseif(target.isFocus) then
@@ -265,7 +270,7 @@ easyPositioner.attach = function( obj, params )
 			target.x = target._x0 + dx
 			target.y = target._y0 + dy
 
-			easyMoverText.text = "< " .. round( target.x, rounding) .. ", " .. round( target.y, rounding) .. " >"
+			easyMoverText.text = "< " .. round( target.x - ox, rounding) .. ", " .. round( target.y - oy, rounding) .. " >"
 
 			if(event.phase == "ended" or event.phase == "cancelled") then
 				display.getCurrentStage():setFocus( target, nil )

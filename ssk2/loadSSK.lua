@@ -66,6 +66,7 @@ ssk.init = function( params )
 		"persist",
 		"pex",
 		"points",
+		"ripper",
 		"security",
 		"shuffleBag",
 		"soundMgr",
