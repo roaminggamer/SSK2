@@ -137,6 +137,33 @@ local function putBack( self, entry )
 
    return true
 end
+
+----------------------------------------------------------------------
+-- save current state of bag.
+----------------------------------------------------------------------
+function save( self, fileName, base  )
+   base = ( base == nil ) and system.DocumentsDirectory or base
+   local toSave = { out = self.out, used = self.used, unused = self.unused }
+   table.save( toSave, fileName, base )
+end
+
+
+----------------------------------------------------------------------
+-- Restore state of bag from saved bag
+----------------------------------------------------------------------
+function restore( self, fileName, base  )
+   base = ( base == nil ) and system.DocumentsDirectory or base
+
+   local restored = table.load( fileName, base )
+   if ( restored ) then
+      self.out      = restored.out
+      self.used     = restored.used
+      self.unused   = restored.unused
+   else
+      print( "Warning! shuffleBag.restore() - Failed to restore: " .. tostring( fileName ) )
+   end
+end
+
 ----------------------------------------------------------------------
 --	new - Return new shuffle bag instance.
 ----------------------------------------------------------------------
@@ -153,12 +180,17 @@ function shuffleBag.new( ... )
    bag.getCounts  = getCounts
    bag.take       = take
    bag.putBack    = putBack
+
+   bag.save       = save
+   bag.restore    = restore
    
    for i = 1, #arg do
       bag:insert( arg[i] )
    end   
    return bag
 end
+
+
 
 
 return shuffleBag
