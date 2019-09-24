@@ -253,7 +253,7 @@ misc.easyShake = function( obj, amplitude, time, delay, onComplete2 )
 		obj.y = obj._shakeY0
 		if( onComplete2 ) then onComplete2() end
 	end
-	transition.to(obj , {time = time, x = obj.x, y = obj.y, delay = delay, transition = shakeEasing, onComplete = onComplete } ) -- use the displayObjects current x and y as parameter
+	return transition.to(obj , {time = time, x = obj.x, y = obj.y, delay = delay, transition = shakeEasing, onComplete = onComplete } ) -- use the displayObjects current x and y as parameter
 end
 
 -- Easy alert popup
