@@ -81,7 +81,7 @@ function basic.create( group, x, y, params )
 		end
 		return true
 	end
-	frame.blocker = newImageRect( frame, centerX, centerY, "ssk2/dialogs/images/fillW.png",
+	frame.blocker = newImageRect( frame, centerX, centerY, "ssk2/extras/dialogs/images/fillW.png",
 							{ w = fullw, h = fullh,touch = blockerTouch,
 							  fill = blockerFill, alpha = blockerAlpha } )
 	if( blockerAlphaTime > 0 ) then
@@ -99,55 +99,55 @@ function basic.create( group, x, y, params )
 
 		if( softShadowOY < 0 or mAbs(softShadowOX) > 10 ) then
 			shadow._top = newImageRect( snap.group, -width/2 + 10, -height/2, 
-									"ssk2/dialogs/images/top" .. style .. ".png",
+									"ssk2/extras/dialogs/images/top" .. style .. ".png",
 									{ w = width - 20, h = 24, anchorX = 0, anchorY = 0, fill = softShadowFill } )
 		end
 
 		if( softShadowOY > 0 or mAbs(softShadowOX) > 10 ) then
 			shadow._bot = newImageRect( snap.group, -width/2 + 10, height/2, 
-									"ssk2/dialogs/images/top" .. style .. ".png",
+									"ssk2/extras/dialogs/images/top" .. style .. ".png",
 									{ w = width - 20, h = 24, yScale = -1, anchorX = 0, anchorY = 0, fill = softShadowFill } )
 		end
 
 		if( softShadowOX < 0 or mAbs(softShadowOY) > 24) then
 			shadow._left = newImageRect( snap.group, -width/2, 0, 
-									"ssk2/dialogs/images/left" .. style .. ".png",
+									"ssk2/extras/dialogs/images/left" .. style .. ".png",
 									{ w = 10, h = height - 48, anchorX = 0, fill = softShadowFill } )
 		end
 	
 		if( softShadowOX > 0 or mAbs(softShadowOY) > 24 ) then	
 			shadow._right = newImageRect( snap.group, width/2, 0, 
-									"ssk2/dialogs/images/left" .. style .. ".png",
+									"ssk2/extras/dialogs/images/left" .. style .. ".png",
 									{ w = 10, h = height - 48, xScale = -1, anchorX = 0, fill = softShadowFill } )
 		end
 
 		if( mAbs(softShadowOX) > 10 or mAbs(softShadowOY) > 24 ) then
 			shadow._center = newImageRect( snap.group, 0, 0,
-									"ssk2/dialogs/images/center" .. style .. ".png",
+									"ssk2/extras/dialogs/images/center" .. style .. ".png",
 									{ w = width - 20, h = height - 48, fill = softShadowFill } )
 		end
 
 		if( softShadowOY < 0 or softShadowOX < 0 ) then
 			shadow._ul = newImageRect( snap.group, -width/2, -height/2, 
-									"ssk2/dialogs/images/ul" .. style .. ".png",
+									"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 									{ w = 10, h = 24, anchorX = 0, anchorY = 0, fill = softShadowFill } )
 		end
 
 		if( softShadowOY < 0 or softShadowOX > 0 ) then
 			shadow._ur = newImageRect( snap.group, width/2, -height/2, 
-									"ssk2/dialogs/images/ul" .. style .. ".png",
+									"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 									{ w = 10, h = 24, xScale = -1, anchorX = 0, anchorY = 0, fill = softShadowFill } )
 		end
 
 		if( softShadowOY > 0 or softShadowOX < 0 ) then
 			shadow._ll = newImageRect( snap.group, -width/2, height/2, 
-									"ssk2/dialogs/images/ul" .. style .. ".png",									
+									"ssk2/extras/dialogs/images/ul" .. style .. ".png",									
 									{ w = 10, h = 24, yScale = -1, anchorX = 0, anchorY = 0, fill = softShadowFill } )
 		end
 
 		if( softShadowOY > 0 or softShadowOX > 0 ) then
 			shadow._lr = newImageRect( snap.group, width/2, height/2, 
-									"ssk2/dialogs/images/ul" .. style .. ".png",
+									"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 									{ w = 10, h = 24, xScale = -1, yScale = -1, anchorX = 0, anchorY = 0, fill = softShadowFill } )
 		end
 
@@ -166,37 +166,37 @@ function basic.create( group, x, y, params )
 	end
 
 	dialog._top = newImageRect( dialog, -width/2 + 10, -height/2, 
-							"ssk2/dialogs/images/top" .. style .. ".png",
+							"ssk2/extras/dialogs/images/top" .. style .. ".png",
 							{ w = width - 20, h = 24, anchorX = 0, anchorY = 0, fill = fill } )
 
 	dialog._bot = newImageRect( dialog, -width/2 + 10, height/2, 
-							"ssk2/dialogs/images/top" .. style .. ".png",
+							"ssk2/extras/dialogs/images/top" .. style .. ".png",
 							{ w = width - 20, h = 24, yScale = -1, anchorX = 0, anchorY = 0, fill = fill } )
 
 	dialog._left = newImageRect( dialog, -width/2, 0, 
-							"ssk2/dialogs/images/left" .. style .. ".png",
+							"ssk2/extras/dialogs/images/left" .. style .. ".png",
 							{ w = 10, h = height - 48, anchorX = 0, fill = fill } )
 
 	dialog._right = newImageRect( dialog, width/2, 0, 
-							"ssk2/dialogs/images/left" .. style .. ".png",
+							"ssk2/extras/dialogs/images/left" .. style .. ".png",
 							{ w = 10, h = height - 48, xScale = -1, anchorX = 0, fill = fill } )
 
 	dialog._center = newImageRect( dialog, 0, 0,
-							"ssk2/dialogs/images/center" .. style .. ".png",
+							"ssk2/extras/dialogs/images/center" .. style .. ".png",
 							{ w = width - 20, h = height - 48, fill = fill } )
 
 	dialog._ul = newImageRect( dialog, -width/2, -height/2, 
-							"ssk2/dialogs/images/ul" .. style .. ".png",
+							"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 							{ w = 10, h = 24, anchorX = 0, anchorY = 0, fill = fill } )
 	dialog._ur = newImageRect( dialog, width/2, -height/2, 
-							"ssk2/dialogs/images/ul" .. style .. ".png",
+							"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 							{ w = 10, h = 24, xScale = -1, anchorX = 0, anchorY = 0, fill = fill } )
 
 	dialog._ll = newImageRect( dialog, -width/2, height/2, 
-							"ssk2/dialogs/images/ul" .. style .. ".png",
+							"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 							{ w = 10, h = 24, yScale = -1, anchorX = 0, anchorY = 0, fill = fill } )
 	dialog._lr = newImageRect( dialog, width/2, height/2, 
-							"ssk2/dialogs/images/ul" .. style .. ".png",
+							"ssk2/extras/dialogs/images/ul" .. style .. ".png",
 							{ w = 10, h = 24, xScale = -1, yScale = -1, anchorX = 0, anchorY = 0, fill = fill } )
 
 	dialog:toFront()

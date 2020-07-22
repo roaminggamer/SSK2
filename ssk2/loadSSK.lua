@@ -22,7 +22,7 @@ local gCount2
 -- Create ssk as global (temporarily)
 _G.ssk = {}
 
-ssk.getVersion = function() return "2018.11.01" end
+ssk.getVersion = function() return "2020.06.29" end
 
 local initialized = false
 ssk.init = function( params )
@@ -30,7 +30,7 @@ ssk.init = function( params )
 	params = params or
 	{ 
 		gameFont 				= native.systemFont,
-		measure 					= false, -- Print out memory usage for SSK libraries.
+		measure 				= false, -- Print out memory usage for SSK libraries.
 		debugLevel 				= 0, -- Some modules use this to print extra debug messages
 		                          -- Typical levels are 0, 1, 2 (where 2 is the most verbose)
 	}
@@ -47,8 +47,14 @@ ssk.init = function( params )
 		"actions.movep",
 		"actions.scene",
 		"actions.target",
+		"adHelpers.fakeAdsHelper",
+		"adHelpers.adMobHelper",
+		"adHelpers.appLovinHelper",
 		"android",
 		"behaviors",
+		"composer_helpers",
+		"dialogs.basic",
+		"dialogs.custom",
 		"easyBench",
 		"easyCamera",
 		"easyInputs.joystick",
@@ -61,6 +67,7 @@ ssk.init = function( params )
 		"easySocial",
 		"factoryMgr",
 		"files",
+		"logger",
 		"meters",
 		"misc",
 		"persist",
@@ -86,6 +93,10 @@ ssk.init = function( params )
 		"randomlua",
 		"wait",
 	}
+
+	-- Game Logic (must be added manually to init list)
+	params.logic = params.logic or {}
+
 
 	-- WIP Featuer to support HTML5
 	_G.HTML5_MODE = (params.html5 == true)
@@ -141,6 +152,19 @@ ssk.init = function( params )
 		local_require("ssk2.external." .. toLoad[i] )
 	end
 
+	--
+	-- Load (Game) Logic (Helpers) Alphabetically
+	--
+	local toLoad = {}
+	for k,v in pairs(params.logic) do
+		toLoad[#toLoad+1] = v		
+	end
+	table.sort( toLoad )
+	for i = 1, #toLoad do		
+		local_require("ssk2.logic." .. toLoad[i] )
+	end
+
+
 	-- =============================================================
 	-- Frame counter 
 	-- =============================================================
@@ -182,7 +206,7 @@ ssk.init = function( params )
 		require("ssk2.measureSSK").summary() 
 		print(string.rep("-",74))
 		gCount2 = countGlobals()
-		print("SSK 3 Added: " .. tostring( gCount2 - gCount1) .. " globals." )
+		print("SSK 2 Added: " .. tostring( gCount2 - gCount1) .. " globals." )
 		print(string.rep("-",74))
 	end
 

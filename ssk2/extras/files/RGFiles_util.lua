@@ -94,7 +94,7 @@ function util.mvFolder( src, dst ) -- Move/Rename File
    return result
 end
 
-function util.mkFolder( name, makeFailOK ) -- Remove File
+function util.mkFolder( name, makeFailOK ) -- Make Folder
    if( util.exists( name ) ) then return true end
    makeFailOK = makeFailOK or false
    local result, reason = lfs.mkdir (name)
@@ -105,12 +105,12 @@ function util.mkFolder( name, makeFailOK ) -- Remove File
 end
 
 -- NOTE eventually replace this with pure lfs.* and io.* calls
-function util.cpFolder( src, dst, makeFailOK ) -- Remove Folder
+function util.cpFolder( src, dst, makeFailOK ) -- Copy Folder
    makeFailOK = true
    src = util.repairPath( src, true )
    dst = util.repairPath( dst, true )
-   makeFailOK = makeFailOK or false
-   local recurse   
+   makeFailOK = makeFailOK or false   
+   local recurse
    recurse = function( path )
       local toRecurse
       if( path == nil ) then

@@ -9,9 +9,13 @@ local function rpad(str, len, char)
     return str .. string.rep(char, len - #str)
 end
 
-local ccmgr
+local ccmgr = {}
 
-ccmgr = {}
+if( not _G.ssk ) then
+	_G.ssk = {}
+end
+_G.ssk.ccmgr = ccmgr
+
 	
 -- ==
 --    ssk.ccmgr:newCalculator() - Creates a blank (unconfigured) collision calculator.
@@ -188,6 +192,5 @@ function ccmgr:newCalculator()
 	return collisionsCalculator
 end
 
-_G.ssk.cc = ccmgr
 
 return ccmgr

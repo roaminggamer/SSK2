@@ -11,7 +11,7 @@ local strGSub			= string.gsub
 local strSub			= string.sub
 local strFormat 		= string.format
 local mFloor			= math.floor
-local angle2Vector	= ssk.math2d.angle2Vector
+local angle2Vector		= ssk.math2d.angle2Vector
 local scaleVec			= ssk.math2d.scale
 
 if( not _G.HTML5_MODE ) then	
@@ -347,8 +347,8 @@ function misc.addSmartDrag( obj, params )
 		if( phase == "began" ) then
 			self.isFocus = true
 			display.currentStage:setFocus( self, id )
-			self.x0 = self.x
-			self.y0 = self.y
+			self._x0 = self.x
+			self._y0 = self.y
 			if( params.toFront ) then self:toFront() end
 			if( self.onDragged ) then
 				self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y,  dx = 0, dy = 0, time = getTimer(), target = self } )
@@ -360,8 +360,8 @@ function misc.addSmartDrag( obj, params )
 		elseif( self.isFocus ) then
 			local dx = event.x - event.xStart
 			local dy = event.y - event.yStart
-			self.x = self.x0 + dx
-			self.y = self.y0 + dy
+			self.x = self._x0 + dx
+			self.y = self._y0 + dy
 
 			event.dx = dx
 			event.dy = dy
@@ -419,8 +419,8 @@ function misc.addPhysicsDrag( obj, params )
 			self.tempJoint.maxForce = touchJointForce
 
 			display.currentStage:setFocus( self, id )
-			self.x0 = self.x
-			self.y0 = self.y
+			self._x0 = self.x
+			self._y0 = self.y
 			if( params.toFront ) then self:toFront() end
 			if( self.onDragged ) then
 				self:onDragged( { obj = self, phase = event.phase, x = event.x, y = event.y,  time = getTimer(), target = self } )

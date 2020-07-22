@@ -80,7 +80,7 @@ function custom.create( group, x, y, params )
 		end
 		return true
 	end
-	frame.blocker = newImageRect( frame, centerX, centerY, "ssk2/dialogs/images/fillW.png",
+	frame.blocker = newImageRect( frame, centerX, centerY, "ssk2/extras/dialogs/images/fillW.png",
 							{ w = fullw, h = fullh,touch = blockerTouch,
 							  fill = blockerFill, alpha = blockerAlpha } )
 	if( blockerAlphaTime > 0 ) then

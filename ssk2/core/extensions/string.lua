@@ -10,7 +10,7 @@ local strSub = string.sub
 function string.truncate( str, maxLen, appendMe )
   if not str then return "" end
   appendMe = appendMe or ""
-  local out = str
+  local out = tostring(str)
   maxLen = maxLen
   if(out:len() > maxLen) then
     out = out:sub(1,maxLen-appendMe:len()) .. appendMe
