@@ -58,7 +58,7 @@ function tiledLoader.new( params )
 	if( params.cc ) then
 		myCC = params.cc
 	else
-		myCC = ssk.cc.newCalculator()
+		myCC = ssk.ccmgr.newCalculator()
 		myCC:addName( "default" )
 		myCC:collidesWith( "default", { "default" } )
 	end
@@ -85,6 +85,8 @@ function tiledLoader.new( params )
 	--
 	function loader.load( path )
 
+		-- print(levelsPath .. "." .. path)
+
 		-- Raw Tiled Level
 		levelData = table.deepCopy(require( levelsPath .. "." .. path ))
 
@@ -97,11 +99,11 @@ function tiledLoader.new( params )
 			if( layerData.type == "tilelayer" ) then
 				-- Skip these
 			elseif( layerData.name == "logic" ) then
-				table.print_r(objects[i] )
+				-- table.print_r(objects[i])
 				for i = 1, #objects do				
 					logic[#logic+1] = table.deepCopy( objects[i] )
 				end
-				table.print_r(logic[#logic])
+				-- table.print_r(logic[#logic])
 			
 			elseif( layerData.name == "ignore" ) then
 			elseif( layerData.type == "objectgroup" ) then 
@@ -224,13 +226,14 @@ function tiledLoader.new( params )
 
 		elseif( rec.gid ) then
 			local imgRec = images[rec.gid]
-   		obj = newImageRect( group, imgRec.image, rec.width, rec.height )
-   		obj.x = rec.x + ox
-   		obj.y = rec.y + oy   		
-   		obj.rotation = rec.rotation or 0
-   		obj.rec = rec
-   		obj.anchorX = 0
-   		obj.anchorY = 1
+			table.dump( image, tostring(rec.gid) )
+	   		obj = newImageRect( group, imgRec.image, rec.width, rec.height )
+	   		obj.x = rec.x + ox
+	   		obj.y = rec.y + oy   		
+	   		obj.rotation = rec.rotation or 0
+	   		obj.rec = rec
+	   		obj.anchorX = 0
+	   		obj.anchorY = 1
 
    		-- If this is an animated tile, set up enterFrame listener
    		-- to change fill over time
@@ -241,7 +244,7 @@ function tiledLoader.new( params )
 	   			local animObj = obj
 	   			local curFrame = 1
 		   		local frameAnimator
-		   		table.print_r(animation)
+		   		-- table.print_r(animation)
 		   		frameAnimator = function()
 		   			if( not isValid(animObj) ) then return end
 	   				curFrame = curFrame + 1
